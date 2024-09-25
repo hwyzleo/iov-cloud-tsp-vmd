@@ -25,4 +25,13 @@ public interface VehLifecyclePoAssembler {
     @Mappings({})
     VehicleLifecycleNodeDo toDo(VehLifecyclePo vehLifecyclePo);
 
+    /**
+     * 领域对象转数据对象
+     *
+     * @param vehicleLifecycleNodeDo 领域对象
+     * @return 数据对象
+     */
+    @Mappings({})
+    VehLifecyclePo fromDo(VehicleLifecycleNodeDo vehicleLifecycleNodeDo);
+
 }

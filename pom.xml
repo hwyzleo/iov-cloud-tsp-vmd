@@ -23,6 +23,7 @@
 
     <properties>
         <vmd.version>0.0.1-SNAPSHOT</vmd.version>
+        <account.version>0.0.1-SNAPSHOT</account.version>
     </properties>
 
 </project>

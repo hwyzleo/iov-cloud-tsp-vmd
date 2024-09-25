@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.hwyz.iov.cloud.tsp.vmd.api.contract.enums.QrcodeState;
+import net.hwyz.iov.cloud.tsp.vmd.api.contract.enums.QrcodeType;
+
+import java.util.Map;
 
 /**
  * 二维码响应
@@ -22,8 +25,16 @@ public class QrcodeResponse {
      */
     private String qrcode;
     /**
+     * 二维码类型
+     */
+    private QrcodeType type;
+    /**
      * 二维码状态
      */
     private QrcodeState state;
+    /**
+     * 额外信息
+     */
+    private Map<String, Object> extras;
 
 }

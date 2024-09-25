@@ -7,7 +7,8 @@ import cn.hutool.json.JSONUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.hwyz.iov.cloud.tsp.vmd.api.contract.enums.QrcodeState;
-import net.hwyz.iov.cloud.tsp.vmd.service.domain.contract.enums.QrcodeType;
+import net.hwyz.iov.cloud.tsp.vmd.api.contract.enums.QrcodeType;
+import net.hwyz.iov.cloud.tsp.vmd.service.domain.contract.enums.VehicleLifecycleNode;
 import net.hwyz.iov.cloud.tsp.vmd.service.domain.qrcode.model.QrcodeDo;
 import net.hwyz.iov.cloud.tsp.vmd.service.domain.vehicle.model.VehicleDo;
 import net.hwyz.iov.cloud.tsp.vmd.service.domain.vehicle.model.VehicleLifecycleNodeDo;
@@ -15,6 +16,9 @@ import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.cache.CacheService;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -46,9 +50,21 @@ public class CacheServiceImpl implements CacheService {
             return Optional.empty();
         }
         JSONObject jsonObject = JSONUtil.parseObj(vehicleDoJson);
+        List<VehicleLifecycleNodeDo> allNodeList = new ArrayList<>();
+        for (Object o : jsonObject.getJSONArray("allNodeList")) {
+            JSONObject node = JSONUtil.parseObj(o, true);
+            VehicleLifecycleNodeDo nodeDo = VehicleLifecycleNodeDo.builder()
+                    .vin(node.getStr("vin"))
+                    .node(VehicleLifecycleNode.valOf(node.getStr("node")))
+                    .reachTime(new Date(node.getLong("reachTime")))
+                    .sort(node.getInt("sort"))
+                    .build();
+            nodeDo.stateLoad();
+            allNodeList.add(nodeDo);
+        }
         return Optional.ofNullable(VehicleDo.builder()
                 .vin(jsonObject.getStr("vin"))
-                .allNodeList(jsonObject.getBeanList("allNodeList", VehicleLifecycleNodeDo.class))
+                .allNodeList(allNodeList)
                 .nodeTimeMap(jsonObject.getJSONObject("nodeTimeMap").toBean(new TypeReference<>() {
                 }))
                 .build());
@@ -61,8 +77,8 @@ public class CacheServiceImpl implements CacheService {
     }
 
     @Override
-    public Optional<QrcodeDo> getQrcode(String vin, QrcodeType type) {
-        String qrcodeDoJson = redisTemplate.opsForValue().get(REDIS_KEY_PREFIX_QRCODE + vin + "-" + type.name());
+    public Optional<QrcodeDo> getQrcode(String qrcode) {
+        String qrcodeDoJson = redisTemplate.opsForValue().get(REDIS_KEY_PREFIX_QRCODE + qrcode);
         if (StrUtil.isBlank(qrcodeDoJson)) {
             return Optional.empty();
         }
@@ -73,13 +89,14 @@ public class CacheServiceImpl implements CacheService {
                 .qrcode(jsonObject.getStr("qrcode"))
                 .type(QrcodeType.valOf(jsonObject.getStr("type")))
                 .qrcodeState(QrcodeState.valOf(jsonObject.getStr("qrcodeState")))
+                .createTime(new Date(jsonObject.getLong("createTime")))
                 .build());
     }
 
     @Override
     public void setQrcode(QrcodeDo qrcode) {
         logger.debug("设置车辆[{}]二维码[{}]领域对象缓存", qrcode.getVin(), qrcode.getType());
-        redisTemplate.opsForValue().set(REDIS_KEY_PREFIX_QRCODE + qrcode.getVin() + "-" + qrcode.getType().name(),
+        redisTemplate.opsForValue().set(REDIS_KEY_PREFIX_QRCODE + qrcode.getQrcode(),
                 JSONUtil.parse(qrcode).toJSONString(0), 1, TimeUnit.HOURS);
     }
 }

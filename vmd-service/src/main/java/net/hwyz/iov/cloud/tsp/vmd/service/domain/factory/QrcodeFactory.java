@@ -1,6 +1,6 @@
 package net.hwyz.iov.cloud.tsp.vmd.service.domain.factory;
 
-import net.hwyz.iov.cloud.tsp.vmd.service.domain.contract.enums.QrcodeType;
+import net.hwyz.iov.cloud.tsp.vmd.api.contract.enums.QrcodeType;
 import net.hwyz.iov.cloud.tsp.vmd.service.domain.qrcode.model.QrcodeDo;
 import org.springframework.stereotype.Component;
 

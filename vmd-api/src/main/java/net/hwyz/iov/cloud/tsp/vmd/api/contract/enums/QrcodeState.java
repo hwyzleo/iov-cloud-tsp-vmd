@@ -19,11 +19,7 @@ public enum QrcodeState {
     /** 已确认 **/
     CONFIRMED,
     /** 已过期 **/
-    EXPIRED,
-    /** 成功 **/
-    SUCCESS,
-    /** 失败 **/
-    FAILURE;
+    EXPIRED;
 
     public static QrcodeState valOf(String val) {
         return Arrays.stream(QrcodeState.values())

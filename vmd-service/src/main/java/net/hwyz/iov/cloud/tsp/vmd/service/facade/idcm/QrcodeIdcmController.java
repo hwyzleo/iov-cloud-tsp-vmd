@@ -22,7 +22,7 @@ public class QrcodeIdcmController implements QrcodeIdcmApi {
     private final QrcodeAppService qrcodeAppService;
 
     /**
-     * 生成激活二维码
+     * 生成车辆激活二维码
      *
      * @param vin      车架号
      * @param clientId 客户端ID
@@ -31,21 +31,22 @@ public class QrcodeIdcmController implements QrcodeIdcmApi {
     @Override
     @PostMapping("/action/generateActiveQrcode")
     public Response<QrcodeResponse> generateActiveQrcode(@RequestHeader String vin, @RequestHeader String clientId) {
-        logger.info("车辆[{}]车机[{}]生成激活二维码", vin, clientId);
+        logger.info("车辆[{}]车机[{}]生成车辆激活二维码", vin, clientId);
         return new Response<>(qrcodeAppService.generateActiveQrcode(vin, clientId));
     }
 
     /**
-     * 获取激活二维码状态
+     * 获取车辆激活二维码状态
      *
      * @param vin      车架号
      * @param clientId 客户端ID
      * @return 二维码返回
      */
     @Override
-    @GetMapping("")
-    public Response<QrcodeResponse> getActiveQrcodeState(@RequestHeader String vin, @RequestHeader String clientId) {
-        logger.info("车辆[{}]车机[{}]获取激活二维码状态", vin, clientId);
-        return new Response<>(qrcodeAppService.getActiveQrcodeState(vin, clientId));
+    @GetMapping("/active/{qrcode}")
+    public Response<QrcodeResponse> getActiveQrcodeState(@PathVariable("qrcode") String qrcode, @RequestHeader String vin,
+                                                         @RequestHeader String clientId) {
+        logger.info("车辆[{}]车机[{}]获取车辆激活二维码状态", vin, clientId);
+        return new Response<>(qrcodeAppService.getActiveQrcodeState(qrcode, vin, clientId));
     }
 }

@@ -1,6 +1,5 @@
 package net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.cache;
 
-import net.hwyz.iov.cloud.tsp.vmd.service.domain.contract.enums.QrcodeType;
 import net.hwyz.iov.cloud.tsp.vmd.service.domain.qrcode.model.QrcodeDo;
 import net.hwyz.iov.cloud.tsp.vmd.service.domain.vehicle.model.VehicleDo;
 
@@ -31,11 +30,10 @@ public interface CacheService {
     /**
      * 获取二维码领域对象缓存
      *
-     * @param vin  车架号
-     * @param type 二维码类型
+     * @param qrcode 二维码
      * @return 二维码领域对象
      */
-    Optional<QrcodeDo> getQrcode(String vin, QrcodeType type);
+    Optional<QrcodeDo> getQrcode(String qrcode);
 
     /**
      * 设置二维码领域对象缓存

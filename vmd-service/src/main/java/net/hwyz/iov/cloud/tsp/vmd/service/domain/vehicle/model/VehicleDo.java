@@ -43,4 +43,20 @@ public class VehicleDo extends BaseDo<String> implements DomainObj<VehicleDo> {
         return nodeTimeMap.get(VehicleLifecycleNode.VEHICLE_ACTIVE) != null;
     }
 
+    /**
+     * 激活车辆
+     */
+    public void activate() {
+        VehicleLifecycleNodeDo node = VehicleLifecycleNodeDo.builder()
+                .vin(vin)
+                .node(VehicleLifecycleNode.VEHICLE_ACTIVE)
+                .reachTime(new Date())
+                .sort(0)
+                .build();
+        node.init();
+        allNodeList.add(node);
+        nodeTimeMap.put(VehicleLifecycleNode.VEHICLE_ACTIVE, node.getReachTime());
+        stateChange();
+    }
+
 }

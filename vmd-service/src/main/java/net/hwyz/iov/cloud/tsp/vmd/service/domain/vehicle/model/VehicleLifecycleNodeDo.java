@@ -20,6 +20,10 @@ import java.util.Date;
 public class VehicleLifecycleNodeDo extends BaseDo<Long> implements DomainObj<VehicleDo> {
 
     /**
+     * 车架号
+     */
+    private String vin;
+    /**
      * 生命周期节点
      */
     private VehicleLifecycleNode node;
@@ -27,5 +31,13 @@ public class VehicleLifecycleNodeDo extends BaseDo<Long> implements DomainObj<Ve
      * 触达时间
      */
     private Date reachTime;
+    /**
+     * 排序
+     */
+    private Integer sort;
+
+    public void init() {
+        stateInit();
+    }
 
 }

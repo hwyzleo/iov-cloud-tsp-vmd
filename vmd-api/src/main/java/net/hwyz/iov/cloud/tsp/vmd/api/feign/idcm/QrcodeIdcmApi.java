@@ -11,7 +11,7 @@ import net.hwyz.iov.cloud.tsp.vmd.api.contract.response.QrcodeResponse;
 public interface QrcodeIdcmApi {
 
     /**
-     * 生成激活二维码
+     * 生成车辆激活二维码
      *
      * @param vin      车架号
      * @param clientId 客户端ID
@@ -20,12 +20,13 @@ public interface QrcodeIdcmApi {
     Response<QrcodeResponse> generateActiveQrcode(String vin, String clientId);
 
     /**
-     * 获取激活二维码状态
+     * 获取车辆激活二维码状态
      *
+     * @param qrcode   二维码
      * @param vin      车架号
      * @param clientId 客户端ID
      * @return 二维码返回
      */
-    Response<QrcodeResponse> getActiveQrcodeState(String vin, String clientId);
+    Response<QrcodeResponse> getActiveQrcodeState(String qrcode, String vin, String clientId);
 
 }

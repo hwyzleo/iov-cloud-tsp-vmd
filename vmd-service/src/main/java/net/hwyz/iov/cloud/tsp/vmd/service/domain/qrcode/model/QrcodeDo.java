@@ -1,5 +1,6 @@
 package net.hwyz.iov.cloud.tsp.vmd.service.domain.qrcode.model;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.MD5;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
@@ -7,7 +8,12 @@ import lombok.extern.slf4j.Slf4j;
 import net.hwyz.iov.cloud.tsp.framework.commons.domain.BaseDo;
 import net.hwyz.iov.cloud.tsp.framework.commons.domain.DomainObj;
 import net.hwyz.iov.cloud.tsp.vmd.api.contract.enums.QrcodeState;
-import net.hwyz.iov.cloud.tsp.vmd.service.domain.contract.enums.QrcodeType;
+import net.hwyz.iov.cloud.tsp.vmd.api.contract.enums.QrcodeType;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.exception.QrcodeHasExpiredException;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.exception.QrcodeHasUsedException;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.exception.QrcodeInvalidException;
+
+import java.util.Date;
 
 /**
  * 二维码领域对象
@@ -39,6 +45,10 @@ public class QrcodeDo extends BaseDo<String> implements DomainObj<QrcodeDo> {
      * 二维码状态
      */
     private QrcodeState qrcodeState;
+    /**
+     * 创建时间
+     */
+    private Date createTime;
 
     /**
      * 初始化
@@ -50,6 +60,55 @@ public class QrcodeDo extends BaseDo<String> implements DomainObj<QrcodeDo> {
         stateInit();
         qrcode = generateQrcode(vin, sn);
         qrcodeState = QrcodeState.INITIALIZED;
+        createTime = new Date();
+    }
+
+    /**
+     * 轮询
+     */
+    public void polling() {
+        if (qrcodeState != QrcodeState.CONFIRMED && System.currentTimeMillis() - createTime.getTime() > type.timeout * 1000) {
+            qrcodeState = QrcodeState.EXPIRED;
+            stateChange();
+        }
+    }
+
+    /**
+     * 扫描验证二维码
+     *
+     * @param qrcode 二维码
+     */
+    public void validate(String qrcode) {
+        if (qrcodeState == QrcodeState.CONFIRMED) {
+            throw new QrcodeHasUsedException(vin, type);
+        }
+        if (qrcodeState == QrcodeState.EXPIRED) {
+            throw new QrcodeHasExpiredException(vin, type);
+        }
+        if (StrUtil.isBlank(qrcode) || !qrcode.toUpperCase().equals(this.qrcode)) {
+            throw new QrcodeInvalidException(vin, type);
+        }
+        qrcodeState = QrcodeState.SCANNED;
+        stateChange();
+    }
+
+    /**
+     * 确认二维码
+     *
+     * @param qrcode 二维码
+     */
+    public void confirm(String qrcode) {
+        if (qrcodeState == QrcodeState.CONFIRMED) {
+            throw new QrcodeHasUsedException(vin, type);
+        }
+        if (qrcodeState == QrcodeState.EXPIRED) {
+            throw new QrcodeHasExpiredException(vin, type);
+        }
+        if (StrUtil.isBlank(qrcode) || !qrcode.toUpperCase().equals(this.qrcode)) {
+            throw new QrcodeInvalidException(vin, type);
+        }
+        qrcodeState = QrcodeState.CONFIRMED;
+        stateChange();
     }
 
     /**
@@ -59,7 +118,7 @@ public class QrcodeDo extends BaseDo<String> implements DomainObj<QrcodeDo> {
      */
     private String generateQrcode(String vin, String sn) {
         // TODO 生成二维码策略
-        return MD5.create().digestHex(vin + sn).toUpperCase();
+        return MD5.create().digestHex(vin + sn + System.currentTimeMillis()).toUpperCase();
     }
 
 }

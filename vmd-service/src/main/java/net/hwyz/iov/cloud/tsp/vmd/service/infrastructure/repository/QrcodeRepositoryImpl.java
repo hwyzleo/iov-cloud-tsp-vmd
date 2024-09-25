@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.hwyz.iov.cloud.tsp.framework.commons.domain.AbstractRepository;
 import net.hwyz.iov.cloud.tsp.framework.commons.domain.DoState;
-import net.hwyz.iov.cloud.tsp.vmd.service.domain.contract.enums.QrcodeType;
 import net.hwyz.iov.cloud.tsp.vmd.service.domain.qrcode.model.QrcodeDo;
 import net.hwyz.iov.cloud.tsp.vmd.service.domain.qrcode.repository.QrcodeRepository;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.cache.CacheService;
@@ -38,7 +37,7 @@ public class QrcodeRepositoryImpl extends AbstractRepository<String, QrcodeDo> i
     }
 
     @Override
-    public Optional<QrcodeDo> getByVinAndType(String vin, QrcodeType type) {
-        return cacheService.getQrcode(vin, type);
+    public Optional<QrcodeDo> getByQrcode(String qrcode) {
+        return cacheService.getQrcode(qrcode);
     }
 }

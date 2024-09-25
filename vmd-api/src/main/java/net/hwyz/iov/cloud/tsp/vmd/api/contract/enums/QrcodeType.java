@@ -1,4 +1,4 @@
-package net.hwyz.iov.cloud.tsp.vmd.service.domain.contract.enums;
+package net.hwyz.iov.cloud.tsp.vmd.api.contract.enums;
 
 import lombok.AllArgsConstructor;
 
@@ -13,7 +13,13 @@ import java.util.Arrays;
 public enum QrcodeType {
 
     /** 车辆激活 **/
-    VEHICLE_ACTIVE;
+    VEHICLE_ACTIVE(1800);
+
+    /**
+     * 二维码过期时间
+     * 单位：秒
+     */
+    public final Integer timeout;
 
     public static QrcodeType valOf(String val) {
         return Arrays.stream(QrcodeType.values())

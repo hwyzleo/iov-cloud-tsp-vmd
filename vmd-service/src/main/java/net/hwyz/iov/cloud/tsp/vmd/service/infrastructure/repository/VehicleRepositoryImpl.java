@@ -6,6 +6,7 @@ import net.hwyz.iov.cloud.tsp.framework.commons.domain.AbstractRepository;
 import net.hwyz.iov.cloud.tsp.vmd.service.domain.contract.enums.VehicleLifecycleNode;
 import net.hwyz.iov.cloud.tsp.vmd.service.domain.vehicle.model.VehicleDo;
 import net.hwyz.iov.cloud.tsp.vmd.service.domain.vehicle.model.VehicleLifecycleNodeDo;
+import net.hwyz.iov.cloud.tsp.vmd.service.domain.vehicle.repository.VehicleLifecycleNodeRepository;
 import net.hwyz.iov.cloud.tsp.vmd.service.domain.vehicle.repository.VehicleRepository;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.cache.CacheService;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.exception.VehicleNotExistException;
@@ -31,6 +32,7 @@ public class VehicleRepositoryImpl extends AbstractRepository<String, VehicleDo>
     private final CacheService cacheService;
     private final VehBasicInfoDao vehBasicInfoDao;
     private final VehLifecycleDao vehLifecycleDao;
+    private final VehicleLifecycleNodeRepository vehicleLifecycleNodeRepository;
 
     @Override
     public Optional<VehicleDo> getById(String vin) {
@@ -39,7 +41,18 @@ public class VehicleRepositoryImpl extends AbstractRepository<String, VehicleDo>
 
     @Override
     public boolean save(VehicleDo vehicleDo) {
-        return false;
+        switch (vehicleDo.getState()) {
+            case CHANGED -> {
+                for (VehicleLifecycleNodeDo vehicleLifecycleNodeDo : vehicleDo.getAllNodeList()) {
+                    vehicleLifecycleNodeRepository.save(vehicleLifecycleNodeDo);
+                }
+                cacheService.setVehicle(vehicleDo);
+            }
+            default -> {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
