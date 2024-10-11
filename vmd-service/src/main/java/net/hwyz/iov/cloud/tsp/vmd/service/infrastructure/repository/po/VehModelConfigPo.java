@@ -4,11 +4,12 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import net.hwyz.iov.cloud.tsp.framework.mysql.po.BasePo;
-import lombok.*;
 
 /**
  * <p>
@@ -16,7 +17,7 @@ import lombok.*;
  * </p>
  *
  * @author hwyz_leo
- * @since 2024-09-24
+ * @since 2024-10-11
  */
 @Getter
 @Setter
@@ -53,7 +54,7 @@ public class VehModelConfigPo extends BasePo {
     private String modelCode;
 
     /**
-     * 车型配置代码
+     * 车型配置代码：车型代码+外饰代码(2)+内饰代码(2)+车轮代码(2)+备胎代码(2)+智驾代码(2)
      */
     @TableField("code")
     private String code;
@@ -69,6 +70,36 @@ public class VehModelConfigPo extends BasePo {
      */
     @TableField("name_en")
     private String nameEn;
+
+    /**
+     * 外饰代码
+     */
+    @TableField("exterior_code")
+    private String exteriorCode;
+
+    /**
+     * 内饰代码
+     */
+    @TableField("interior_code")
+    private String interiorCode;
+
+    /**
+     * 车轮代码
+     */
+    @TableField("wheel_code")
+    private String wheelCode;
+
+    /**
+     * 备胎代码
+     */
+    @TableField("spare_tire_code")
+    private String spareTireCode;
+
+    /**
+     * 智驾代码
+     */
+    @TableField("adas_code")
+    private String adasCode;
 
     /**
      * 是否启用

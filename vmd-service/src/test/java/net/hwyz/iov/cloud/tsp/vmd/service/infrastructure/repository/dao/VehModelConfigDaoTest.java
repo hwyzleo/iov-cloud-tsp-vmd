@@ -25,10 +25,15 @@ public class VehModelConfigDaoTest extends BaseTest {
                 .platformCode("H")
                 .seriesCode("H01")
                 .modelCode("H0106")
-                .code("H0106000111")
-                .name("寒01低配六座版 无备胎 极地白 20寸轮毂（AT胎）高亮黑 高阶智驾")
+                .code("H01060103030102")
+                .name("寒01低配六座版 墨玉黑 霜雪白 21寸轮毂（四季胎）高亮黑 有备胎 高阶智驾")
+                .exteriorCode("WS01")
+                .interiorCode("NS03")
+                .wheelCode("CL03")
+                .spareTireCode("XZ01")
+                .adasCode("XZ02")
                 .enable(true)
-                .sort(0)
+                .sort(99)
                 .build();
         vehModelConfigDao.insertPo(vehModelConfigPo);
     }

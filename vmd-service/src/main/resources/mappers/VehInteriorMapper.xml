@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehModelConfigDao">
+<mapper namespace="net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehInteriorDao">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="baseResultMap" type="net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehModelConfigPo">
+    <resultMap id="baseResultMap" type="net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehInteriorPo">
         <id column="id" property="id" />
         <result column="description" property="description" />
         <result column="create_time" property="createTime" />
@@ -12,65 +12,52 @@
         <result column="modify_by" property="modifyBy" />
         <result column="row_version" property="rowVersion" />
         <result column="row_valid" property="rowValid" />
-        <result column="platform_code" property="platformCode" />
         <result column="series_code" property="seriesCode" />
-        <result column="model_code" property="modelCode" />
         <result column="code" property="code" />
         <result column="name" property="name" />
         <result column="name_en" property="nameEn" />
-        <result column="exterior_code" property="exteriorCode" />
-        <result column="interior_code" property="interiorCode" />
-        <result column="wheel_code" property="wheelCode" />
-        <result column="spare_tire_code" property="spareTireCode" />
-        <result column="adas_code" property="adasCode" />
         <result column="enable" property="enable" />
         <result column="sort" property="sort" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
-        id, platform_code, series_code, model_code, code, name, name_en, exterior_code, interior_code, wheel_code, spare_tire_code, adas_code, enable, sort, 
+        id, series_code, code, name, name_en, enable, sort, 
         description, create_time, create_by, modify_time, modify_by, row_version, row_valid
     </sql>
 
     <!-- 插入 -->
     <insert id="insertPo" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO tb_veh_model_config (
-            id, platform_code, series_code, model_code, code, name, name_en, exterior_code, interior_code, wheel_code, spare_tire_code, adas_code, enable, sort, 
+        INSERT INTO tb_veh_interior (
+            id, series_code, code, name, name_en, enable, sort, 
             description, create_time, create_by, modify_time, modify_by, row_version, row_valid
         )
         VALUES (
-            #{id}, #{platformCode}, #{seriesCode}, #{modelCode}, #{code}, #{name}, #{nameEn}, #{exteriorCode}, #{interiorCode}, #{wheelCode}, #{spareTireCode}, #{adasCode}, #{enable}, #{sort}, 
+            #{id}, #{seriesCode}, #{code}, #{name}, #{nameEn}, #{enable}, #{sort}, 
             #{description}, now(), #{createBy}, now(), #{modifyBy}, 1, 1
         )
     </insert>
 
     <!-- 批量插入 -->
     <insert id="batchInsertPo" useGeneratedKeys="true" keyProperty="id" parameterType="java.util.List">
-        INSERT INTO tb_veh_model_config (
-            id, platform_code, series_code, model_code, code, name, name_en, exterior_code, interior_code, wheel_code, spare_tire_code, adas_code, enable, sort, 
+        INSERT INTO tb_veh_interior (
+            id, series_code, code, name, name_en, enable, sort, 
             description, create_time, create_by, modify_time, modify_by, row_version, row_valid
         )
         VALUES
         <foreach collection="list" item="item" index="index" separator=",">
         (
-            #{item.id}, #{item.platformCode}, #{item.seriesCode}, #{item.modelCode}, #{item.code}, #{item.name}, #{item.nameEn}, #{item.exteriorCode}, #{item.interiorCode}, #{item.wheelCode}, #{item.spareTireCode}, #{item.adasCode}, #{item.enable}, #{item.sort}, 
+            #{item.id}, #{item.seriesCode}, #{item.code}, #{item.name}, #{item.nameEn}, #{item.enable}, #{item.sort}, 
             #{item.description}, now(), #{item.createBy}, now(), #{item.modifyBy}, 1, 1
         )
         </foreach>
     </insert>
 
     <!-- 更新 -->
-    <update id="updatePo" parameterType="net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehModelConfigPo">
-        UPDATE tb_veh_model_config t SET
-        <if test="platformCode != null and platformCode != ''">
-            t.platform_code = #{platformCode},
-        </if>
+    <update id="updatePo" parameterType="net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehInteriorPo">
+        UPDATE tb_veh_interior t SET
         <if test="seriesCode != null and seriesCode != ''">
             t.series_code = #{seriesCode},
-        </if>
-        <if test="modelCode != null and modelCode != ''">
-            t.model_code = #{modelCode},
         </if>
         <if test="code != null and code != ''">
             t.code = #{code},
@@ -80,21 +67,6 @@
         </if>
         <if test="nameEn != null and nameEn != ''">
             t.name_en = #{nameEn},
-        </if>
-        <if test="exteriorCode != null and exteriorCode != ''">
-            t.exterior_code = #{exteriorCode},
-        </if>
-        <if test="interiorCode != null and interiorCode != ''">
-            t.interior_code = #{interiorCode},
-        </if>
-        <if test="wheelCode != null and wheelCode != ''">
-            t.wheel_code = #{wheelCode},
-        </if>
-        <if test="spareTireCode != null and spareTireCode != ''">
-            t.spare_tire_code = #{spareTireCode},
-        </if>
-        <if test="adasCode != null and adasCode != ''">
-            t.adas_code = #{adasCode},
         </if>
         <if test="enable != null">
             t.enable = #{enable},
@@ -115,7 +87,7 @@
 
     <!-- 逻辑删除 -->
     <update id="logicalDeletePo" parameterType="Long">
-        UPDATE tb_veh_model_config t SET
+        UPDATE tb_veh_interior t SET
         t.row_version = t.row_version + 1,
         t.modify_time = now(),
         t.row_valid = 0
@@ -124,34 +96,28 @@
 
     <!-- 物理删除 -->
     <delete id="physicalDeletePo" parameterType="Long">
-        DELETE FROM tb_veh_model_config t
+        DELETE FROM tb_veh_interior t
         WHERE t.id = #{value}
     </delete>
 
     <!-- 根据主键获取对应数据 -->
     <select id="selectPoById" parameterType="Long" resultMap="baseResultMap">
         SELECT <include refid="baseColumnList"/>
-        FROM tb_veh_model_config t
+        FROM tb_veh_interior t
         WHERE t.id = #{value}
         AND t.row_valid = 1
     </select>
 
     <!-- 根据数据对象获取对应数据列表 -->
-    <select id="selectPoByExample" parameterType="net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehModelConfigPo" resultMap="baseResultMap">
+    <select id="selectPoByExample" parameterType="net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehInteriorPo" resultMap="baseResultMap">
         SELECT <include refid="baseColumnList"/>
-        FROM tb_veh_model_config t
+        FROM tb_veh_interior t
         WHERE t.row_valid = 1
         <if test="id != null">
             AND t.id = #{id}
         </if>
-        <if test="platformCode != null and platformCode != ''">
-            AND t.platform_code = #{platformCode}
-        </if>
         <if test="seriesCode != null and seriesCode != ''">
             AND t.series_code = #{seriesCode}
-        </if>
-        <if test="modelCode != null and modelCode != ''">
-            AND t.model_code = #{modelCode}
         </if>
         <if test="code != null and code != ''">
             AND t.code = #{code}
@@ -161,21 +127,6 @@
         </if>
         <if test="nameEn != null and nameEn != ''">
             AND t.name_en = #{nameEn}
-        </if>
-        <if test="exteriorCode != null and exteriorCode != ''">
-            AND t.exterior_code = #{exteriorCode}
-        </if>
-        <if test="interiorCode != null and interiorCode != ''">
-            AND t.interior_code = #{interiorCode}
-        </if>
-        <if test="wheelCode != null and wheelCode != ''">
-            AND t.wheel_code = #{wheelCode}
-        </if>
-        <if test="spareTireCode != null and spareTireCode != ''">
-            AND t.spare_tire_code = #{spareTireCode}
-        </if>
-        <if test="adasCode != null and adasCode != ''">
-            AND t.adas_code = #{adasCode}
         </if>
         <if test="enable != null">
             AND t.enable = #{enable}
@@ -207,7 +158,7 @@
     <!-- 根据Map对象获取对应数据列表 -->
     <select id="selectPoByMap" parameterType="java.util.Map" resultMap="baseResultMap">
         SELECT <include refid="baseColumnList"/>
-        FROM tb_veh_model_config t
+        FROM tb_veh_interior t
         WHERE t.row_valid = 1
         <!-- 添加自定义条件 -->
         ORDER BY t.id DESC
@@ -216,7 +167,7 @@
     <!-- 根据Map对象统计记录数 -->
     <select id="countPoByMap" parameterType="java.util.Map" resultType="int">
         SELECT COUNT(*)
-        FROM tb_veh_model_config t
+        FROM tb_veh_interior t
         WHERE t.row_valid = 1
         <!-- 添加自定义条件 -->
     </select>

@@ -1,36 +1,35 @@
 package net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao;
 
 import net.hwyz.iov.cloud.tsp.vmd.service.BaseTest;
-import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehModelPo;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehOptionalPo;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehWheelPo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * 车辆车型表 DAO 测试类
+ * 车辆选装表 DAO 测试类
  *
  * @author hwyz_leo
  */
-public class VehModelDaoTest extends BaseTest {
+public class VehOptionalDaoTest extends BaseTest {
 
     @Autowired
-    private VehModelDao vehModelDao;
+    private VehOptionalDao vehOptionalDao;
 
     @Test
     @Order(1)
     @DisplayName("新增一条记录")
     public void testInsertPo() throws Exception {
-        VehModelPo vehModelPo = VehModelPo.builder()
-                .platformCode("H")
+        VehOptionalPo vehOptionalPo = VehOptionalPo.builder()
                 .seriesCode("H01")
-                .code("H0107")
-                .name("寒01 7座")
-                .nameEn("Han01")
+                .code("XZ03")
+                .name("后拖挂牵引杠")
                 .enable(true)
-                .sort(0)
+                .sort(99)
                 .build();
-        vehModelDao.insertPo(vehModelPo);
+        vehOptionalDao.insertPo(vehOptionalPo);
     }
 
 }
