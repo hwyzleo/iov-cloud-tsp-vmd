@@ -10,20 +10,10 @@
         <module>vmd-service</module>
     </modules>
 
-    <parent>
-        <groupId>net.hwyz.iov.cloud.tsp</groupId>
-        <artifactId>service-parent</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
-    </parent>
-
+    <groupId>net.hwyz.iov.cloud.tsp</groupId>
     <artifactId>vmd</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <description>车辆主数据</description>
     <name>vmd</name>
-
-    <properties>
-        <vmd.version>0.0.1-SNAPSHOT</vmd.version>
-        <account.version>0.0.1-SNAPSHOT</account.version>
-    </properties>
 
 </project>
