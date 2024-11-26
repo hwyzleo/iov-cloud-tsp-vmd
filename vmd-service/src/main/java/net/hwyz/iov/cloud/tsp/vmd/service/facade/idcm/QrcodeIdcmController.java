@@ -2,7 +2,7 @@ package net.hwyz.iov.cloud.tsp.vmd.service.facade.idcm;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.hwyz.iov.cloud.tsp.framework.commons.bean.Response;
+import net.hwyz.iov.cloud.framework.common.bean.Response;
 import net.hwyz.iov.cloud.tsp.vmd.api.contract.response.QrcodeResponse;
 import net.hwyz.iov.cloud.tsp.vmd.api.feign.idcm.QrcodeIdcmApi;
 import net.hwyz.iov.cloud.tsp.vmd.service.application.service.QrcodeAppService;

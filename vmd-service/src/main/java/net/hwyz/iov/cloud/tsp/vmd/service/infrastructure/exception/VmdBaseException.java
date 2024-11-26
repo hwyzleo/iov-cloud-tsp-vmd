@@ -1,6 +1,7 @@
 package net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.exception;
 
-import net.hwyz.iov.cloud.tsp.framework.commons.exception.BaseException;
+
+import net.hwyz.iov.cloud.framework.common.exception.BaseException;
 
 /**
  * 车辆主数据服务基础异常

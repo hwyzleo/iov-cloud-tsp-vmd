@@ -1,6 +1,6 @@
 package net.hwyz.iov.cloud.tsp.vmd.api.feign.idcm;
 
-import net.hwyz.iov.cloud.tsp.framework.commons.bean.Response;
+import net.hwyz.iov.cloud.framework.common.bean.Response;
 import net.hwyz.iov.cloud.tsp.vmd.api.contract.response.QrcodeResponse;
 
 /**

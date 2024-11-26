@@ -7,8 +7,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 
 import lombok.experimental.SuperBuilder;
-import net.hwyz.iov.cloud.tsp.framework.mysql.po.BasePo;
 import lombok.*;
+import net.hwyz.iov.cloud.framework.mysql.po.BasePo;
 
 /**
  * <p>

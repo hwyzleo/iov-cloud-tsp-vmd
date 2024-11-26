@@ -1,7 +1,7 @@
 package net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao;
 
+import net.hwyz.iov.cloud.framework.mysql.dao.BaseDao;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehSeriesPo;
-import net.hwyz.iov.cloud.tsp.framework.mysql.dao.BaseDao;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

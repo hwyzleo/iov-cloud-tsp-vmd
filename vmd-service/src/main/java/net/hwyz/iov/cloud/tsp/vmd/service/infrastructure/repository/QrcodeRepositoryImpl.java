@@ -2,8 +2,8 @@ package net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.hwyz.iov.cloud.tsp.framework.commons.domain.AbstractRepository;
-import net.hwyz.iov.cloud.tsp.framework.commons.domain.DoState;
+import net.hwyz.iov.cloud.framework.common.domain.AbstractRepository;
+import net.hwyz.iov.cloud.framework.common.domain.DoState;
 import net.hwyz.iov.cloud.tsp.vmd.service.domain.qrcode.model.QrcodeDo;
 import net.hwyz.iov.cloud.tsp.vmd.service.domain.qrcode.repository.QrcodeRepository;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.cache.CacheService;
