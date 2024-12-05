@@ -48,7 +48,7 @@ public class PlatformMptController extends BaseController implements PlatformMpt
         List<VehPlatformPo> platformPoList = platformAppService.search(platform.getCode(), platform.getName(),
                 getBeginTime(platform), getEndTime(platform));
         List<PlatformMpt> platformMptList = PlatformMptAssembler.INSTANCE.fromPoList(platformPoList);
-        return getDataTable(platformMptList);
+        return getDataTable(platformPoList, platformMptList);
     }
 
     /**

@@ -48,7 +48,7 @@ public class ModelMptController extends BaseController implements ModelMptApi {
         List<VehModelPo> modelPoList = modelAppService.search(model.getPlatformCode(), model.getSeriesCode(), model.getCode(),
                 model.getName(), getBeginTime(model), getEndTime(model));
         List<ModelMpt> modelMptList = ModelMptAssembler.INSTANCE.fromPoList(modelPoList);
-        return getDataTable(modelMptList);
+        return getDataTable(modelPoList, modelMptList);
     }
 
     /**

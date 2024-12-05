@@ -48,7 +48,7 @@ public class ModelConfigMptController extends BaseController implements ModelCon
         List<VehModelConfigPo> modelConfigPoList = modelConfigAppService.search(modelConfig.getPlatformCode(), modelConfig.getSeriesCode(),
                 modelConfig.getModelCode(), modelConfig.getCode(), modelConfig.getName(), getBeginTime(modelConfig), getEndTime(modelConfig));
         List<ModelConfigMpt> modelConfigMptList = ModelConfigMptAssembler.INSTANCE.fromPoList(modelConfigPoList);
-        return getDataTable(modelConfigMptList);
+        return getDataTable(modelConfigPoList, modelConfigMptList);
     }
 
     /**

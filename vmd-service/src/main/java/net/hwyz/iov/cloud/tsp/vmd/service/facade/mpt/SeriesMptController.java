@@ -48,7 +48,7 @@ public class SeriesMptController extends BaseController implements SeriesMptApi 
         List<VehSeriesPo> seriesPoList = seriesAppService.search(series.getPlatformCode(), series.getCode(),
                 series.getName(), getBeginTime(series), getEndTime(series));
         List<SeriesMpt> seriesMptList = SeriesMptAssembler.INSTANCE.fromPoList(seriesPoList);
-        return getDataTable(seriesMptList);
+        return getDataTable(seriesPoList, seriesMptList);
     }
 
     /**
