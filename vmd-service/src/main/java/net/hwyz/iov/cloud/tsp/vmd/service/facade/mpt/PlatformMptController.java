@@ -113,7 +113,7 @@ public class PlatformMptController extends BaseController implements PlatformMpt
     public AjaxResult edit(@Validated @RequestBody PlatformMpt platform) {
         logger.info("管理后台用户[{}]修改保存车辆平台信息[{}]", SecurityUtils.getUsername(), platform.getCode());
         if (!platformAppService.checkCodeUnique(platform.getId(), platform.getCode())) {
-            return error("修改保存车辆平台'" + platform.getCode() + "'失败，销售编码已存在");
+            return error("修改保存车辆平台'" + platform.getCode() + "'失败，车辆平台代码已存在");
         }
         VehPlatformPo platformPo = PlatformMptAssembler.INSTANCE.toPo(platform);
         platformPo.setModifyBy(SecurityUtils.getUserId().toString());

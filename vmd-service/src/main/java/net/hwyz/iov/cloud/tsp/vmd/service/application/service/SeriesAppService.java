@@ -64,7 +64,7 @@ public class SeriesAppService {
      * 根据主键ID获取车系信息
      *
      * @param id 主键ID
-     * @return 车辆平台信息
+     * @return 车系信息
      */
     public VehSeriesPo getSeriesById(Long id) {
         return vehSeriesDao.selectPoById(id);

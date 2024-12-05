@@ -101,9 +101,9 @@ public class SeriesMptController extends BaseController implements SeriesMptApi 
     }
 
     /**
-     * 修改保存车辆平台信息
+     * 修改保存车系信息
      *
-     * @param series 车辆平台信息
+     * @param series 车系信息
      * @return 结果
      */
     @Log(title = "车系管理", businessType = BusinessType.UPDATE)
@@ -113,7 +113,7 @@ public class SeriesMptController extends BaseController implements SeriesMptApi 
     public AjaxResult edit(@Validated @RequestBody SeriesMpt series) {
         logger.info("管理后台用户[{}]修改保存车系信息[{}]", SecurityUtils.getUsername(), series.getCode());
         if (!seriesAppService.checkCodeUnique(series.getId(), series.getCode())) {
-            return error("修改保存车系'" + series.getCode() + "'失败，销售编码已存在");
+            return error("修改保存车系'" + series.getCode() + "'失败，车系代码已存在");
         }
         VehSeriesPo seriesPo = SeriesMptAssembler.INSTANCE.toPo(series);
         seriesPo.setModifyBy(SecurityUtils.getUserId().toString());
@@ -121,9 +121,9 @@ public class SeriesMptController extends BaseController implements SeriesMptApi 
     }
 
     /**
-     * 删除车辆平台信息
+     * 删除车系信息
      *
-     * @param seriesIds 车辆平台ID数组
+     * @param seriesIds 车系ID数组
      * @return 结果
      */
     @Log(title = "车系管理", businessType = BusinessType.DELETE)
