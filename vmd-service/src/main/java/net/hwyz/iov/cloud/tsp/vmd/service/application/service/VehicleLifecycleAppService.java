@@ -2,8 +2,8 @@ package net.hwyz.iov.cloud.tsp.vmd.service.application.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.hwyz.iov.cloud.tsp.account.api.contract.AccountInfo;
-import net.hwyz.iov.cloud.tsp.vmd.service.domain.external.service.ExAccountService;
+import net.hwyz.iov.cloud.tsp.account.api.contract.Account;
+import net.hwyz.iov.cloud.tsp.account.api.feign.service.ExAccountService;
 import net.hwyz.iov.cloud.tsp.vmd.service.domain.vehicle.model.VehicleDo;
 import net.hwyz.iov.cloud.tsp.vmd.service.domain.vehicle.repository.VehicleRepository;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.exception.VehicleHasActivatedException;
@@ -58,10 +58,10 @@ public class VehicleLifecycleAppService {
             throw new VehicleWithoutPresetOwnerException(vin);
         }
         VehPresetOwnerPo vehPresetOwnerPo = vehPresetOwnerPoList.get(0);
-        AccountInfo accountInfo = exAccountService.getAccountInfo(accountId);
-        if (!vehPresetOwnerPo.getMobile().equals(accountInfo.getMobile()) ||
-                !vehPresetOwnerPo.getCountryRegionCode().equals(accountInfo.getCountryRegionCode())) {
-            throw new VehiclePresetOwnerNotMatchException(vin, accountInfo.getCountryRegionCode(), accountInfo.getMobile(),
+        Account account = exAccountService.getAccountInfo(accountId);
+        if (!vehPresetOwnerPo.getMobile().equals(account.getMobile()) ||
+                !vehPresetOwnerPo.getCountryRegionCode().equals(account.getCountryRegionCode())) {
+            throw new VehiclePresetOwnerNotMatchException(vin, account.getCountryRegionCode(), account.getMobile(),
                     vehPresetOwnerPo.getCountryRegionCode(), vehPresetOwnerPo.getMobile());
         }
     }
