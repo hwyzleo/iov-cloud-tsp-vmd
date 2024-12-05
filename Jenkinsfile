@@ -20,7 +20,7 @@ pipeline {
 
     stages {
         stage('构建并发布') {
-            when { expression { params.DEPLOY_API == true } }
+            when { expression { params.DEPLOY_API == "true" } }
             steps {
                 script {
                     dir(DIR_API) {
