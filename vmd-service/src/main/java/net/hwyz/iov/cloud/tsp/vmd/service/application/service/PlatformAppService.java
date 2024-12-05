@@ -32,7 +32,7 @@ public class PlatformAppService {
      * @param name      车辆平台名称
      * @param beginTime 开始时间
      * @param endTime   结束时间
-     * @return 销售车型列表
+     * @return 车辆平台列表
      */
     public List<VehPlatformPo> search(String code, String name, Date beginTime, Date endTime) {
         Map<String, Object> map = new HashMap<>();

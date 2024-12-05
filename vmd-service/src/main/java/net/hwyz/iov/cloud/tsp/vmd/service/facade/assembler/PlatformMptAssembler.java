@@ -1,6 +1,6 @@
 package net.hwyz.iov.cloud.tsp.vmd.service.facade.assembler;
 
-import net.hwyz.iov.cloud.tsp.vmd.api.PlatformMpt;
+import net.hwyz.iov.cloud.tsp.vmd.api.contract.PlatformMpt;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehPlatformPo;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mappings;
@@ -9,7 +9,7 @@ import org.mapstruct.factory.Mappers;
 import java.util.List;
 
 /**
- * 管理后台销售车型转换类
+ * 管理后台车辆平台转换类
  *
  * @author hwyz_leo
  */

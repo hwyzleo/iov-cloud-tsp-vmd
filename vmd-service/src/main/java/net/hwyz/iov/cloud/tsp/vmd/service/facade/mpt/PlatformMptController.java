@@ -10,7 +10,7 @@ import net.hwyz.iov.cloud.framework.common.web.domain.AjaxResult;
 import net.hwyz.iov.cloud.framework.common.web.page.TableDataInfo;
 import net.hwyz.iov.cloud.framework.security.annotation.RequiresPermissions;
 import net.hwyz.iov.cloud.framework.security.util.SecurityUtils;
-import net.hwyz.iov.cloud.tsp.vmd.api.PlatformMpt;
+import net.hwyz.iov.cloud.tsp.vmd.api.contract.PlatformMpt;
 import net.hwyz.iov.cloud.tsp.vmd.api.feign.mpt.PlatformMptApi;
 import net.hwyz.iov.cloud.tsp.vmd.service.application.service.PlatformAppService;
 import net.hwyz.iov.cloud.tsp.vmd.service.facade.assembler.PlatformMptAssembler;

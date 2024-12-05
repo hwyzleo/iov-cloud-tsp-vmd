@@ -1,4 +1,4 @@
-package net.hwyz.iov.cloud.tsp.vmd.api;
+package net.hwyz.iov.cloud.tsp.vmd.api.contract;
 
 import lombok.*;
 import net.hwyz.iov.cloud.framework.common.web.domain.BaseRequest;
@@ -15,7 +15,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class PlatformMpt extends BaseRequest {
+public class SeriesMpt extends BaseRequest {
 
     /**
      * 主键
@@ -25,15 +25,20 @@ public class PlatformMpt extends BaseRequest {
     /**
      * 车辆平台代码
      */
+    private String platformCode;
+
+    /**
+     * 车系代码
+     */
     private String code;
 
     /**
-     * 车辆平台名称
+     * 车系名称
      */
     private String name;
 
     /**
-     * 车辆平台英文名称
+     * 车系英文名称
      */
     private String nameEn;
 

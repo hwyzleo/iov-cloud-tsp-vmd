@@ -3,7 +3,7 @@ package net.hwyz.iov.cloud.tsp.vmd.api.feign.mpt;
 import jakarta.servlet.http.HttpServletResponse;
 import net.hwyz.iov.cloud.framework.common.web.domain.AjaxResult;
 import net.hwyz.iov.cloud.framework.common.web.page.TableDataInfo;
-import net.hwyz.iov.cloud.tsp.vmd.api.PlatformMpt;
+import net.hwyz.iov.cloud.tsp.vmd.api.contract.PlatformMpt;
 
 /**
  * 车辆平台相关管理后台接口
