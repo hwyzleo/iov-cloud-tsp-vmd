@@ -15,4 +15,20 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface VehPlatformDao extends BaseDao<VehPlatformPo, Long> {
 
+    /**
+     * 通过code查询车辆平台信息
+     *
+     * @param code 车辆平台编码
+     * @return 车辆平台信息
+     */
+    VehPlatformPo selectPoByCode(String code);
+
+    /**
+     * 批量物理删除车辆平台信息
+     *
+     * @param ids 车辆平台id数组
+     * @return 影响行数
+     */
+    int batchPhysicalDeletePo(Long[] ids);
+
 }
