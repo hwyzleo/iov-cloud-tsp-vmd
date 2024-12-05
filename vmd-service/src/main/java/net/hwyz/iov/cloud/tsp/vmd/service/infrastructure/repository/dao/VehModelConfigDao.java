@@ -15,4 +15,20 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface VehModelConfigDao extends BaseDao<VehModelConfigPo, Long> {
 
+    /**
+     * 通过code查询车型配置信息
+     *
+     * @param code 车型配置编码
+     * @return 车型配置信息
+     */
+    VehModelConfigPo selectPoByCode(String code);
+
+    /**
+     * 批量物理删除车型配置信息
+     *
+     * @param ids 车型配置id数组
+     * @return 影响行数
+     */
+    int batchPhysicalDeletePo(Long[] ids);
+
 }
