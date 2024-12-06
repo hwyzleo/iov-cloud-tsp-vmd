@@ -2,7 +2,6 @@ package net.hwyz.iov.cloud.tsp.vmd.service.facade.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.hwyz.iov.cloud.tsp.vmd.api.feign.service.VehicleModelConfigServiceApi;
 import net.hwyz.iov.cloud.tsp.vmd.service.application.service.VehicleModelConfigAppService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/service/vehicleModelConfig")
-public class VehicleModelConfigServiceController implements VehicleModelConfigServiceApi {
+public class VehicleModelConfigServiceController {
 
     private final VehicleModelConfigAppService vehicleModelConfigAppService;
 
@@ -33,7 +32,6 @@ public class VehicleModelConfigServiceController implements VehicleModelConfigSe
      * @param adasCode      智驾代码
      * @return 车型配置代码
      */
-    @Override
     @GetMapping("/modelConfigCode")
     public String getVehicleModeConfigCode(@RequestParam String modelCode, @RequestParam String exteriorCode,
                                            @RequestParam String interiorCode, @RequestParam String wheelCode,
