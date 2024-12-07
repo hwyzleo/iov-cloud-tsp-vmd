@@ -5,7 +5,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.hwyz.iov.cloud.framework.common.util.ParamHelper;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehBasicInfoDao;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehLifecycleDao;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehBasicInfoPo;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehLifecyclePo;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -24,6 +26,7 @@ import java.util.Map;
 public class VehicleAppService {
 
     private final VehBasicInfoDao vehBasicInfoDao;
+    private final VehLifecycleDao vehLifecycleDao;
 
     /**
      * 查询车辆信息
@@ -39,6 +42,16 @@ public class VehicleAppService {
         map.put("beginTime", beginTime);
         map.put("endTime", endTime);
         return vehBasicInfoDao.selectPoByMap(map);
+    }
+
+    /**
+     * 查询车辆生命周期
+     *
+     * @param vin 车架号
+     * @return 车辆生命周期列表
+     */
+    public List<VehLifecyclePo> listLifecycle(String vin) {
+        return vehLifecycleDao.selectPoByExample(VehLifecyclePo.builder().vin(vin).build());
     }
 
     /**
@@ -87,6 +100,16 @@ public class VehicleAppService {
     }
 
     /**
+     * 新增车辆生命周期
+     *
+     * @param vehLifecyclePo 车辆生命周期
+     * @return 结果
+     */
+    public int createVehicleLifecycle(VehLifecyclePo vehLifecyclePo) {
+        return vehLifecycleDao.insertPo(vehLifecyclePo);
+    }
+
+    /**
      * 修改车辆
      *
      * @param vehBasicInfo 车辆信息
@@ -97,6 +120,16 @@ public class VehicleAppService {
     }
 
     /**
+     * 修改车辆生命周期
+     *
+     * @param vehLifecyclePo 车辆生命周期
+     * @return 结果
+     */
+    public int modifyVehicleLifecycle(VehLifecyclePo vehLifecyclePo) {
+        return vehLifecycleDao.updatePo(vehLifecyclePo);
+    }
+
+    /**
      * 批量删除车辆
      *
      * @param ids 车辆ID数组
@@ -104,6 +137,16 @@ public class VehicleAppService {
      */
     public int deleteVehicleByIds(Long[] ids) {
         return vehBasicInfoDao.batchPhysicalDeletePo(ids);
+    }
+
+    /**
+     * 批量删除车辆生命周期
+     *
+     * @param ids 车辆生命周期ID数组
+     * @return 结果
+     */
+    public int deleteVehicleLifecycleByIds(Long[] ids) {
+        return vehLifecycleDao.batchPhysicalDeletePo(ids);
     }
 
 }

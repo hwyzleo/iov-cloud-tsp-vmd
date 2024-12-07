@@ -12,6 +12,8 @@ import java.util.Arrays;
 @AllArgsConstructor
 public enum VehicleLifecycleNode {
 
+    /** PDI电检 **/
+    PDI,
     /** 车辆激活 **/
     VEHICLE_ACTIVE;
 

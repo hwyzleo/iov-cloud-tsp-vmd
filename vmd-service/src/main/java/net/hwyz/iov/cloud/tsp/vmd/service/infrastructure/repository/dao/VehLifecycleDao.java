@@ -15,4 +15,12 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface VehLifecycleDao extends BaseDao<VehLifecyclePo, Long> {
 
+    /**
+     * 批量物理删除车辆生命周期
+     *
+     * @param ids 车辆生命周期id数组
+     * @return 影响行数
+     */
+    int batchPhysicalDeletePo(Long[] ids);
+
 }
