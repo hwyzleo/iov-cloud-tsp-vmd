@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.hwyz.iov.cloud.framework.common.util.ParamHelper;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehPlatformDao;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehBrandPo;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehPlatformPo;
 import org.springframework.stereotype.Service;
 
@@ -56,6 +57,19 @@ public class PlatformAppService {
         }
         VehPlatformPo platformPo = getPlatformByCode(code);
         return !ObjUtil.isNotNull(platformPo) || platformPo.getId().longValue() == platformId.longValue();
+    }
+
+    /**
+     * 检查车辆平台下是否存在车辆
+     *
+     * @param platformId 车辆平台ID
+     * @return 结果
+     */
+    public Boolean checkPlatformVehicleExist(Long platformId) {
+        VehPlatformPo platformPo = getPlatformById(platformId);
+        Map<String, Object> map = new HashMap<>();
+        map.put("code", platformPo.getCode());
+        return vehPlatformDao.countPoByMap(map) > 0;
     }
 
     /**

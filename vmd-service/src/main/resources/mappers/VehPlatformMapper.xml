@@ -55,9 +55,6 @@
     <!-- 更新 -->
     <update id="updatePo" parameterType="net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehPlatformPo">
         UPDATE tb_veh_platform t SET
-        <if test="code != null and code != ''">
-            t.code = #{code},
-        </if>
         <if test="name != null and name != ''">
             t.name = #{name},
         </if>
@@ -193,5 +190,8 @@
         FROM tb_veh_platform t
         WHERE t.row_valid = 1
         <!-- 添加自定义条件 -->
+        <if test="code != null and code != ''">
+            AND t.code = #{code}
+        </if>
     </select>
 </mapper>
