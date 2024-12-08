@@ -41,7 +41,7 @@ public class BrandMptController extends BaseController implements BrandMptApi {
      * @param brand 车辆品牌信息
      * @return 车辆品牌信息列表
      */
-    @RequiresPermissions("tsp:vmd:brand:list")
+    @RequiresPermissions("vehicle:product:brand:list")
     @Override
     @GetMapping(value = "/list")
     public TableDataInfo list(BrandMpt brand) {
@@ -60,7 +60,7 @@ public class BrandMptController extends BaseController implements BrandMptApi {
      * @param brand    车辆品牌信息
      */
     @Log(title = "车辆品牌管理", businessType = BusinessType.EXPORT)
-    @RequiresPermissions("tsp:vmd:brand:export")
+    @RequiresPermissions("vehicle:product:brand:export")
     @Override
     @PostMapping("/export")
     public void export(HttpServletResponse response, BrandMpt brand) {
@@ -73,7 +73,7 @@ public class BrandMptController extends BaseController implements BrandMptApi {
      * @param brandId 车辆品牌ID
      * @return 车辆品牌信息
      */
-    @RequiresPermissions("tsp:vmd:brand:query")
+    @RequiresPermissions("vehicle:product:brand:query")
     @Override
     @GetMapping(value = "/{brandId}")
     public AjaxResult getInfo(@PathVariable Long brandId) {
@@ -89,7 +89,7 @@ public class BrandMptController extends BaseController implements BrandMptApi {
      * @return 结果
      */
     @Log(title = "车辆品牌管理", businessType = BusinessType.INSERT)
-    @RequiresPermissions("tsp:vmd:brand:add")
+    @RequiresPermissions("vehicle:product:brand:add")
     @Override
     @PostMapping
     public AjaxResult add(@Validated @RequestBody BrandMpt brand) {
@@ -109,7 +109,7 @@ public class BrandMptController extends BaseController implements BrandMptApi {
      * @return 结果
      */
     @Log(title = "车辆品牌管理", businessType = BusinessType.UPDATE)
-    @RequiresPermissions("tsp:vmd:brand:edit")
+    @RequiresPermissions("vehicle:product:brand:edit")
     @Override
     @PutMapping
     public AjaxResult edit(@Validated @RequestBody BrandMpt brand) {
@@ -129,7 +129,7 @@ public class BrandMptController extends BaseController implements BrandMptApi {
      * @return 结果
      */
     @Log(title = "车辆品牌管理", businessType = BusinessType.DELETE)
-    @RequiresPermissions("tsp:vmd:brand:remove")
+    @RequiresPermissions("vehicle:product:brand:remove")
     @Override
     @DeleteMapping("/{brandIds}")
     public AjaxResult remove(@PathVariable Long[] brandIds) {
