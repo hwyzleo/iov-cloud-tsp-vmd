@@ -4,6 +4,7 @@ import cn.hutool.core.util.ObjUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.hwyz.iov.cloud.framework.common.util.ParamHelper;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehBasicInfoDao;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehBrandDao;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehBrandPo;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehManufacturerPo;
@@ -25,6 +26,7 @@ import java.util.Map;
 public class BrandAppService {
 
     private final VehBrandDao vehBrandDao;
+    private final VehBasicInfoDao vehBasicInfoDao;
 
     /**
      * 查询车辆品牌信息
@@ -68,8 +70,8 @@ public class BrandAppService {
     public Boolean checkBrandVehicleExist(Long brandId) {
         VehBrandPo brandPo = getBrandById(brandId);
         Map<String, Object> map = new HashMap<>();
-        map.put("code", brandPo.getCode());
-        return vehBrandDao.countPoByMap(map) > 0;
+        map.put("brandCode", brandPo.getCode());
+        return vehBasicInfoDao.countPoByMap(map) > 0;
     }
 
     /**

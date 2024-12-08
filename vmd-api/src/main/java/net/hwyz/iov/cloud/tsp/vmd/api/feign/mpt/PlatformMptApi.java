@@ -5,6 +5,8 @@ import net.hwyz.iov.cloud.framework.common.web.domain.AjaxResult;
 import net.hwyz.iov.cloud.framework.common.web.page.TableDataInfo;
 import net.hwyz.iov.cloud.tsp.vmd.api.contract.PlatformMpt;
 
+import java.util.List;
+
 /**
  * 车辆平台相关管理后台接口
  *
@@ -19,6 +21,13 @@ public interface PlatformMptApi {
      * @return 车辆平台信息列表
      */
     TableDataInfo list(PlatformMpt platform);
+
+    /**
+     * 获取所有车辆平台信息
+     *
+     * @return 车辆平台信息列表
+     */
+    List<PlatformMpt> listAll();
 
     /**
      * 导出车辆平台信息

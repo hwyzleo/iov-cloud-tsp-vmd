@@ -4,7 +4,7 @@ import cn.hutool.core.util.ObjUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.hwyz.iov.cloud.framework.common.util.ParamHelper;
-import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehPlatformDao;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.*;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehBrandPo;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehPlatformPo;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,11 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class PlatformAppService {
 
+    private final VehModelDao vehModelDao;
+    private final VehSeriesDao vehSeriesDao;
     private final VehPlatformDao vehPlatformDao;
+    private final VehBasicInfoDao vehBasicInfoDao;
+    private final VehModelConfigDao vehModelConfigDao;
 
     /**
      * 查询车辆平台信息
@@ -60,6 +64,45 @@ public class PlatformAppService {
     }
 
     /**
+     * 检查车辆平台下是否存在车系
+     *
+     * @param platformId 车辆平台ID
+     * @return 结果
+     */
+    public Boolean checkPlatformSeriesExist(Long platformId) {
+        VehPlatformPo platformPo = getPlatformById(platformId);
+        Map<String, Object> map = new HashMap<>();
+        map.put("platformCode", platformPo.getCode());
+        return vehSeriesDao.countPoByMap(map) > 0;
+    }
+
+    /**
+     * 检查车辆平台下是否存在车型
+     *
+     * @param platformId 车辆平台ID
+     * @return 结果
+     */
+    public Boolean checkPlatformModelExist(Long platformId) {
+        VehPlatformPo platformPo = getPlatformById(platformId);
+        Map<String, Object> map = new HashMap<>();
+        map.put("platformCode", platformPo.getCode());
+        return vehModelDao.countPoByMap(map) > 0;
+    }
+
+    /**
+     * 检查车辆平台下是否存在车型配置
+     *
+     * @param platformId 车辆平台ID
+     * @return 结果
+     */
+    public Boolean checkPlatformModelConfigExist(Long platformId) {
+        VehPlatformPo platformPo = getPlatformById(platformId);
+        Map<String, Object> map = new HashMap<>();
+        map.put("platformCode", platformPo.getCode());
+        return vehModelConfigDao.countPoByMap(map) > 0;
+    }
+
+    /**
      * 检查车辆平台下是否存在车辆
      *
      * @param platformId 车辆平台ID
@@ -68,8 +111,8 @@ public class PlatformAppService {
     public Boolean checkPlatformVehicleExist(Long platformId) {
         VehPlatformPo platformPo = getPlatformById(platformId);
         Map<String, Object> map = new HashMap<>();
-        map.put("code", platformPo.getCode());
-        return vehPlatformDao.countPoByMap(map) > 0;
+        map.put("platformCode", platformPo.getCode());
+        return vehBasicInfoDao.countPoByMap(map) > 0;
     }
 
     /**

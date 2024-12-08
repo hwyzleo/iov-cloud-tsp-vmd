@@ -213,5 +213,11 @@
         FROM tb_veh_model t
         WHERE t.row_valid = 1
         <!-- 添加自定义条件 -->
+        <if test="platformCode != null and platformCode != ''">
+            AND t.platform_code = #{platformCode}
+        </if>
+        <if test="seriesCode != null and seriesCode != ''">
+            AND t.series_code = #{seriesCode}
+        </if>
     </select>
 </mapper>

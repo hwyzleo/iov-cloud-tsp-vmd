@@ -70,7 +70,7 @@ public class ManufacturerAppService {
     public Boolean checkManufacturerVehicleExist(Long manufacturerId) {
         VehManufacturerPo manufacturerPo = getManufacturerById(manufacturerId);
         Map<String, Object> map = new HashMap<>();
-        map.put("code", manufacturerPo.getCode());
+        map.put("manufacturerCode", manufacturerPo.getCode());
         return vehBasicInfoDao.countPoByMap(map) > 0;
     }
 

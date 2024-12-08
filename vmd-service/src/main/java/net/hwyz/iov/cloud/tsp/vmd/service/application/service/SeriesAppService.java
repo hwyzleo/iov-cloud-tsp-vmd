@@ -4,7 +4,11 @@ import cn.hutool.core.util.ObjUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.hwyz.iov.cloud.framework.common.util.ParamHelper;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehBasicInfoDao;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehModelConfigDao;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehModelDao;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehSeriesDao;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehPlatformPo;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehSeriesPo;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +27,10 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class SeriesAppService {
 
+    private final VehModelDao vehModelDao;
     private final VehSeriesDao vehSeriesDao;
+    private final VehBasicInfoDao vehBasicInfoDao;
+    private final VehModelConfigDao vehModelConfigDao;
 
     /**
      * 查询车系信息
@@ -58,6 +65,45 @@ public class SeriesAppService {
         }
         VehSeriesPo seriesPo = getSeriesByCode(code);
         return !ObjUtil.isNotNull(seriesPo) || seriesPo.getId().longValue() == seriesId.longValue();
+    }
+
+    /**
+     * 检查车系下是否存在车型
+     *
+     * @param seriesId 车系ID
+     * @return 结果
+     */
+    public Boolean checkSeriesModelExist(Long seriesId) {
+        VehSeriesPo seriesPo = getSeriesById(seriesId);
+        Map<String, Object> map = new HashMap<>();
+        map.put("seriesCode", seriesPo.getCode());
+        return vehModelDao.countPoByMap(map) > 0;
+    }
+
+    /**
+     * 检查车系下是否存在车型配置
+     *
+     * @param seriesId 车系ID
+     * @return 结果
+     */
+    public Boolean checkSeriesModelConfigExist(Long seriesId) {
+        VehSeriesPo seriesPo = getSeriesById(seriesId);
+        Map<String, Object> map = new HashMap<>();
+        map.put("seriesCode", seriesPo.getCode());
+        return vehModelConfigDao.countPoByMap(map) > 0;
+    }
+
+    /**
+     * 检查车系下是否存在车辆
+     *
+     * @param seriesId 车系ID
+     * @return 结果
+     */
+    public Boolean checkSeriesVehicleExist(Long seriesId) {
+        VehSeriesPo seriesPo = getSeriesById(seriesId);
+        Map<String, Object> map = new HashMap<>();
+        map.put("seriesCode", seriesPo.getCode());
+        return vehBasicInfoDao.countPoByMap(map) > 0;
     }
 
     /**

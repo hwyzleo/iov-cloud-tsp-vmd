@@ -198,5 +198,14 @@
         <if test="manufacturerCode != null and manufacturerCode != ''">
             AND t.manufacturer_code = #{manufacturerCode}
         </if>
+        <if test="brandCode != null and brandCode != ''">
+            AND t.brand_code = #{brandCode}
+        </if>
+        <if test="platformCode != null and platformCode != ''">
+            AND t.platform_code = #{platformCode}
+        </if>
+        <if test="seriesCode != null and seriesCode != ''">
+            AND t.series_code = #{seriesCode}
+        </if>
     </select>
 </mapper>

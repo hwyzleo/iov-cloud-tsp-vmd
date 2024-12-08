@@ -39,7 +39,7 @@ public class SeriesMptController extends BaseController implements SeriesMptApi 
      * @param series 车系信息
      * @return 车系信息列表
      */
-    @RequiresPermissions("tsp:vmd:series:list")
+    @RequiresPermissions("vehicle:product:series:list")
     @Override
     @GetMapping(value = "/list")
     public TableDataInfo list(SeriesMpt series) {
@@ -58,7 +58,7 @@ public class SeriesMptController extends BaseController implements SeriesMptApi 
      * @param series   车系信息
      */
     @Log(title = "车系管理", businessType = BusinessType.EXPORT)
-    @RequiresPermissions("tsp:vmd:series:export")
+    @RequiresPermissions("vehicle:product:series:export")
     @Override
     @PostMapping("/export")
     public void export(HttpServletResponse response, SeriesMpt series) {
@@ -71,7 +71,7 @@ public class SeriesMptController extends BaseController implements SeriesMptApi 
      * @param seriesId 车系ID
      * @return 车系信息
      */
-    @RequiresPermissions("tsp:vmd:series:query")
+    @RequiresPermissions("vehicle:product:series:query")
     @Override
     @GetMapping(value = "/{seriesId}")
     public AjaxResult getInfo(@PathVariable Long seriesId) {
@@ -87,7 +87,7 @@ public class SeriesMptController extends BaseController implements SeriesMptApi 
      * @return 结果
      */
     @Log(title = "车系管理", businessType = BusinessType.INSERT)
-    @RequiresPermissions("tsp:vmd:series:add")
+    @RequiresPermissions("vehicle:product:series:add")
     @Override
     @PostMapping
     public AjaxResult add(@Validated @RequestBody SeriesMpt series) {
@@ -107,7 +107,7 @@ public class SeriesMptController extends BaseController implements SeriesMptApi 
      * @return 结果
      */
     @Log(title = "车系管理", businessType = BusinessType.UPDATE)
-    @RequiresPermissions("tsp:vmd:series:edit")
+    @RequiresPermissions("vehicle:product:series:edit")
     @Override
     @PutMapping
     public AjaxResult edit(@Validated @RequestBody SeriesMpt series) {
@@ -127,11 +127,22 @@ public class SeriesMptController extends BaseController implements SeriesMptApi 
      * @return 结果
      */
     @Log(title = "车系管理", businessType = BusinessType.DELETE)
-    @RequiresPermissions("tsp:vmd:series:remove")
+    @RequiresPermissions("vehicle:product:series:remove")
     @Override
     @DeleteMapping("/{seriesIds}")
     public AjaxResult remove(@PathVariable Long[] seriesIds) {
         logger.info("管理后台用户[{}]删除车系信息[{}]", SecurityUtils.getUsername(), seriesIds);
+        for (Long seriesId : seriesIds) {
+            if (seriesAppService.checkSeriesModelExist(seriesId)) {
+                return error("删除车系'" + seriesId + "'失败，该车系下存在车型");
+            }
+            if (seriesAppService.checkSeriesModelConfigExist(seriesId)) {
+                return error("删除车系'" + seriesId + "'失败，该车系下存在车型配置");
+            }
+            if (seriesAppService.checkSeriesVehicleExist(seriesId)) {
+                return error("删除车系'" + seriesId + "'失败，该车系下存在车辆");
+            }
+        }
         return toAjax(seriesAppService.deleteSeriesByIds(seriesIds));
     }
 

@@ -52,6 +52,20 @@ public class PlatformMptController extends BaseController implements PlatformMpt
     }
 
     /**
+     * 获取所有车辆平台信息
+     *
+     * @return 车辆平台信息列表
+     */
+    @RequiresPermissions("vehicle:product:platform:list")
+    @Override
+    @GetMapping(value = "/listAll")
+    public List<PlatformMpt> listAll() {
+        logger.info("管理后台用户[{}]获取所有车辆平台信息", SecurityUtils.getUsername());
+        List<VehPlatformPo> platformPoList = platformAppService.search(null, null, null, null);
+        return PlatformMptAssembler.INSTANCE.fromPoList(platformPoList);
+    }
+
+    /**
      * 导出车辆平台信息
      *
      * @param response 响应
@@ -133,6 +147,15 @@ public class PlatformMptController extends BaseController implements PlatformMpt
     public AjaxResult remove(@PathVariable Long[] platformIds) {
         logger.info("管理后台用户[{}]删除车辆平台信息[{}]", SecurityUtils.getUsername(), platformIds);
         for (Long platformId : platformIds) {
+            if (platformAppService.checkPlatformSeriesExist(platformId)) {
+                return error("删除车辆平台'" + platformId + "'失败，该车辆平台下存在车系");
+            }
+            if (platformAppService.checkPlatformModelExist(platformId)) {
+                return error("删除车辆平台'" + platformId + "'失败，该车辆平台下存在车型");
+            }
+            if (platformAppService.checkPlatformModelConfigExist(platformId)) {
+                return error("删除车辆平台'" + platformId + "'失败，该车辆平台下存在车型配置");
+            }
             if (platformAppService.checkPlatformVehicleExist(platformId)) {
                 return error("删除车辆平台'" + platformId + "'失败，该车辆平台下存在车辆");
             }
