@@ -4,6 +4,7 @@ import cn.hutool.core.util.ObjUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.hwyz.iov.cloud.framework.common.util.ParamHelper;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehBasicInfoDao;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehManufacturerDao;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehManufacturerPo;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehPlatformPo;
@@ -24,6 +25,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ManufacturerAppService {
 
+    private final VehBasicInfoDao vehBasicInfoDao;
     private final VehManufacturerDao vehManufacturerDao;
 
     /**
@@ -57,6 +59,19 @@ public class ManufacturerAppService {
         }
         VehManufacturerPo manufacturerPo = getManufacturerByCode(code);
         return !ObjUtil.isNotNull(manufacturerPo) || manufacturerPo.getId().longValue() == manufacturerId.longValue();
+    }
+
+    /**
+     * 检查车辆工厂下是否存在车辆
+     *
+     * @param manufacturerId 车辆工厂ID
+     * @return 结果
+     */
+    public Boolean checkManufacturerVehicleExist(Long manufacturerId) {
+        VehManufacturerPo manufacturerPo = getManufacturerById(manufacturerId);
+        Map<String, Object> map = new HashMap<>();
+        map.put("manufacturerCode", manufacturerPo.getCode());
+        return vehBasicInfoDao.countPoByMap(map) > 0;
     }
 
     /**

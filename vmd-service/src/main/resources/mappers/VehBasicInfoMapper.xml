@@ -195,5 +195,8 @@
         FROM tb_veh_basic_info t
         WHERE t.row_valid = 1
         <!-- 添加自定义条件 -->
+        <if test="manufacturerCode != null and manufacturerCode != ''">
+            AND t.manufacturer_code = #{manufacturerCode}
+        </if>
     </select>
 </mapper>

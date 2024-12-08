@@ -14,9 +14,7 @@ import net.hwyz.iov.cloud.tsp.vmd.api.contract.ManufacturerMpt;
 import net.hwyz.iov.cloud.tsp.vmd.api.feign.mpt.ManufacturerMptApi;
 import net.hwyz.iov.cloud.tsp.vmd.service.application.service.ManufacturerAppService;
 import net.hwyz.iov.cloud.tsp.vmd.service.facade.assembler.ManufacturerMptAssembler;
-import net.hwyz.iov.cloud.tsp.vmd.service.facade.assembler.PlatformMptAssembler;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehManufacturerPo;
-import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehPlatformPo;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -134,6 +132,11 @@ public class ManufacturerMptController extends BaseController implements Manufac
     @DeleteMapping("/{manufacturerIds}")
     public AjaxResult remove(@PathVariable Long[] manufacturerIds) {
         logger.info("管理后台用户[{}]删除车辆工厂信息[{}]", SecurityUtils.getUsername(), manufacturerIds);
+        for (Long manufacturerId : manufacturerIds) {
+            if (manufacturerAppService.checkManufacturerVehicleExist(manufacturerId)) {
+                return error("删除车辆工厂'" + manufacturerId + "'失败，该车辆工厂下存在车辆");
+            }
+        }
         return toAjax(manufacturerAppService.deletePlatformByIds(manufacturerIds));
     }
 
