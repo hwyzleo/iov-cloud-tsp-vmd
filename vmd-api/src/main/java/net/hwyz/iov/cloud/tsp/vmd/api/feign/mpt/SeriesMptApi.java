@@ -26,7 +26,7 @@ public interface SeriesMptApi {
     /**
      * 获取指定车辆平台下的所有车系
      *
-     * @return 车辆平台信息列表
+     * @return 车系信息列表
      */
     List<SeriesMpt> listByPlatformCode(String platformCode);
 

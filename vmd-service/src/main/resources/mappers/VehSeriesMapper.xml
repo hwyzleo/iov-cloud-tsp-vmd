@@ -56,12 +56,6 @@
     <!-- 更新 -->
     <update id="updatePo" parameterType="net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehSeriesPo">
         UPDATE tb_veh_series t SET
-        <if test="platformCode != null and platformCode != ''">
-            t.platform_code = #{platformCode},
-        </if>
-        <if test="code != null and code != ''">
-            t.code = #{code},
-        </if>
         <if test="name != null and name != ''">
             t.name = #{name},
         </if>

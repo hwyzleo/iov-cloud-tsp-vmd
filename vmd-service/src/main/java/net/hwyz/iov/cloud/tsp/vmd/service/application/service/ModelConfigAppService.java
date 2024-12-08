@@ -4,6 +4,7 @@ import cn.hutool.core.util.ObjUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.hwyz.iov.cloud.framework.common.util.ParamHelper;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehBasicInfoDao;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehModelConfigDao;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehModelConfigPo;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ModelConfigAppService {
 
+    private final VehBasicInfoDao vehBasicInfoDao;
     private final VehModelConfigDao vehModelConfigDao;
 
     /**
@@ -63,6 +65,19 @@ public class ModelConfigAppService {
         }
         VehModelConfigPo modelConfigPo = getModelConfigByCode(code);
         return !ObjUtil.isNotNull(modelConfigPo) || modelConfigPo.getId().longValue() == modelConfigId.longValue();
+    }
+
+    /**
+     * 检查车型配置下是否存在车辆
+     *
+     * @param modelConfigId 车型配置ID
+     * @return 结果
+     */
+    public Boolean checkModelConfigVehicleExist(Long modelConfigId) {
+        VehModelConfigPo modelConfigPo = getModelConfigById(modelConfigId);
+        Map<String, Object> map = new HashMap<>();
+        map.put("modelConfigCode", modelConfigPo.getCode());
+        return vehBasicInfoDao.countPoByMap(map) > 0;
     }
 
     /**

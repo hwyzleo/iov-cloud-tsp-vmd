@@ -5,6 +5,8 @@ import net.hwyz.iov.cloud.framework.common.web.domain.AjaxResult;
 import net.hwyz.iov.cloud.framework.common.web.page.TableDataInfo;
 import net.hwyz.iov.cloud.tsp.vmd.api.contract.ModelMpt;
 
+import java.util.List;
+
 /**
  * 车型相关管理后台接口
  *
@@ -19,6 +21,13 @@ public interface ModelMptApi {
      * @return 车型信息列表
      */
     TableDataInfo list(ModelMpt model);
+
+    /**
+     * 获取指定车辆平台及车系下的所有车型
+     *
+     * @return 车型信息列表
+     */
+    List<ModelMpt> listByPlatformCodeAndSeriesCode(String platformCode, String seriesCode);
 
     /**
      * 导出车型信息

@@ -210,5 +210,8 @@
         <if test="modelCode != null and modelCode != ''">
             AND t.model_code = #{modelCode}
         </if>
+        <if test="modelConfigCode != null and modelConfigCode != ''">
+            AND t.model_config_code = #{modelConfigCode}
+        </if>
     </select>
 </mapper>

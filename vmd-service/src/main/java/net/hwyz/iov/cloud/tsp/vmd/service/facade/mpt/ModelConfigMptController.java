@@ -39,7 +39,7 @@ public class ModelConfigMptController extends BaseController implements ModelCon
      * @param modelConfig 车型配置信息
      * @return 车型配置信息列表
      */
-    @RequiresPermissions("tsp:vmd:modelConfig:list")
+    @RequiresPermissions("vehicle:product:modelConfig:list")
     @Override
     @GetMapping(value = "/list")
     public TableDataInfo list(ModelConfigMpt modelConfig) {
@@ -58,7 +58,7 @@ public class ModelConfigMptController extends BaseController implements ModelCon
      * @param modelConfig 车型信息
      */
     @Log(title = "车型配置管理", businessType = BusinessType.EXPORT)
-    @RequiresPermissions("tsp:vmd:modelConfig:export")
+    @RequiresPermissions("vehicle:product:modelConfig:export")
     @Override
     @PostMapping("/export")
     public void export(HttpServletResponse response, ModelConfigMpt modelConfig) {
@@ -71,7 +71,7 @@ public class ModelConfigMptController extends BaseController implements ModelCon
      * @param modelConfigId 车型配置ID
      * @return 车型配置信息
      */
-    @RequiresPermissions("tsp:vmd:modelConfig:query")
+    @RequiresPermissions("vehicle:product:modelConfig:query")
     @Override
     @GetMapping(value = "/{modelConfigId}")
     public AjaxResult getInfo(@PathVariable Long modelConfigId) {
@@ -87,7 +87,7 @@ public class ModelConfigMptController extends BaseController implements ModelCon
      * @return 结果
      */
     @Log(title = "车型配置管理", businessType = BusinessType.INSERT)
-    @RequiresPermissions("tsp:vmd:modelConfig:add")
+    @RequiresPermissions("vehicle:product:modelConfig:add")
     @Override
     @PostMapping
     public AjaxResult add(@Validated @RequestBody ModelConfigMpt modelConfig) {
@@ -107,7 +107,7 @@ public class ModelConfigMptController extends BaseController implements ModelCon
      * @return 结果
      */
     @Log(title = "车型配置管理", businessType = BusinessType.UPDATE)
-    @RequiresPermissions("tsp:vmd:modelConfig:edit")
+    @RequiresPermissions("vehicle:product:modelConfig:edit")
     @Override
     @PutMapping
     public AjaxResult edit(@Validated @RequestBody ModelConfigMpt modelConfig) {
@@ -127,11 +127,16 @@ public class ModelConfigMptController extends BaseController implements ModelCon
      * @return 结果
      */
     @Log(title = "车型配置管理", businessType = BusinessType.DELETE)
-    @RequiresPermissions("tsp:vmd:modelConfig:remove")
+    @RequiresPermissions("vehicle:product:modelConfig:remove")
     @Override
     @DeleteMapping("/{modelConfigIds}")
     public AjaxResult remove(@PathVariable Long[] modelConfigIds) {
         logger.info("管理后台用户[{}]删除车型配置信息[{}]", SecurityUtils.getUsername(), modelConfigIds);
+        for (Long modelConfigId : modelConfigIds) {
+            if (modelConfigAppService.checkModelConfigVehicleExist(modelConfigId)) {
+                return error("删除车型配置'" + modelConfigId + "'失败，该车型配置下存在车辆");
+            }
+        }
         return toAjax(modelConfigAppService.deleteModelConfigByIds(modelConfigIds));
     }
 

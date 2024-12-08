@@ -52,6 +52,20 @@ public class ModelMptController extends BaseController implements ModelMptApi {
     }
 
     /**
+     * 获取指定车辆平台及车系下的所有车型
+     *
+     * @return 车型信息列表
+     */
+    @RequiresPermissions("vehicle:product:model:list")
+    @Override
+    @GetMapping(value = "/listByPlatformCodeAndSeriesCode")
+    public List<ModelMpt> listByPlatformCodeAndSeriesCode(@RequestParam String platformCode, @RequestParam String seriesCode) {
+        logger.info("管理后台用户[{}]获取指定车辆平台[{}]及车系[{}]下的所有车型", SecurityUtils.getUsername(), platformCode, seriesCode);
+        List<VehModelPo> modelPoList = modelAppService.search(platformCode, seriesCode, null, null, null, null);
+        return ModelMptAssembler.INSTANCE.fromPoList(modelPoList);
+    }
+
+    /**
      * 导出车型信息
      *
      * @param response 响应
@@ -137,7 +151,7 @@ public class ModelMptController extends BaseController implements ModelMptApi {
                 return error("删除车型'" + modelId + "'失败，该车型下存在车型配置");
             }
             if (modelAppService.checkModelVehicleExist(modelId)) {
-                return error("删除车系'" + modelId + "'失败，该车型下存在车辆");
+                return error("删除车型'" + modelId + "'失败，该车型下存在车辆");
             }
         }
         return toAjax(modelAppService.deleteModelByIds(modelIds));
