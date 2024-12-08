@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.hwyz.iov.cloud.framework.common.util.ParamHelper;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehBrandDao;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehBrandPo;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehManufacturerPo;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -56,6 +57,19 @@ public class BrandAppService {
         }
         VehBrandPo brandPo = getBrandByCode(code);
         return !ObjUtil.isNotNull(brandPo) || brandPo.getId().longValue() == brandId.longValue();
+    }
+
+    /**
+     * 检查车辆品牌下是否存在车辆
+     *
+     * @param brandId 车辆品牌ID
+     * @return 结果
+     */
+    public Boolean checkBrandVehicleExist(Long brandId) {
+        VehBrandPo brandPo = getBrandById(brandId);
+        Map<String, Object> map = new HashMap<>();
+        map.put("code", brandPo.getCode());
+        return vehBrandDao.countPoByMap(map) > 0;
     }
 
     /**

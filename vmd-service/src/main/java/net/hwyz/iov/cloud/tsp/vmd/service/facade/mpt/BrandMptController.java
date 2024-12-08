@@ -134,6 +134,11 @@ public class BrandMptController extends BaseController implements BrandMptApi {
     @DeleteMapping("/{brandIds}")
     public AjaxResult remove(@PathVariable Long[] brandIds) {
         logger.info("管理后台用户[{}]删除车辆品牌信息[{}]", SecurityUtils.getUsername(), brandIds);
+        for (Long brandId : brandIds) {
+            if (brandAppService.checkBrandVehicleExist(brandId)) {
+                return error("删除车辆品牌'" + brandId + "'失败，该车辆品牌下存在车辆");
+            }
+        }
         return toAjax(brandAppService.deletePlatformByIds(brandIds));
     }
 
