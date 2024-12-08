@@ -41,11 +41,11 @@ public class ManufacturerMptController extends BaseController implements Manufac
      * @param manufacturer 车辆工厂信息
      * @return 车辆工厂信息列表
      */
-    @RequiresPermissions("tsp:vmd:manufacturer:list")
+    @RequiresPermissions("vehicle:product:manufacturer:list")
     @Override
     @GetMapping(value = "/list")
     public TableDataInfo list(ManufacturerMpt manufacturer) {
-        logger.info("管理后台用户[{}]分页查询车辆工厂信息", SecurityUtils.getUsername());
+        logger.info("管理后台用户[{}]分页查询工厂信息", SecurityUtils.getUsername());
         startPage();
         List<VehManufacturerPo> manufacturerPoList = manufacturerAppService.search(manufacturer.getCode(), manufacturer.getName(),
                 getBeginTime(manufacturer), getEndTime(manufacturer));
@@ -59,8 +59,8 @@ public class ManufacturerMptController extends BaseController implements Manufac
      * @param response     响应
      * @param manufacturer 车辆平台信息
      */
-    @Log(title = "车辆工厂管理", businessType = BusinessType.EXPORT)
-    @RequiresPermissions("tsp:vmd:manufacturer:export")
+    @Log(title = "工厂管理", businessType = BusinessType.EXPORT)
+    @RequiresPermissions("vehicle:product:manufacturer:export")
     @Override
     @PostMapping("/export")
     public void export(HttpServletResponse response, ManufacturerMpt manufacturer) {
@@ -73,7 +73,7 @@ public class ManufacturerMptController extends BaseController implements Manufac
      * @param manufacturerId 车辆工厂ID
      * @return 车辆工厂信息
      */
-    @RequiresPermissions("tsp:vmd:manufacturer:query")
+    @RequiresPermissions("vehicle:product:manufacturer:query")
     @Override
     @GetMapping(value = "/{manufacturerId}")
     public AjaxResult getInfo(@PathVariable Long manufacturerId) {
@@ -88,8 +88,8 @@ public class ManufacturerMptController extends BaseController implements Manufac
      * @param manufacturer 车辆工厂信息
      * @return 结果
      */
-    @Log(title = "车辆工厂管理", businessType = BusinessType.INSERT)
-    @RequiresPermissions("tsp:vmd:manufacturer:add")
+    @Log(title = "工厂管理", businessType = BusinessType.INSERT)
+    @RequiresPermissions("vehicle:product:manufacturer:add")
     @Override
     @PostMapping
     public AjaxResult add(@Validated @RequestBody ManufacturerMpt manufacturer) {
@@ -108,8 +108,8 @@ public class ManufacturerMptController extends BaseController implements Manufac
      * @param manufacturer 车辆工厂信息
      * @return 结果
      */
-    @Log(title = "车辆工厂管理", businessType = BusinessType.UPDATE)
-    @RequiresPermissions("tsp:vmd:manufacturer:edit")
+    @Log(title = "工厂管理", businessType = BusinessType.UPDATE)
+    @RequiresPermissions("vehicle:product:manufacturer:edit")
     @Override
     @PutMapping
     public AjaxResult edit(@Validated @RequestBody ManufacturerMpt manufacturer) {
@@ -128,8 +128,8 @@ public class ManufacturerMptController extends BaseController implements Manufac
      * @param manufacturerIds 车辆工厂ID数组
      * @return 结果
      */
-    @Log(title = "车辆工厂管理", businessType = BusinessType.DELETE)
-    @RequiresPermissions("tsp:vmd:manufacturer:remove")
+    @Log(title = "工厂管理", businessType = BusinessType.DELETE)
+    @RequiresPermissions("vehicle:product:manufacturer:remove")
     @Override
     @DeleteMapping("/{manufacturerIds}")
     public AjaxResult remove(@PathVariable Long[] manufacturerIds) {
