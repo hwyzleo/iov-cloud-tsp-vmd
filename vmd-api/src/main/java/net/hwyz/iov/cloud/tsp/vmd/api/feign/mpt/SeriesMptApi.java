@@ -3,7 +3,10 @@ package net.hwyz.iov.cloud.tsp.vmd.api.feign.mpt;
 import jakarta.servlet.http.HttpServletResponse;
 import net.hwyz.iov.cloud.framework.common.web.domain.AjaxResult;
 import net.hwyz.iov.cloud.framework.common.web.page.TableDataInfo;
+import net.hwyz.iov.cloud.tsp.vmd.api.contract.PlatformMpt;
 import net.hwyz.iov.cloud.tsp.vmd.api.contract.SeriesMpt;
+
+import java.util.List;
 
 /**
  * 车系相关管理后台接口
@@ -19,6 +22,13 @@ public interface SeriesMptApi {
      * @return 车系信息列表
      */
     TableDataInfo list(SeriesMpt series);
+
+    /**
+     * 获取指定车辆平台下的所有车系
+     *
+     * @return 车辆平台信息列表
+     */
+    List<SeriesMpt> listByPlatformCode(String platformCode);
 
     /**
      * 导出车系信息

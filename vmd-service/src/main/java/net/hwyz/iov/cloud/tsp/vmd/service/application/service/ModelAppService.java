@@ -4,8 +4,11 @@ import cn.hutool.core.util.ObjUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.hwyz.iov.cloud.framework.common.util.ParamHelper;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehBasicInfoDao;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehModelConfigDao;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehModelDao;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehModelPo;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehSeriesPo;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -24,6 +27,8 @@ import java.util.Map;
 public class ModelAppService {
 
     private final VehModelDao vehModelDao;
+    private final VehBasicInfoDao vehBasicInfoDao;
+    private final VehModelConfigDao vehModelConfigDao;
 
     /**
      * 查询车型信息
@@ -60,6 +65,32 @@ public class ModelAppService {
         }
         VehModelPo modelPo = getModelByCode(code);
         return !ObjUtil.isNotNull(modelPo) || modelPo.getId().longValue() == modelId.longValue();
+    }
+
+    /**
+     * 检查车型下是否存在车型配置
+     *
+     * @param modelId 车型ID
+     * @return 结果
+     */
+    public Boolean checkModelModelConfigExist(Long modelId) {
+        VehModelPo modelPo = getModelById(modelId);
+        Map<String, Object> map = new HashMap<>();
+        map.put("modelCode", modelPo.getCode());
+        return vehModelConfigDao.countPoByMap(map) > 0;
+    }
+
+    /**
+     * 检查车型下是否存在车辆
+     *
+     * @param modelId 车型ID
+     * @return 结果
+     */
+    public Boolean checkModelVehicleExist(Long modelId) {
+        VehModelPo modelPo = getModelById(modelId);
+        Map<String, Object> map = new HashMap<>();
+        map.put("modelCode", modelPo.getCode());
+        return vehBasicInfoDao.countPoByMap(map) > 0;
     }
 
     /**

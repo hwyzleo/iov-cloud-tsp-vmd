@@ -52,6 +52,20 @@ public class SeriesMptController extends BaseController implements SeriesMptApi 
     }
 
     /**
+     * 获取指定车辆平台下的所有车系
+     *
+     * @return 车辆平台信息列表
+     */
+    @RequiresPermissions("vehicle:product:series:list")
+    @Override
+    @GetMapping(value = "/listByPlatformCode")
+    public List<SeriesMpt> listByPlatformCode(@RequestParam String platformCode) {
+        logger.info("管理后台用户[{}]获取指定车辆平台[{}]下的所有车系", SecurityUtils.getUsername(), platformCode);
+        List<VehSeriesPo> seriesPoList = seriesAppService.search(platformCode, null, null, null, null);
+        return SeriesMptAssembler.INSTANCE.fromPoList(seriesPoList);
+    }
+
+    /**
      * 导出车系信息
      *
      * @param response 响应
