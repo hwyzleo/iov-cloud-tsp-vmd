@@ -39,7 +39,7 @@ public class ModelMptController extends BaseController implements ModelMptApi {
      * @param model 车型信息
      * @return 车型信息列表
      */
-    @RequiresPermissions("tsp:vmd:model:list")
+    @RequiresPermissions("vehicle:product:model:list")
     @Override
     @GetMapping(value = "/list")
     public TableDataInfo list(ModelMpt model) {
@@ -58,7 +58,7 @@ public class ModelMptController extends BaseController implements ModelMptApi {
      * @param model    车型信息
      */
     @Log(title = "车型管理", businessType = BusinessType.EXPORT)
-    @RequiresPermissions("tsp:vmd:model:export")
+    @RequiresPermissions("vehicle:product:model:export")
     @Override
     @PostMapping("/export")
     public void export(HttpServletResponse response, ModelMpt model) {
@@ -71,7 +71,7 @@ public class ModelMptController extends BaseController implements ModelMptApi {
      * @param modelId 车型ID
      * @return 车型信息
      */
-    @RequiresPermissions("tsp:vmd:model:query")
+    @RequiresPermissions("vehicle:product:model:query")
     @Override
     @GetMapping(value = "/{modelId}")
     public AjaxResult getInfo(@PathVariable Long modelId) {
@@ -87,7 +87,7 @@ public class ModelMptController extends BaseController implements ModelMptApi {
      * @return 结果
      */
     @Log(title = "车型管理", businessType = BusinessType.INSERT)
-    @RequiresPermissions("tsp:vmd:model:add")
+    @RequiresPermissions("vehicle:product:model:add")
     @Override
     @PostMapping
     public AjaxResult add(@Validated @RequestBody ModelMpt model) {
@@ -107,7 +107,7 @@ public class ModelMptController extends BaseController implements ModelMptApi {
      * @return 结果
      */
     @Log(title = "车型管理", businessType = BusinessType.UPDATE)
-    @RequiresPermissions("tsp:vmd:model:edit")
+    @RequiresPermissions("vehicle:product:model:edit")
     @Override
     @PutMapping
     public AjaxResult edit(@Validated @RequestBody ModelMpt model) {
@@ -127,7 +127,7 @@ public class ModelMptController extends BaseController implements ModelMptApi {
      * @return 结果
      */
     @Log(title = "车型管理", businessType = BusinessType.DELETE)
-    @RequiresPermissions("tsp:vmd:model:remove")
+    @RequiresPermissions("vehicle:product:model:remove")
     @Override
     @DeleteMapping("/{modelIds}")
     public AjaxResult remove(@PathVariable Long[] modelIds) {
