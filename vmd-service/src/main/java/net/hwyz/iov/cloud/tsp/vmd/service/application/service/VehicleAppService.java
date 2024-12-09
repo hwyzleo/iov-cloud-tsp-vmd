@@ -136,6 +136,12 @@ public class VehicleAppService {
      * @return 结果
      */
     public int deleteVehicleByIds(Long[] ids) {
+        for (Long id : ids) {
+            VehBasicInfoPo vehiclePo = getVehicleById(id);
+            if (ObjUtil.isNotNull(vehiclePo)) {
+                vehLifecycleDao.batchPhysicalDeletePoByVin(vehiclePo.getVin());
+            }
+        }
         return vehBasicInfoDao.batchPhysicalDeletePo(ids);
     }
 

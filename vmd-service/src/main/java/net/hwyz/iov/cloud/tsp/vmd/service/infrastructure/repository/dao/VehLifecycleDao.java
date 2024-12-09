@@ -23,4 +23,12 @@ public interface VehLifecycleDao extends BaseDao<VehLifecyclePo, Long> {
      */
     int batchPhysicalDeletePo(Long[] ids);
 
+    /**
+     * 根据vin批量物理删除车辆生命周期
+     *
+     * @param vin 车架号
+     * @return 影响行数
+     */
+    int batchPhysicalDeletePoByVin(String vin);
+
 }

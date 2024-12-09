@@ -101,6 +101,12 @@
         </foreach>
     </delete>
 
+    <!-- 根据vin批量物理删除车辆生命周期 -->
+    <delete id="batchPhysicalDeletePoByVin" parameterType="string">
+        DELETE FROM tb_veh_lifecycle t
+        WHERE t.vin = #{vin}
+    </delete>
+
     <!-- 根据主键获取对应数据 -->
     <select id="selectPoById" parameterType="Long" resultMap="baseResultMap">
         SELECT <include refid="baseColumnList"/>
