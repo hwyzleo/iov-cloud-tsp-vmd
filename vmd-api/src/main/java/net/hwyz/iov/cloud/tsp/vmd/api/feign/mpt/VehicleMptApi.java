@@ -24,6 +24,14 @@ public interface VehicleMptApi {
     TableDataInfo list(VehicleMpt vehicle);
 
     /**
+     * 分页查询可分配车辆信息
+     *
+     * @param vehicle 车辆信息
+     * @return 车辆信息列表
+     */
+    TableDataInfo listAssignable(VehicleMpt vehicle);
+
+    /**
      * 分页查询车辆生命周期
      *
      * @param vin 车辆VIN号

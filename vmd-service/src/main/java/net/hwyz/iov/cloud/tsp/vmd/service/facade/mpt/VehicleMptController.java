@@ -42,11 +42,28 @@ public class VehicleMptController extends BaseController implements VehicleMptAp
      * @param vehicle 车辆信息
      * @return 车辆信息列表
      */
-    @RequiresPermissions("completeVehicle:vehicle:operation:list")
+    @RequiresPermissions("completeVehicle:vehicle:info:list")
     @Override
     @GetMapping(value = "/list")
     public TableDataInfo list(VehicleMpt vehicle) {
         logger.info("管理后台用户[{}]分页查询车辆信息", SecurityUtils.getUsername());
+        startPage();
+        List<VehBasicInfoPo> vehBasicInfoPoList = vehicleAppService.search(vehicle.getVin(), getBeginTime(vehicle), getEndTime(vehicle));
+        List<VehicleMpt> vehicleMptList = VehicleMptAssembler.INSTANCE.fromPoList(vehBasicInfoPoList);
+        return getDataTable(vehBasicInfoPoList, vehicleMptList);
+    }
+
+    /**
+     * 分页查询可分配车辆信息
+     *
+     * @param vehicle 车辆信息
+     * @return 车辆信息列表
+     */
+    @RequiresPermissions("completeVehicle:vehicle:info:list")
+    @Override
+    @GetMapping(value = "/listAssignable")
+    public TableDataInfo listAssignable(VehicleMpt vehicle) {
+        logger.info("管理后台用户[{}]分页查询可分配车辆信息", SecurityUtils.getUsername());
         startPage();
         List<VehBasicInfoPo> vehBasicInfoPoList = vehicleAppService.search(vehicle.getVin(), getBeginTime(vehicle), getEndTime(vehicle));
         List<VehicleMpt> vehicleMptList = VehicleMptAssembler.INSTANCE.fromPoList(vehBasicInfoPoList);
@@ -59,7 +76,7 @@ public class VehicleMptController extends BaseController implements VehicleMptAp
      * @param vin 车辆VIN号
      * @return 车辆生命周期列表
      */
-    @RequiresPermissions("completeVehicle:vehicle:operation:query")
+    @RequiresPermissions("completeVehicle:vehicle:info:query")
     @Override
     @GetMapping(value = "/{vin}/lifecycle")
     public List<VehicleLifecycleMpt> listLifecycle(@PathVariable String vin) {
@@ -75,7 +92,7 @@ public class VehicleMptController extends BaseController implements VehicleMptAp
      * @param vehicle  车辆信息
      */
     @Log(title = "车辆管理", businessType = BusinessType.EXPORT)
-    @RequiresPermissions("completeVehicle:vehicle:operation:export")
+    @RequiresPermissions("completeVehicle:vehicle:info:export")
     @Override
     @PostMapping("/export")
     public void export(HttpServletResponse response, VehicleMpt vehicle) {
@@ -88,7 +105,7 @@ public class VehicleMptController extends BaseController implements VehicleMptAp
      * @param vehicleId 车辆ID
      * @return 车辆信息
      */
-    @RequiresPermissions("completeVehicle:vehicle:operation:query")
+    @RequiresPermissions("completeVehicle:vehicle:info:query")
     @Override
     @GetMapping(value = "/{vehicleId}")
     public AjaxResult getInfo(@PathVariable Long vehicleId) {
@@ -104,7 +121,7 @@ public class VehicleMptController extends BaseController implements VehicleMptAp
      * @return 结果
      */
     @Log(title = "车辆管理", businessType = BusinessType.INSERT)
-    @RequiresPermissions("completeVehicle:vehicle:operation:add")
+    @RequiresPermissions("completeVehicle:vehicle:info:add")
     @Override
     @PostMapping
     public AjaxResult add(@Validated @RequestBody VehicleMpt vehicle) {
@@ -125,7 +142,7 @@ public class VehicleMptController extends BaseController implements VehicleMptAp
      * @return 结果
      */
     @Log(title = "车辆管理", businessType = BusinessType.UPDATE)
-    @RequiresPermissions("completeVehicle:vehicle:operation:edit")
+    @RequiresPermissions("completeVehicle:vehicle:info:edit")
     @Override
     @PostMapping("/{vin}/lifecycle")
     public AjaxResult addLifecycle(@PathVariable String vin, @Validated @RequestBody VehicleLifecycleMpt vehicleLifecycle) {
@@ -142,7 +159,7 @@ public class VehicleMptController extends BaseController implements VehicleMptAp
      * @return 结果
      */
     @Log(title = "车辆管理", businessType = BusinessType.UPDATE)
-    @RequiresPermissions("completeVehicle:vehicle:operation:edit")
+    @RequiresPermissions("completeVehicle:vehicle:info:edit")
     @Override
     @PutMapping
     public AjaxResult edit(@Validated @RequestBody VehicleMpt vehicle) {
@@ -163,7 +180,7 @@ public class VehicleMptController extends BaseController implements VehicleMptAp
      * @return 结果
      */
     @Log(title = "车辆管理", businessType = BusinessType.UPDATE)
-    @RequiresPermissions("completeVehicle:vehicle:operation:edit")
+    @RequiresPermissions("completeVehicle:vehicle:info:edit")
     @Override
     @PutMapping("/{vin}/lifecycle")
     public AjaxResult editLifecycle(@PathVariable String vin, @Validated @RequestBody VehicleLifecycleMpt vehicleLifecycle) {
@@ -180,7 +197,7 @@ public class VehicleMptController extends BaseController implements VehicleMptAp
      * @return 结果
      */
     @Log(title = "车辆管理", businessType = BusinessType.DELETE)
-    @RequiresPermissions("completeVehicle:vehicle:operation:remove")
+    @RequiresPermissions("completeVehicle:vehicle:info:remove")
     @Override
     @DeleteMapping("/{vehicleIds}")
     public AjaxResult remove(@PathVariable Long[] vehicleIds) {
@@ -195,7 +212,7 @@ public class VehicleMptController extends BaseController implements VehicleMptAp
      * @return 结果
      */
     @Log(title = "车辆管理", businessType = BusinessType.UPDATE)
-    @RequiresPermissions("completeVehicle:vehicle:operation:edit")
+    @RequiresPermissions("completeVehicle:vehicle:info:edit")
     @Override
     @DeleteMapping("/{vin}/lifecycle/{lifecycleIds}")
     public AjaxResult removeLifecycle(@PathVariable String vin, @PathVariable Long[] lifecycleIds) {
