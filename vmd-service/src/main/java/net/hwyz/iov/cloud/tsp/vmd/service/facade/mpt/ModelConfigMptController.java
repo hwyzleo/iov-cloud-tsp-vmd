@@ -39,7 +39,7 @@ public class ModelConfigMptController extends BaseController implements ModelCon
      * @param modelConfig 车型配置信息
      * @return 车型配置信息列表
      */
-    @RequiresPermissions("vehicle:product:modelConfig:list")
+    @RequiresPermissions("completeVehicle:product:modelConfig:list")
     @Override
     @GetMapping(value = "/list")
     public TableDataInfo list(ModelConfigMpt modelConfig) {
@@ -58,7 +58,7 @@ public class ModelConfigMptController extends BaseController implements ModelCon
      * @param modelConfig 车型信息
      */
     @Log(title = "车型配置管理", businessType = BusinessType.EXPORT)
-    @RequiresPermissions("vehicle:product:modelConfig:export")
+    @RequiresPermissions("completeVehicle:product:modelConfig:export")
     @Override
     @PostMapping("/export")
     public void export(HttpServletResponse response, ModelConfigMpt modelConfig) {
@@ -71,7 +71,7 @@ public class ModelConfigMptController extends BaseController implements ModelCon
      * @param modelConfigId 车型配置ID
      * @return 车型配置信息
      */
-    @RequiresPermissions("vehicle:product:modelConfig:query")
+    @RequiresPermissions("completeVehicle:product:modelConfig:query")
     @Override
     @GetMapping(value = "/{modelConfigId}")
     public AjaxResult getInfo(@PathVariable Long modelConfigId) {
@@ -87,7 +87,7 @@ public class ModelConfigMptController extends BaseController implements ModelCon
      * @return 结果
      */
     @Log(title = "车型配置管理", businessType = BusinessType.INSERT)
-    @RequiresPermissions("vehicle:product:modelConfig:add")
+    @RequiresPermissions("completeVehicle:product:modelConfig:add")
     @Override
     @PostMapping
     public AjaxResult add(@Validated @RequestBody ModelConfigMpt modelConfig) {
@@ -107,7 +107,7 @@ public class ModelConfigMptController extends BaseController implements ModelCon
      * @return 结果
      */
     @Log(title = "车型配置管理", businessType = BusinessType.UPDATE)
-    @RequiresPermissions("vehicle:product:modelConfig:edit")
+    @RequiresPermissions("completeVehicle:product:modelConfig:edit")
     @Override
     @PutMapping
     public AjaxResult edit(@Validated @RequestBody ModelConfigMpt modelConfig) {
@@ -127,7 +127,7 @@ public class ModelConfigMptController extends BaseController implements ModelCon
      * @return 结果
      */
     @Log(title = "车型配置管理", businessType = BusinessType.DELETE)
-    @RequiresPermissions("vehicle:product:modelConfig:remove")
+    @RequiresPermissions("completeVehicle:product:modelConfig:remove")
     @Override
     @DeleteMapping("/{modelConfigIds}")
     public AjaxResult remove(@PathVariable Long[] modelConfigIds) {

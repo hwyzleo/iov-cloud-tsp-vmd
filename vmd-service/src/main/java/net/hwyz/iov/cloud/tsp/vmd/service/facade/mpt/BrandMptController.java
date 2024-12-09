@@ -41,7 +41,7 @@ public class BrandMptController extends BaseController implements BrandMptApi {
      * @param brand 车辆品牌信息
      * @return 车辆品牌信息列表
      */
-    @RequiresPermissions("vehicle:product:brand:list")
+    @RequiresPermissions("completeVehicle:product:brand:list")
     @Override
     @GetMapping(value = "/list")
     public TableDataInfo list(BrandMpt brand) {
@@ -60,7 +60,7 @@ public class BrandMptController extends BaseController implements BrandMptApi {
      * @param brand    车辆品牌信息
      */
     @Log(title = "车辆品牌管理", businessType = BusinessType.EXPORT)
-    @RequiresPermissions("vehicle:product:brand:export")
+    @RequiresPermissions("completeVehicle:product:brand:export")
     @Override
     @PostMapping("/export")
     public void export(HttpServletResponse response, BrandMpt brand) {
@@ -73,7 +73,7 @@ public class BrandMptController extends BaseController implements BrandMptApi {
      * @param brandId 车辆品牌ID
      * @return 车辆品牌信息
      */
-    @RequiresPermissions("vehicle:product:brand:query")
+    @RequiresPermissions("completeVehicle:product:brand:query")
     @Override
     @GetMapping(value = "/{brandId}")
     public AjaxResult getInfo(@PathVariable Long brandId) {
@@ -89,7 +89,7 @@ public class BrandMptController extends BaseController implements BrandMptApi {
      * @return 结果
      */
     @Log(title = "车辆品牌管理", businessType = BusinessType.INSERT)
-    @RequiresPermissions("vehicle:product:brand:add")
+    @RequiresPermissions("completeVehicle:product:brand:add")
     @Override
     @PostMapping
     public AjaxResult add(@Validated @RequestBody BrandMpt brand) {
@@ -109,7 +109,7 @@ public class BrandMptController extends BaseController implements BrandMptApi {
      * @return 结果
      */
     @Log(title = "车辆品牌管理", businessType = BusinessType.UPDATE)
-    @RequiresPermissions("vehicle:product:brand:edit")
+    @RequiresPermissions("completeVehicle:product:brand:edit")
     @Override
     @PutMapping
     public AjaxResult edit(@Validated @RequestBody BrandMpt brand) {
@@ -129,7 +129,7 @@ public class BrandMptController extends BaseController implements BrandMptApi {
      * @return 结果
      */
     @Log(title = "车辆品牌管理", businessType = BusinessType.DELETE)
-    @RequiresPermissions("vehicle:product:brand:remove")
+    @RequiresPermissions("completeVehicle:product:brand:remove")
     @Override
     @DeleteMapping("/{brandIds}")
     public AjaxResult remove(@PathVariable Long[] brandIds) {

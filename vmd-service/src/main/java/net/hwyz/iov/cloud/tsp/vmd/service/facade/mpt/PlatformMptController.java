@@ -39,7 +39,7 @@ public class PlatformMptController extends BaseController implements PlatformMpt
      * @param platform 车辆平台信息
      * @return 车辆平台信息列表
      */
-    @RequiresPermissions("vehicle:product:platform:list")
+    @RequiresPermissions("completeVehicle:product:platform:list")
     @Override
     @GetMapping(value = "/list")
     public TableDataInfo list(PlatformMpt platform) {
@@ -56,7 +56,7 @@ public class PlatformMptController extends BaseController implements PlatformMpt
      *
      * @return 车辆平台信息列表
      */
-    @RequiresPermissions("vehicle:product:platform:list")
+    @RequiresPermissions("completeVehicle:product:platform:list")
     @Override
     @GetMapping(value = "/listAll")
     public List<PlatformMpt> listAll() {
@@ -72,7 +72,7 @@ public class PlatformMptController extends BaseController implements PlatformMpt
      * @param platform 车辆平台信息
      */
     @Log(title = "车辆平台管理", businessType = BusinessType.EXPORT)
-    @RequiresPermissions("vehicle:product:platform:export")
+    @RequiresPermissions("completeVehicle:product:platform:export")
     @Override
     @PostMapping("/export")
     public void export(HttpServletResponse response, PlatformMpt platform) {
@@ -85,7 +85,7 @@ public class PlatformMptController extends BaseController implements PlatformMpt
      * @param platformId 车辆平台ID
      * @return 车辆平台信息
      */
-    @RequiresPermissions("vehicle:product:platform:query")
+    @RequiresPermissions("completeVehicle:product:platform:query")
     @Override
     @GetMapping(value = "/{platformId}")
     public AjaxResult getInfo(@PathVariable Long platformId) {
@@ -101,7 +101,7 @@ public class PlatformMptController extends BaseController implements PlatformMpt
      * @return 结果
      */
     @Log(title = "车辆平台管理", businessType = BusinessType.INSERT)
-    @RequiresPermissions("vehicle:product:platform:add")
+    @RequiresPermissions("completeVehicle:product:platform:add")
     @Override
     @PostMapping
     public AjaxResult add(@Validated @RequestBody PlatformMpt platform) {
@@ -121,7 +121,7 @@ public class PlatformMptController extends BaseController implements PlatformMpt
      * @return 结果
      */
     @Log(title = "车辆平台管理", businessType = BusinessType.UPDATE)
-    @RequiresPermissions("vehicle:product:platform:edit")
+    @RequiresPermissions("completeVehicle:product:platform:edit")
     @Override
     @PutMapping
     public AjaxResult edit(@Validated @RequestBody PlatformMpt platform) {
@@ -141,7 +141,7 @@ public class PlatformMptController extends BaseController implements PlatformMpt
      * @return 结果
      */
     @Log(title = "车辆平台管理", businessType = BusinessType.DELETE)
-    @RequiresPermissions("vehicle:product:platform:remove")
+    @RequiresPermissions("completeVehicle:product:platform:remove")
     @Override
     @DeleteMapping("/{platformIds}")
     public AjaxResult remove(@PathVariable Long[] platformIds) {

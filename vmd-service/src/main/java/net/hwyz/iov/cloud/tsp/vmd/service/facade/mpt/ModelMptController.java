@@ -39,7 +39,7 @@ public class ModelMptController extends BaseController implements ModelMptApi {
      * @param model 车型信息
      * @return 车型信息列表
      */
-    @RequiresPermissions("vehicle:product:model:list")
+    @RequiresPermissions("completeVehicle:product:model:list")
     @Override
     @GetMapping(value = "/list")
     public TableDataInfo list(ModelMpt model) {
@@ -56,7 +56,7 @@ public class ModelMptController extends BaseController implements ModelMptApi {
      *
      * @return 车型信息列表
      */
-    @RequiresPermissions("vehicle:product:model:list")
+    @RequiresPermissions("completeVehicle:product:model:list")
     @Override
     @GetMapping(value = "/listByPlatformCodeAndSeriesCode")
     public List<ModelMpt> listByPlatformCodeAndSeriesCode(@RequestParam String platformCode, @RequestParam String seriesCode) {
@@ -72,7 +72,7 @@ public class ModelMptController extends BaseController implements ModelMptApi {
      * @param model    车型信息
      */
     @Log(title = "车型管理", businessType = BusinessType.EXPORT)
-    @RequiresPermissions("vehicle:product:model:export")
+    @RequiresPermissions("completeVehicle:product:model:export")
     @Override
     @PostMapping("/export")
     public void export(HttpServletResponse response, ModelMpt model) {
@@ -85,7 +85,7 @@ public class ModelMptController extends BaseController implements ModelMptApi {
      * @param modelId 车型ID
      * @return 车型信息
      */
-    @RequiresPermissions("vehicle:product:model:query")
+    @RequiresPermissions("completeVehicle:product:model:query")
     @Override
     @GetMapping(value = "/{modelId}")
     public AjaxResult getInfo(@PathVariable Long modelId) {
@@ -101,7 +101,7 @@ public class ModelMptController extends BaseController implements ModelMptApi {
      * @return 结果
      */
     @Log(title = "车型管理", businessType = BusinessType.INSERT)
-    @RequiresPermissions("vehicle:product:model:add")
+    @RequiresPermissions("completeVehicle:product:model:add")
     @Override
     @PostMapping
     public AjaxResult add(@Validated @RequestBody ModelMpt model) {
@@ -121,7 +121,7 @@ public class ModelMptController extends BaseController implements ModelMptApi {
      * @return 结果
      */
     @Log(title = "车型管理", businessType = BusinessType.UPDATE)
-    @RequiresPermissions("vehicle:product:model:edit")
+    @RequiresPermissions("completeVehicle:product:model:edit")
     @Override
     @PutMapping
     public AjaxResult edit(@Validated @RequestBody ModelMpt model) {
@@ -141,7 +141,7 @@ public class ModelMptController extends BaseController implements ModelMptApi {
      * @return 结果
      */
     @Log(title = "车型管理", businessType = BusinessType.DELETE)
-    @RequiresPermissions("vehicle:product:model:remove")
+    @RequiresPermissions("completeVehicle:product:model:remove")
     @Override
     @DeleteMapping("/{modelIds}")
     public AjaxResult remove(@PathVariable Long[] modelIds) {

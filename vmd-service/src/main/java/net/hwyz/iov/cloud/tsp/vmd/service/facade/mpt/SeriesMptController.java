@@ -39,7 +39,7 @@ public class SeriesMptController extends BaseController implements SeriesMptApi 
      * @param series 车系信息
      * @return 车系信息列表
      */
-    @RequiresPermissions("vehicle:product:series:list")
+    @RequiresPermissions("completeVehicle:product:series:list")
     @Override
     @GetMapping(value = "/list")
     public TableDataInfo list(SeriesMpt series) {
@@ -56,7 +56,7 @@ public class SeriesMptController extends BaseController implements SeriesMptApi 
      *
      * @return 车辆平台信息列表
      */
-    @RequiresPermissions("vehicle:product:series:list")
+    @RequiresPermissions("completeVehicle:product:series:list")
     @Override
     @GetMapping(value = "/listByPlatformCode")
     public List<SeriesMpt> listByPlatformCode(@RequestParam String platformCode) {
@@ -72,7 +72,7 @@ public class SeriesMptController extends BaseController implements SeriesMptApi 
      * @param series   车系信息
      */
     @Log(title = "车系管理", businessType = BusinessType.EXPORT)
-    @RequiresPermissions("vehicle:product:series:export")
+    @RequiresPermissions("completeVehicle:product:series:export")
     @Override
     @PostMapping("/export")
     public void export(HttpServletResponse response, SeriesMpt series) {
@@ -85,7 +85,7 @@ public class SeriesMptController extends BaseController implements SeriesMptApi 
      * @param seriesId 车系ID
      * @return 车系信息
      */
-    @RequiresPermissions("vehicle:product:series:query")
+    @RequiresPermissions("completeVehicle:product:series:query")
     @Override
     @GetMapping(value = "/{seriesId}")
     public AjaxResult getInfo(@PathVariable Long seriesId) {
@@ -101,7 +101,7 @@ public class SeriesMptController extends BaseController implements SeriesMptApi 
      * @return 结果
      */
     @Log(title = "车系管理", businessType = BusinessType.INSERT)
-    @RequiresPermissions("vehicle:product:series:add")
+    @RequiresPermissions("completeVehicle:product:series:add")
     @Override
     @PostMapping
     public AjaxResult add(@Validated @RequestBody SeriesMpt series) {
@@ -121,7 +121,7 @@ public class SeriesMptController extends BaseController implements SeriesMptApi 
      * @return 结果
      */
     @Log(title = "车系管理", businessType = BusinessType.UPDATE)
-    @RequiresPermissions("vehicle:product:series:edit")
+    @RequiresPermissions("completeVehicle:product:series:edit")
     @Override
     @PutMapping
     public AjaxResult edit(@Validated @RequestBody SeriesMpt series) {
@@ -141,7 +141,7 @@ public class SeriesMptController extends BaseController implements SeriesMptApi 
      * @return 结果
      */
     @Log(title = "车系管理", businessType = BusinessType.DELETE)
-    @RequiresPermissions("vehicle:product:series:remove")
+    @RequiresPermissions("completeVehicle:product:series:remove")
     @Override
     @DeleteMapping("/{seriesIds}")
     public AjaxResult remove(@PathVariable Long[] seriesIds) {

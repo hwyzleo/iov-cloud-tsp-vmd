@@ -39,7 +39,7 @@ public class ManufacturerMptController extends BaseController implements Manufac
      * @param manufacturer 车辆工厂信息
      * @return 车辆工厂信息列表
      */
-    @RequiresPermissions("vehicle:product:manufacturer:list")
+    @RequiresPermissions("completeVehicle:product:manufacturer:list")
     @Override
     @GetMapping(value = "/list")
     public TableDataInfo list(ManufacturerMpt manufacturer) {
@@ -58,7 +58,7 @@ public class ManufacturerMptController extends BaseController implements Manufac
      * @param manufacturer 车辆平台信息
      */
     @Log(title = "工厂管理", businessType = BusinessType.EXPORT)
-    @RequiresPermissions("vehicle:product:manufacturer:export")
+    @RequiresPermissions("completeVehicle:product:manufacturer:export")
     @Override
     @PostMapping("/export")
     public void export(HttpServletResponse response, ManufacturerMpt manufacturer) {
@@ -71,7 +71,7 @@ public class ManufacturerMptController extends BaseController implements Manufac
      * @param manufacturerId 车辆工厂ID
      * @return 车辆工厂信息
      */
-    @RequiresPermissions("vehicle:product:manufacturer:query")
+    @RequiresPermissions("completeVehicle:product:manufacturer:query")
     @Override
     @GetMapping(value = "/{manufacturerId}")
     public AjaxResult getInfo(@PathVariable Long manufacturerId) {
@@ -87,7 +87,7 @@ public class ManufacturerMptController extends BaseController implements Manufac
      * @return 结果
      */
     @Log(title = "工厂管理", businessType = BusinessType.INSERT)
-    @RequiresPermissions("vehicle:product:manufacturer:add")
+    @RequiresPermissions("completeVehicle:product:manufacturer:add")
     @Override
     @PostMapping
     public AjaxResult add(@Validated @RequestBody ManufacturerMpt manufacturer) {
@@ -107,7 +107,7 @@ public class ManufacturerMptController extends BaseController implements Manufac
      * @return 结果
      */
     @Log(title = "工厂管理", businessType = BusinessType.UPDATE)
-    @RequiresPermissions("vehicle:product:manufacturer:edit")
+    @RequiresPermissions("completeVehicle:product:manufacturer:edit")
     @Override
     @PutMapping
     public AjaxResult edit(@Validated @RequestBody ManufacturerMpt manufacturer) {
@@ -127,7 +127,7 @@ public class ManufacturerMptController extends BaseController implements Manufac
      * @return 结果
      */
     @Log(title = "工厂管理", businessType = BusinessType.DELETE)
-    @RequiresPermissions("vehicle:product:manufacturer:remove")
+    @RequiresPermissions("completeVehicle:product:manufacturer:remove")
     @Override
     @DeleteMapping("/{manufacturerIds}")
     public AjaxResult remove(@PathVariable Long[] manufacturerIds) {
