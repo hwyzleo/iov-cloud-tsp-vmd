@@ -58,6 +58,11 @@ public class VehicleMpt extends BaseRequest {
     private String modelConfigCode;
 
     /**
+     * 车辆下线时间
+     */
+    private Date eolTime;
+
+    /**
      * 创建时间
      */
     private Date createTime;

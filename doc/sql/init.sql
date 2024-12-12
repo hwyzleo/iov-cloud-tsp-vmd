@@ -9,6 +9,8 @@ CREATE TABLE `db_vmd`.`tb_veh_basic_info`
     `series_code`       VARCHAR(255) NOT NULL COMMENT '车系代码',
     `model_code`        VARCHAR(255) NOT NULL COMMENT '车型代码',
     `model_config_code` VARCHAR(255) NOT NULL COMMENT '车型配置代码',
+    `eol_time`          TIMESTAMP             DEFAULT NULL COMMENT '车辆下线时间',
+    `pdi_time`          TIMESTAMP             DEFAULT NULL COMMENT '最后一次PDI时间',
     `description`       VARCHAR(255)          DEFAULT NULL COMMENT '备注',
     `create_time`       TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `create_by`         VARCHAR(64)           DEFAULT NULL COMMENT '创建者',
@@ -281,3 +283,24 @@ CREATE TABLE `db_vmd`.`tb_veh_optional`
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='车辆选装表';
+
+DROP TABLE IF EXISTS `db_vmd`.`tb_mes_vehicle_data`;
+CREATE TABLE `db_vmd`.`tb_mes_vehicle_data`
+(
+    `id`          BIGINT       NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `batch_num`   VARCHAR(255) NOT NULL COMMENT '批次号',
+    `type`        VARCHAR(100) NOT NULL COMMENT '数据类型',
+    `version`     VARCHAR(100) NOT NULL COMMENT '数据版本',
+    `data`        TEXT         NOT NULL COMMENT 'MES车辆数据',
+    `handle`      TINYINT               DEFAULT 0 COMMENT '是否处理',
+    `description` VARCHAR(255)          DEFAULT NULL COMMENT '备注',
+    `create_time` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `create_by`   VARCHAR(64)           DEFAULT NULL COMMENT '创建者',
+    `modify_time` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
+    `modify_by`   VARCHAR(64)           DEFAULT NULL COMMENT '修改者',
+    `row_version` INT                   DEFAULT 1 COMMENT '记录版本',
+    `row_valid`   TINYINT               DEFAULT 1 COMMENT '记录是否有效',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY (`batch_num`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4 COMMENT ='MES车辆数据表';

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
+import java.util.Date;
 
 import lombok.experimental.SuperBuilder;
 import lombok.*;
@@ -75,4 +76,16 @@ public class VehBasicInfoPo extends BasePo {
      */
     @TableField("model_config_code")
     private String modelConfigCode;
+
+    /**
+     * 车辆下线时间
+     */
+    @TableField("eol_time")
+    private Date eolTime;
+
+    /**
+     * 最后一次PDI时间
+     */
+    @TableField("pdi_time")
+    private Date pdiTime;
 }

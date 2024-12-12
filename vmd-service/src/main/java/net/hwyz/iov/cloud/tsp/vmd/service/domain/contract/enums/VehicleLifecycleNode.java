@@ -12,6 +12,12 @@ import java.util.Arrays;
 @AllArgsConstructor
 public enum VehicleLifecycleNode {
 
+    /** 车辆生产 **/
+    PRODUCE,
+    /** 车辆下线 **/
+    EOL,
+    /** 入前置库 **/
+    PDC_INBOUND,
     /** PDI电检 **/
     PDI,
     /** 车辆激活 **/
