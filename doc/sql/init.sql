@@ -11,6 +11,7 @@ CREATE TABLE `db_vmd`.`tb_veh_basic_info`
     `model_config_code` VARCHAR(255) NOT NULL COMMENT '车型配置代码',
     `eol_time`          TIMESTAMP             DEFAULT NULL COMMENT '车辆下线时间',
     `pdi_time`          TIMESTAMP             DEFAULT NULL COMMENT '最后一次PDI时间',
+    `order_num`         VARCHAR(50)           DEFAULT NULL COMMENT '订单编码',
     `description`       VARCHAR(255)          DEFAULT NULL COMMENT '备注',
     `create_time`       TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `create_by`         VARCHAR(64)           DEFAULT NULL COMMENT '创建者',
@@ -19,7 +20,8 @@ CREATE TABLE `db_vmd`.`tb_veh_basic_info`
     `row_version`       INT                   DEFAULT 1 COMMENT '记录版本',
     `row_valid`         TINYINT               DEFAULT 1 COMMENT '记录是否有效',
     PRIMARY KEY (`id`),
-    UNIQUE KEY (`vin`)
+    UNIQUE KEY (`vin`),
+    INDEX `idx_order_num` (`order_num`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='车辆基础信息表';
 

@@ -48,7 +48,8 @@ public class VehicleMptController extends BaseController implements VehicleMptAp
     public TableDataInfo list(VehicleMpt vehicle) {
         logger.info("管理后台用户[{}]分页查询车辆信息", SecurityUtils.getUsername());
         startPage();
-        List<VehBasicInfoPo> vehBasicInfoPoList = vehicleAppService.search(vehicle.getVin(), getBeginTime(vehicle), getEndTime(vehicle));
+        List<VehBasicInfoPo> vehBasicInfoPoList = vehicleAppService.search(vehicle.getVin(), vehicle.getModelConfigCode(),
+                getBeginTime(vehicle), getEndTime(vehicle), null, null);
         List<VehicleMpt> vehicleMptList = VehicleMptAssembler.INSTANCE.fromPoList(vehBasicInfoPoList);
         return getDataTable(vehBasicInfoPoList, vehicleMptList);
     }
@@ -65,7 +66,8 @@ public class VehicleMptController extends BaseController implements VehicleMptAp
     public TableDataInfo listAssignable(VehicleMpt vehicle) {
         logger.info("管理后台用户[{}]分页查询可分配车辆信息", SecurityUtils.getUsername());
         startPage();
-        List<VehBasicInfoPo> vehBasicInfoPoList = vehicleAppService.search(vehicle.getVin(), getBeginTime(vehicle), getEndTime(vehicle));
+        List<VehBasicInfoPo> vehBasicInfoPoList = vehicleAppService.search(vehicle.getVin(), vehicle.getModelConfigCode(),
+                getBeginTime(vehicle), getEndTime(vehicle), true, false);
         List<VehicleMpt> vehicleMptList = VehicleMptAssembler.INSTANCE.fromPoList(vehBasicInfoPoList);
         return getDataTable(vehBasicInfoPoList, vehicleMptList);
     }

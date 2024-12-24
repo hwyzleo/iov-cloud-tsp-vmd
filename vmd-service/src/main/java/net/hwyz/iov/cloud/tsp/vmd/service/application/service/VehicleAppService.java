@@ -41,16 +41,23 @@ public class VehicleAppService {
     /**
      * 查询车辆信息
      *
-     * @param vin       车架号
-     * @param beginTime 开始时间
-     * @param endTime   结束时间
+     * @param vin             车架号
+     * @param modelConfigCode 车型配置代码
+     * @param beginTime       开始时间
+     * @param endTime         结束时间
+     * @param isEol           是否下线
+     * @param isOrder         是否有订单
      * @return 车辆平台列表
      */
-    public List<VehBasicInfoPo> search(String vin, Date beginTime, Date endTime) {
+    public List<VehBasicInfoPo> search(String vin, String modelConfigCode, Date beginTime, Date endTime, Boolean isEol,
+                                       Boolean isOrder) {
         Map<String, Object> map = new HashMap<>();
         map.put("vin", ParamHelper.fuzzyQueryParam(vin));
+        map.put("modelConfigCode", modelConfigCode);
         map.put("beginTime", beginTime);
         map.put("endTime", endTime);
+        map.put("isEol", isEol);
+        map.put("isOrder", isOrder);
         return vehBasicInfoDao.selectPoByMap(map);
     }
 

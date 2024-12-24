@@ -88,4 +88,10 @@ public class VehBasicInfoPo extends BasePo {
      */
     @TableField("pdi_time")
     private Date pdiTime;
+
+    /**
+     * 订单号
+     */
+    @TableField("order_num")
+    private String orderNum;
 }
