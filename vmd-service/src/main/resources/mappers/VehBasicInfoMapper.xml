@@ -60,9 +60,6 @@
     <!-- 更新 -->
     <update id="updatePo" parameterType="net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehBasicInfoPo">
         UPDATE tb_veh_basic_info t SET
-        <if test="vin != null and vin != ''">
-            t.vin = #{vin},
-        </if>
         <if test="manufacturerCode != null and manufacturerCode != ''">
             t.manufacturer_code = #{manufacturerCode},
         </if>
@@ -98,7 +95,7 @@
         </if>
         t.row_version = t.row_version + 1,
         t.modify_time = now()
-        WHERE id = #{id}
+        WHERE vin = #{vin}
     </update>
 
     <!-- 逻辑删除 -->

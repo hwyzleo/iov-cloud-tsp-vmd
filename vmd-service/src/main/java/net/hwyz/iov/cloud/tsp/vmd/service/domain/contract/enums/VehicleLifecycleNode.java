@@ -16,6 +16,8 @@ public enum VehicleLifecycleNode {
     PRODUCE,
     /** 车辆下线 **/
     EOL,
+    /** 车辆绑定订单 **/
+    BIND_ORDER,
     /** 入前置库 **/
     PDC_INBOUND,
     /** PDI电检 **/

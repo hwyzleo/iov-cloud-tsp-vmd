@@ -7,6 +7,7 @@ import net.hwyz.iov.cloud.tsp.account.api.feign.service.ExAccountService;
 import net.hwyz.iov.cloud.tsp.vmd.service.domain.vehicle.model.VehicleDo;
 import net.hwyz.iov.cloud.tsp.vmd.service.domain.vehicle.repository.VehicleRepository;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.exception.VehicleHasActivatedException;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.exception.VehicleHasBindOrderException;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.exception.VehiclePresetOwnerNotMatchException;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.exception.VehicleWithoutPresetOwnerException;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehPresetOwnerDao;
@@ -28,6 +29,22 @@ public class VehicleLifecycleAppService {
     private final ExAccountService exAccountService;
     private final VehicleRepository vehicleRepository;
     private final VehPresetOwnerDao vehPresetOwnerDao;
+
+    /**
+     * 绑定订单
+     *
+     * @param vin      车架号
+     * @param orderNum 订单编号
+     */
+    public void bindOrder(String vin, String orderNum) {
+        logger.info("车辆[{}]绑定订单[{}]", vin, orderNum);
+        VehicleDo vehicleDo = vehicleRepository.getByVin(vin);
+        if (vehicleDo.hasOrder()) {
+            throw new VehicleHasBindOrderException(vin, vehicleDo.getOrderNum());
+        }
+        vehicleDo.bindOrder(orderNum);
+        vehicleRepository.save(vehicleDo);
+    }
 
     /**
      * 车辆激活

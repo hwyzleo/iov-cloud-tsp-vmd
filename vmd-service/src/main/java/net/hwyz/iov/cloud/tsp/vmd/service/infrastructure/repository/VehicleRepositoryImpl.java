@@ -10,6 +10,7 @@ import net.hwyz.iov.cloud.tsp.vmd.service.domain.vehicle.repository.VehicleLifec
 import net.hwyz.iov.cloud.tsp.vmd.service.domain.vehicle.repository.VehicleRepository;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.cache.CacheService;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.exception.VehicleNotExistException;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.assembler.VehBasicInfoPoAssembler;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.assembler.VehLifecyclePoAssembler;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehBasicInfoDao;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehLifecycleDao;
@@ -46,6 +47,7 @@ public class VehicleRepositoryImpl extends AbstractRepository<String, VehicleDo>
                 for (VehicleLifecycleNodeDo vehicleLifecycleNodeDo : vehicleDo.getAllNodeList()) {
                     vehicleLifecycleNodeRepository.save(vehicleLifecycleNodeDo);
                 }
+                vehBasicInfoDao.updatePo(VehBasicInfoPoAssembler.INSTANCE.fromDo(vehicleDo));
                 cacheService.setVehicle(vehicleDo);
             }
             default -> {
