@@ -150,6 +150,9 @@ public class SeriesMptController extends BaseController implements SeriesMptApi 
             if (seriesAppService.checkSeriesModelExist(seriesId)) {
                 return error("删除车系'" + seriesId + "'失败，该车系下存在车型");
             }
+            if (seriesAppService.checkSeriesBasicModelExist(seriesId)) {
+                return error("删除车系'" + seriesId + "'失败，该车系下存在基础车型");
+            }
             if (seriesAppService.checkSeriesModelConfigExist(seriesId)) {
                 return error("删除车系'" + seriesId + "'失败，该车系下存在车型配置");
             }

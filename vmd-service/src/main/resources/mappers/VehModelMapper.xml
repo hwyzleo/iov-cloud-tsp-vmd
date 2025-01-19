@@ -210,5 +210,8 @@
         <if test="seriesCode != null and seriesCode != ''">
             AND t.series_code = #{seriesCode}
         </if>
+        <if test="code != null and code != ''">
+            AND t.code = #{code}
+        </if>
     </select>
 </mapper>

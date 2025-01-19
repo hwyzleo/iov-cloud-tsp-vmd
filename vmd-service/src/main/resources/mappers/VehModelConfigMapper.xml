@@ -15,6 +15,7 @@
         <result column="platform_code" property="platformCode" />
         <result column="series_code" property="seriesCode" />
         <result column="model_code" property="modelCode" />
+        <result column="basic_model_code" property="basicModelCode" />
         <result column="code" property="code" />
         <result column="name" property="name" />
         <result column="name_en" property="nameEn" />
@@ -29,18 +30,18 @@
 
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
-        id, platform_code, series_code, model_code, code, name, name_en, exterior_code, interior_code, wheel_code, spare_tire_code, adas_code, enable, sort, 
+        id, platform_code, series_code, model_code, basic_model_code, code, name, name_en, exterior_code, interior_code, wheel_code, spare_tire_code, adas_code, enable, sort,
         description, create_time, create_by, modify_time, modify_by, row_version, row_valid
     </sql>
 
     <!-- 插入 -->
     <insert id="insertPo" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_veh_model_config (
-            id, platform_code, series_code, model_code, code, name, name_en, exterior_code, interior_code, wheel_code, spare_tire_code, adas_code, enable, sort, 
+            id, platform_code, series_code, model_code, basic_model_code, code, name, name_en, exterior_code, interior_code, wheel_code, spare_tire_code, adas_code, enable, sort,
             description, create_time, create_by, modify_time, modify_by, row_version, row_valid
         )
         VALUES (
-            #{id}, #{platformCode}, #{seriesCode}, #{modelCode}, #{code}, #{name}, #{nameEn}, #{exteriorCode}, #{interiorCode}, #{wheelCode}, #{spareTireCode}, #{adasCode}, #{enable}, #{sort}, 
+            #{id}, #{platformCode}, #{seriesCode}, #{modelCode}, #{basicModelCode}, #{code}, #{name}, #{nameEn}, #{exteriorCode}, #{interiorCode}, #{wheelCode}, #{spareTireCode}, #{adasCode}, #{enable}, #{sort},
             #{description}, now(), #{createBy}, now(), #{modifyBy}, 1, 1
         )
     </insert>
@@ -48,13 +49,13 @@
     <!-- 批量插入 -->
     <insert id="batchInsertPo" useGeneratedKeys="true" keyProperty="id" parameterType="java.util.List">
         INSERT INTO tb_veh_model_config (
-            id, platform_code, series_code, model_code, code, name, name_en, exterior_code, interior_code, wheel_code, spare_tire_code, adas_code, enable, sort, 
+            id, platform_code, series_code, model_code, basic_model_code, code, name, name_en, exterior_code, interior_code, wheel_code, spare_tire_code, adas_code, enable, sort,
             description, create_time, create_by, modify_time, modify_by, row_version, row_valid
         )
         VALUES
         <foreach collection="list" item="item" index="index" separator=",">
         (
-            #{item.id}, #{item.platformCode}, #{item.seriesCode}, #{item.modelCode}, #{item.code}, #{item.name}, #{item.nameEn}, #{item.exteriorCode}, #{item.interiorCode}, #{item.wheelCode}, #{item.spareTireCode}, #{item.adasCode}, #{item.enable}, #{item.sort}, 
+            #{item.id}, #{item.platformCode}, #{item.seriesCode}, #{item.modelCode}, #{item.basicModelCode}, #{item.code}, #{item.name}, #{item.nameEn}, #{item.exteriorCode}, #{item.interiorCode}, #{item.wheelCode}, #{item.spareTireCode}, #{item.adasCode}, #{item.enable}, #{item.sort},
             #{item.description}, now(), #{item.createBy}, now(), #{item.modifyBy}, 1, 1
         )
         </foreach>
@@ -150,6 +151,9 @@
         <if test="modelCode != null and modelCode != ''">
             AND t.model_code = #{modelCode}
         </if>
+        <if test="basicModelCode != null and basicModelCode != ''">
+            AND t.basic_model_code = #{basicModelCode}
+        </if>
         <if test="code != null and code != ''">
             AND t.code = #{code}
         </if>
@@ -216,6 +220,9 @@
         <if test="modelCode != null and modelCode != ''">
             AND t.model_code = #{modelCode}
         </if>
+        <if test="basicModelCode != null and basicModelCode != ''">
+            AND t.basic_model_code = #{basicModelCode}
+        </if>
         <if test="code != null and code != ''">
             AND t.code = #{code}
         </if>
@@ -254,6 +261,9 @@
         </if>
         <if test="modelCode != null and modelCode != ''">
             AND t.model_code = #{modelCode}
+        </if>
+        <if test="basicModelCode != null and basicModelCode != ''">
+            AND t.basic_model_code = #{basicModelCode}
         </if>
     </select>
 </mapper>

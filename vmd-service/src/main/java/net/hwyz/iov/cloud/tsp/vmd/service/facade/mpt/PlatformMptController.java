@@ -153,6 +153,9 @@ public class PlatformMptController extends BaseController implements PlatformMpt
             if (platformAppService.checkPlatformModelExist(platformId)) {
                 return error("删除车辆平台'" + platformId + "'失败，该车辆平台下存在车型");
             }
+            if (platformAppService.checkPlatformBasicModelExist(platformId)) {
+                return error("删除车辆平台'" + platformId + "'失败，该车辆平台下存在基础车型");
+            }
             if (platformAppService.checkPlatformModelConfigExist(platformId)) {
                 return error("删除车辆平台'" + platformId + "'失败，该车辆平台下存在车型配置");
             }

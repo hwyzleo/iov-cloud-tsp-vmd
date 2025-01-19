@@ -260,6 +260,17 @@ public class VehicleAppService {
         } else {
             logger.warn("MES车辆数据批次号[{}]车型为空", batchNum);
         }
+        String basicModel = dataJson.getByPath("$.REQUEST.DATA.ITEM.BASIC_MODEL", String[].class)[0];
+        if (StrUtil.isNotBlank(basicModel)) {
+            if (StrUtil.isBlank(vehBasicInfoPo.getBasicModelCode())) {
+                vehBasicInfoPo.setBasicModelCode(basicModel.trim().toUpperCase());
+            } else if (!basicModel.trim().equalsIgnoreCase(vehBasicInfoPo.getBasicModelCode())) {
+                logger.warn("MES车辆数据批次号[{}]基础车型数据[{}]与原数据[{}]不一致", batchNum, basicModel.trim(),
+                        vehBasicInfoPo.getBasicModelCode());
+            }
+        } else {
+            logger.warn("MES车辆数据批次号[{}]基础车型为空", batchNum);
+        }
         String modelConfig = dataJson.getByPath("$.REQUEST.DATA.ITEM.MODEL_CONFIG", String[].class)[0];
         if (StrUtil.isNotBlank(modelConfig)) {
             if (StrUtil.isBlank(vehBasicInfoPo.getModelConfigCode())) {

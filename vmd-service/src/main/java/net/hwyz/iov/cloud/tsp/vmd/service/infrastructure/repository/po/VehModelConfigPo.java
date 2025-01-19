@@ -54,6 +54,12 @@ public class VehModelConfigPo extends BasePo {
     private String modelCode;
 
     /**
+     * 基础车型代码
+     */
+    @TableField("basic_model_code")
+    private String basicModelCode;
+
+    /**
      * 车型配置代码：车型代码+外饰代码(2)+内饰代码(2)+车轮代码(2)+备胎代码(2)+智驾代码(2)
      */
     @TableField("code")

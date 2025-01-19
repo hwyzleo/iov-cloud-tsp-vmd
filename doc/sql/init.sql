@@ -8,6 +8,7 @@ CREATE TABLE `db_vmd`.`tb_veh_basic_info`
     `platform_code`     VARCHAR(255) NOT NULL COMMENT '平台代码',
     `series_code`       VARCHAR(255) NOT NULL COMMENT '车系代码',
     `model_code`        VARCHAR(255) NOT NULL COMMENT '车型代码',
+    `basic_model_code`  VARCHAR(255) NOT NULL COMMENT '基础车型代码',
     `model_config_code` VARCHAR(255) NOT NULL COMMENT '车型配置代码',
     `eol_time`          TIMESTAMP             DEFAULT NULL COMMENT '车辆下线时间',
     `pdi_time`          TIMESTAMP             DEFAULT NULL COMMENT '最后一次PDI时间',
@@ -133,30 +134,55 @@ CREATE TABLE `db_vmd`.`tb_veh_model`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='车辆车型表';
 
+DROP TABLE IF EXISTS `db_vmd`.`tb_veh_basic_model`;
+CREATE TABLE `db_vmd`.`tb_veh_basic_model`
+(
+    `id`            BIGINT       NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `platform_code` VARCHAR(255) NOT NULL COMMENT '平台代码',
+    `series_code`   VARCHAR(255) NOT NULL COMMENT '车系代码',
+    `model_code`    VARCHAR(255) NOT NULL COMMENT '车型代码',
+    `code`          VARCHAR(255) NOT NULL COMMENT '基础车型代码',
+    `name`          VARCHAR(255) NOT NULL COMMENT '基础车型名称',
+    `name_en`       VARCHAR(255)          DEFAULT NULL COMMENT '基础车型英文名称',
+    `enable`        TINYINT      NOT NULL COMMENT '是否启用',
+    `sort`          INT          NOT NULL COMMENT '排序',
+    `description`   VARCHAR(255)          DEFAULT NULL COMMENT '备注',
+    `create_time`   TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `create_by`     VARCHAR(64)           DEFAULT NULL COMMENT '创建者',
+    `modify_time`   TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
+    `modify_by`     VARCHAR(64)           DEFAULT NULL COMMENT '修改者',
+    `row_version`   INT                   DEFAULT 1 COMMENT '记录版本',
+    `row_valid`     TINYINT               DEFAULT 1 COMMENT '记录是否有效',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY (`code`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4 COMMENT ='车辆基础车型表';
+
 DROP TABLE IF EXISTS `db_vmd`.`tb_veh_model_config`;
 CREATE TABLE `db_vmd`.`tb_veh_model_config`
 (
-    `id`              BIGINT       NOT NULL AUTO_INCREMENT COMMENT '主键',
-    `platform_code`   VARCHAR(255) NOT NULL COMMENT '平台代码',
-    `series_code`     VARCHAR(255) NOT NULL COMMENT '车系代码',
-    `model_code`      VARCHAR(255) NOT NULL COMMENT '车型代码',
-    `code`            VARCHAR(255) NOT NULL COMMENT '车型配置代码：车型代码+外饰代码(2)+内饰代码(2)+车轮代码(2)+备胎代码(2)+智驾代码(2)',
-    `name`            VARCHAR(255) NOT NULL COMMENT '车型配置名称',
-    `name_en`         VARCHAR(255)          DEFAULT NULL COMMENT '车型配置英文名称',
-    `exterior_code`   VARCHAR(50)           DEFAULT NULL COMMENT '外饰代码',
-    `interior_code`   VARCHAR(50)           DEFAULT NULL COMMENT '内饰代码',
-    `wheel_code`      VARCHAR(50)           DEFAULT NULL COMMENT '车轮代码',
-    `spare_tire_code` VARCHAR(50)           DEFAULT NULL COMMENT '备胎代码',
-    `adas_code`       VARCHAR(50)           DEFAULT NULL COMMENT '智驾代码',
-    `enable`          TINYINT               DEFAULT 1 COMMENT '是否启用',
-    `sort`            INT                   DEFAULT 99 COMMENT '排序',
-    `description`     VARCHAR(255)          DEFAULT NULL COMMENT '备注',
-    `create_time`     TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `create_by`       VARCHAR(64)           DEFAULT NULL COMMENT '创建者',
-    `modify_time`     TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
-    `modify_by`       VARCHAR(64)           DEFAULT NULL COMMENT '修改者',
-    `row_version`     INT                   DEFAULT 1 COMMENT '记录版本',
-    `row_valid`       TINYINT               DEFAULT 1 COMMENT '记录是否有效',
+    `id`               BIGINT       NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `platform_code`    VARCHAR(255) NOT NULL COMMENT '平台代码',
+    `series_code`      VARCHAR(255) NOT NULL COMMENT '车系代码',
+    `model_code`       VARCHAR(255) NOT NULL COMMENT '车型代码',
+    `basic_model_code` VARCHAR(255) NOT NULL COMMENT '基础车型代码',
+    `code`             VARCHAR(255) NOT NULL COMMENT '车型配置代码：车型代码+外饰代码(2)+内饰代码(2)+车轮代码(2)+备胎代码(2)+智驾代码(2)',
+    `name`             VARCHAR(255) NOT NULL COMMENT '车型配置名称',
+    `name_en`          VARCHAR(255)          DEFAULT NULL COMMENT '车型配置英文名称',
+    `exterior_code`    VARCHAR(50)           DEFAULT NULL COMMENT '外饰代码',
+    `interior_code`    VARCHAR(50)           DEFAULT NULL COMMENT '内饰代码',
+    `wheel_code`       VARCHAR(50)           DEFAULT NULL COMMENT '车轮代码',
+    `spare_tire_code`  VARCHAR(50)           DEFAULT NULL COMMENT '备胎代码',
+    `adas_code`        VARCHAR(50)           DEFAULT NULL COMMENT '智驾代码',
+    `enable`           TINYINT               DEFAULT 1 COMMENT '是否启用',
+    `sort`             INT                   DEFAULT 99 COMMENT '排序',
+    `description`      VARCHAR(255)          DEFAULT NULL COMMENT '备注',
+    `create_time`      TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `create_by`        VARCHAR(64)           DEFAULT NULL COMMENT '创建者',
+    `modify_time`      TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
+    `modify_by`        VARCHAR(64)           DEFAULT NULL COMMENT '修改者',
+    `row_version`      INT                   DEFAULT 1 COMMENT '记录版本',
+    `row_valid`        TINYINT               DEFAULT 1 COMMENT '记录是否有效',
     PRIMARY KEY (`id`),
     UNIQUE KEY (`code`)
 ) ENGINE = InnoDB

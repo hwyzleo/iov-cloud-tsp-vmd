@@ -6,7 +6,7 @@ import net.hwyz.iov.cloud.framework.common.web.domain.BaseRequest;
 import java.util.Date;
 
 /**
- * 管理后台车型
+ * 管理后台基础车型
  *
  * @author hwyz_leo
  */
@@ -15,7 +15,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class ModelMpt extends BaseRequest {
+public class BasicModelMpt extends BaseRequest {
 
     /**
      * 主键
@@ -35,15 +35,20 @@ public class ModelMpt extends BaseRequest {
     /**
      * 车型代码
      */
+    private String modelCode;
+
+    /**
+     * 基础车型代码
+     */
     private String code;
 
     /**
-     * 车型名称
+     * 基础车型名称
      */
     private String name;
 
     /**
-     * 车型英文名称
+     * 基础车型英文名称
      */
     private String nameEn;
 

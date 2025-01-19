@@ -4,10 +4,7 @@ import cn.hutool.core.util.ObjUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.hwyz.iov.cloud.framework.common.util.ParamHelper;
-import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehBasicInfoDao;
-import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehModelConfigDao;
-import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehModelDao;
-import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehSeriesDao;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.*;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehPlatformPo;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehSeriesPo;
 import org.springframework.stereotype.Service;
@@ -30,6 +27,7 @@ public class SeriesAppService {
     private final VehModelDao vehModelDao;
     private final VehSeriesDao vehSeriesDao;
     private final VehBasicInfoDao vehBasicInfoDao;
+    private final VehBasicModelDao vehBasicModelDao;
     private final VehModelConfigDao vehModelConfigDao;
 
     /**
@@ -78,6 +76,19 @@ public class SeriesAppService {
         Map<String, Object> map = new HashMap<>();
         map.put("seriesCode", seriesPo.getCode());
         return vehModelDao.countPoByMap(map) > 0;
+    }
+
+    /**
+     * 检查车系下是否存在基础车型
+     *
+     * @param seriesId 车系ID
+     * @return 结果
+     */
+    public Boolean checkSeriesBasicModelExist(Long seriesId) {
+        VehSeriesPo seriesPo = getSeriesById(seriesId);
+        Map<String, Object> map = new HashMap<>();
+        map.put("seriesCode", seriesPo.getCode());
+        return vehBasicModelDao.countPoByMap(map) > 0;
     }
 
     /**

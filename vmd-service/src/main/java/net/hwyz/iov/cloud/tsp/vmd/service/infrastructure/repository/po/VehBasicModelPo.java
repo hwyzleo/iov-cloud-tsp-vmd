@@ -5,27 +5,25 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
-import java.util.Date;
-
-import lombok.experimental.SuperBuilder;
-import lombok.*;
 import net.hwyz.iov.cloud.framework.mysql.po.BasePo;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 /**
  * <p>
- * 车辆基础信息表 数据对象
+ * 车辆基础车型表 数据对象
  * </p>
  *
  * @author hwyz_leo
- * @since 2024-09-24
+ * @since 2025-01-19
  */
 @Getter
 @Setter
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("tb_veh_basic_info")
-public class VehBasicInfoPo extends BasePo {
+@TableName("tb_veh_basic_model")
+public class VehBasicModelPo extends BasePo {
 
     private static final long serialVersionUID = 1L;
 
@@ -34,24 +32,6 @@ public class VehBasicInfoPo extends BasePo {
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
-
-    /**
-     * 车架号
-     */
-    @TableField("vin")
-    private String vin;
-
-    /**
-     * 工厂代码
-     */
-    @TableField("manufacturer_code")
-    private String manufacturerCode;
-
-    /**
-     * 品牌代码
-     */
-    @TableField("brand_code")
-    private String brandCode;
 
     /**
      * 平台代码
@@ -74,30 +54,30 @@ public class VehBasicInfoPo extends BasePo {
     /**
      * 基础车型代码
      */
-    @TableField("basic_model_code")
-    private String basicModelCode;
+    @TableField("code")
+    private String code;
 
     /**
-     * 车型配置代码
+     * 基础车型名称
      */
-    @TableField("model_config_code")
-    private String modelConfigCode;
+    @TableField("name")
+    private String name;
 
     /**
-     * 车辆下线时间
+     * 基础车型英文名称
      */
-    @TableField("eol_time")
-    private Date eolTime;
+    @TableField("name_en")
+    private String nameEn;
 
     /**
-     * 最后一次PDI时间
+     * 是否启用
      */
-    @TableField("pdi_time")
-    private Date pdiTime;
+    @TableField("enable")
+    private Boolean enable;
 
     /**
-     * 订单号
+     * 排序
      */
-    @TableField("order_num")
-    private String orderNum;
+    @TableField("sort")
+    private Integer sort;
 }

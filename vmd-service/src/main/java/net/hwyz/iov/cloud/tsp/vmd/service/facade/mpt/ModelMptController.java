@@ -147,6 +147,9 @@ public class ModelMptController extends BaseController implements ModelMptApi {
     public AjaxResult remove(@PathVariable Long[] modelIds) {
         logger.info("管理后台用户[{}]删除车型信息[{}]", SecurityUtils.getUsername(), modelIds);
         for (Long modelId : modelIds) {
+            if (modelAppService.checkModelBasicModelExist(modelId)) {
+                return error("删除车型'" + modelId + "'失败，该车型下存在基础车型");
+            }
             if (modelAppService.checkModelModelConfigExist(modelId)) {
                 return error("删除车型'" + modelId + "'失败，该车型下存在车型配置");
             }

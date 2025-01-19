@@ -28,6 +28,7 @@ public class PlatformAppService {
     private final VehSeriesDao vehSeriesDao;
     private final VehPlatformDao vehPlatformDao;
     private final VehBasicInfoDao vehBasicInfoDao;
+    private final VehBasicModelDao vehBasicModelDao;
     private final VehModelConfigDao vehModelConfigDao;
 
     /**
@@ -87,6 +88,19 @@ public class PlatformAppService {
         Map<String, Object> map = new HashMap<>();
         map.put("platformCode", platformPo.getCode());
         return vehModelDao.countPoByMap(map) > 0;
+    }
+
+    /**
+     * 检查车辆平台下是否存在基础车型
+     *
+     * @param platformId 车辆平台ID
+     * @return 结果
+     */
+    public Boolean checkPlatformBasicModelExist(Long platformId) {
+        VehPlatformPo platformPo = getPlatformById(platformId);
+        Map<String, Object> map = new HashMap<>();
+        map.put("platformCode", platformPo.getCode());
+        return vehBasicModelDao.countPoByMap(map) > 0;
     }
 
     /**
