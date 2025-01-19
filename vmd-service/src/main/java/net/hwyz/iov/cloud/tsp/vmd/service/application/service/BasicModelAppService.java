@@ -39,7 +39,7 @@ public class BasicModelAppService {
      * @param name         基础车型名称
      * @param beginTime    开始时间
      * @param endTime      结束时间
-     * @return 车系列表
+     * @return 基础车型列表
      */
     public List<VehBasicModelPo> search(String platformCode, String seriesCode, String modelCode, String code, String name,
                                         Date beginTime, Date endTime) {

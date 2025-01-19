@@ -41,7 +41,7 @@ public class ModelAppService {
      * @param name         车型名称
      * @param beginTime    开始时间
      * @param endTime      结束时间
-     * @return 车系列表
+     * @return 车型列表
      */
     public List<VehModelPo> search(String platformCode, String seriesCode, String code, String name, Date beginTime, Date endTime) {
         Map<String, Object> map = new HashMap<>();
@@ -91,7 +91,7 @@ public class ModelAppService {
     public Boolean checkModelModelConfigExist(Long modelId) {
         VehModelPo modelPo = getModelById(modelId);
         Map<String, Object> map = new HashMap<>();
-        map.put("code", modelPo.getCode());
+        map.put("modelCode", modelPo.getCode());
         return vehModelConfigDao.countPoByMap(map) > 0;
     }
 

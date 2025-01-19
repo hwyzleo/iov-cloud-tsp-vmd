@@ -265,5 +265,8 @@
         <if test="basicModelCode != null and basicModelCode != ''">
             AND t.basic_model_code = #{basicModelCode}
         </if>
+        <if test="exteriorCode != null and exteriorCode != ''">
+            AND t.exterior_code = #{exteriorCode}
+        </if>
     </select>
 </mapper>

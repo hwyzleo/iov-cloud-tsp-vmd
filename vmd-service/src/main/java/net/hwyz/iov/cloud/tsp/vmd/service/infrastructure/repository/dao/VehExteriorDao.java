@@ -2,6 +2,7 @@ package net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao;
 
 import net.hwyz.iov.cloud.framework.mysql.dao.BaseDao;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehExteriorPo;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehModelPo;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -14,5 +15,21 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface VehExteriorDao extends BaseDao<VehExteriorPo, Long> {
+
+    /**
+     * 通过code查询车身颜色信息
+     *
+     * @param code 车身颜色编码
+     * @return 车身颜色信息
+     */
+    VehExteriorPo selectPoByCode(String code);
+
+    /**
+     * 批量物理删除车身颜色信息
+     *
+     * @param ids 车身颜色id数组
+     * @return 影响行数
+     */
+    int batchPhysicalDeletePo(Long[] ids);
 
 }

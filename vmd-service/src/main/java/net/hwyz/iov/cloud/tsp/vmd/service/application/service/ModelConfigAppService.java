@@ -37,7 +37,7 @@ public class ModelConfigAppService {
      * @param name         车型配置名称
      * @param beginTime    开始时间
      * @param endTime      结束时间
-     * @return 车系列表
+     * @return 车型配置列表
      */
     public List<VehModelConfigPo> search(String platformCode, String seriesCode, String modelCode, String code, String name,
                                          Date beginTime, Date endTime) {
