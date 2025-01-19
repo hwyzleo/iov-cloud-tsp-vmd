@@ -38,6 +38,11 @@ public class ModelConfigMpt extends BaseRequest {
     private String modelCode;
 
     /**
+     * 基础车型代码
+     */
+    private String basicModelCode;
+
+    /**
      * 车型配置代码
      */
     private String code;

@@ -61,7 +61,7 @@ public class BasicModelMptController extends BaseController implements BasicMode
      */
     @RequiresPermissions("completeVehicle:product:basicModel:list")
     @Override
-    @GetMapping(value = "/listByPlatformCodeAndSeriesCode")
+    @GetMapping(value = "/listByPlatformCodeAndSeriesCodeAndModelCode")
     public List<BasicModelMpt> listByPlatformCodeAndSeriesCodeAndModelCode(@RequestParam String platformCode,
                                                                            @RequestParam String seriesCode,
                                                                            @RequestParam String modelCode) {
