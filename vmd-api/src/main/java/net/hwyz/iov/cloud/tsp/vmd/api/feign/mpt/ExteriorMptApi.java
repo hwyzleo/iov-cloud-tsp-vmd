@@ -35,7 +35,7 @@ public interface ExteriorMptApi {
      * 导出车身颜色信息
      *
      * @param response 响应
-     * @param exterior 车型信息
+     * @param exterior 车身颜色信息
      */
     void export(HttpServletResponse response, ExteriorMpt exterior);
 

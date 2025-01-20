@@ -15,4 +15,20 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface VehInteriorDao extends BaseDao<VehInteriorPo, Long> {
 
+    /**
+     * 通过code查询内饰颜色信息
+     *
+     * @param code 内饰颜色编码
+     * @return 内饰颜色信息
+     */
+    VehInteriorPo selectPoByCode(String code);
+
+    /**
+     * 批量物理删除内饰颜色信息
+     *
+     * @param ids 内饰颜色id数组
+     * @return 影响行数
+     */
+    int batchPhysicalDeletePo(Long[] ids);
+
 }

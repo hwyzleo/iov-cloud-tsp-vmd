@@ -268,5 +268,8 @@
         <if test="exteriorCode != null and exteriorCode != ''">
             AND t.exterior_code = #{exteriorCode}
         </if>
+        <if test="interiorCode != null and interiorCode != ''">
+            AND t.interior_code = #{interiorCode}
+        </if>
     </select>
 </mapper>

@@ -253,20 +253,21 @@ CREATE TABLE `db_vmd`.`tb_veh_exterior`
 DROP TABLE IF EXISTS `db_vmd`.`tb_veh_interior`;
 CREATE TABLE `db_vmd`.`tb_veh_interior`
 (
-    `id`          BIGINT       NOT NULL AUTO_INCREMENT COMMENT '主键',
-    `series_code` VARCHAR(255) NOT NULL COMMENT '车系代码',
-    `code`        VARCHAR(100) NOT NULL COMMENT '内饰代码',
-    `name`        VARCHAR(255) NOT NULL COMMENT '内饰名称',
-    `name_en`     VARCHAR(255)          DEFAULT NULL COMMENT '内饰英文名称',
-    `enable`      TINYINT               DEFAULT 1 COMMENT '是否启用',
-    `sort`        INT                   DEFAULT 99 COMMENT '排序',
-    `description` VARCHAR(255)          DEFAULT NULL COMMENT '备注',
-    `create_time` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `create_by`   VARCHAR(64)           DEFAULT NULL COMMENT '创建者',
-    `modify_time` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
-    `modify_by`   VARCHAR(64)           DEFAULT NULL COMMENT '修改者',
-    `row_version` INT                   DEFAULT 1 COMMENT '记录版本',
-    `row_valid`   TINYINT               DEFAULT 1 COMMENT '记录是否有效',
+    `id`            BIGINT       NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `platform_code` VARCHAR(255) NOT NULL COMMENT '平台代码',
+    `series_code`   VARCHAR(255) NOT NULL COMMENT '车系代码',
+    `code`          VARCHAR(100) NOT NULL COMMENT '内饰代码',
+    `name`          VARCHAR(255) NOT NULL COMMENT '内饰名称',
+    `name_en`       VARCHAR(255)          DEFAULT NULL COMMENT '内饰英文名称',
+    `enable`        TINYINT               DEFAULT 1 COMMENT '是否启用',
+    `sort`          INT                   DEFAULT 99 COMMENT '排序',
+    `description`   VARCHAR(255)          DEFAULT NULL COMMENT '备注',
+    `create_time`   TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `create_by`     VARCHAR(64)           DEFAULT NULL COMMENT '创建者',
+    `modify_time`   TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
+    `modify_by`     VARCHAR(64)           DEFAULT NULL COMMENT '修改者',
+    `row_version`   INT                   DEFAULT 1 COMMENT '记录版本',
+    `row_valid`     TINYINT               DEFAULT 1 COMMENT '记录是否有效',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='车辆内饰表';
