@@ -271,5 +271,8 @@
         <if test="interiorCode != null and interiorCode != ''">
             AND t.interior_code = #{interiorCode}
         </if>
+        <if test="wheelCode != null and wheelCode != ''">
+            AND t.wheel_code = #{wheelCode}
+        </if>
     </select>
 </mapper>

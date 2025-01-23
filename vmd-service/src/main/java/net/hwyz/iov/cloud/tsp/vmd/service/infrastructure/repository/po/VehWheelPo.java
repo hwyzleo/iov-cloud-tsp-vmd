@@ -34,6 +34,12 @@ public class VehWheelPo extends BasePo {
     private Long id;
 
     /**
+     * 车辆平台代码
+     */
+    @TableField("platform_code")
+    private String platformCode;
+
+    /**
      * 车系代码
      */
     @TableField("series_code")

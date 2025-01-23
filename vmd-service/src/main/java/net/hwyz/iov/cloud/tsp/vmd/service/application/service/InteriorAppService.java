@@ -123,7 +123,7 @@ public class InteriorAppService {
      * @param ids 内饰颜色ID数组
      * @return 结果
      */
-    public int deleteModelByIds(Long[] ids) {
+    public int deleteInteriorByIds(Long[] ids) {
         return vehInteriorDao.batchPhysicalDeletePo(ids);
     }
 

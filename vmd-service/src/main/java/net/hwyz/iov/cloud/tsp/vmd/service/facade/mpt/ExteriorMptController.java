@@ -151,7 +151,7 @@ public class ExteriorMptController extends BaseController implements ExteriorMpt
                 return error("删除车身颜色'" + exteriorId + "'失败，该车身颜色下存在车型配置");
             }
         }
-        return toAjax(exteriorAppService.deleteModelByIds(exteriorIds));
+        return toAjax(exteriorAppService.deleteExteriorByIds(exteriorIds));
     }
 
 }

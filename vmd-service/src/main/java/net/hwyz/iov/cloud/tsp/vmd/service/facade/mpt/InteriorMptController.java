@@ -89,7 +89,7 @@ public class InteriorMptController extends BaseController implements InteriorMpt
     @Override
     @GetMapping(value = "/{interiorId}")
     public AjaxResult getInfo(@PathVariable Long interiorId) {
-        logger.info("管理后台用户[{}]根据车身颜色ID[{}]获取车身颜色信息", SecurityUtils.getUsername(), interiorId);
+        logger.info("管理后台用户[{}]根据内饰颜色ID[{}]获取内饰颜色信息", SecurityUtils.getUsername(), interiorId);
         VehInteriorPo interiorPo = interiorAppService.getInteriorById(interiorId);
         return success(InteriorMptAssembler.INSTANCE.fromPo(interiorPo));
     }
@@ -151,7 +151,7 @@ public class InteriorMptController extends BaseController implements InteriorMpt
                 return error("删除内饰颜色'" + interiorId + "'失败，该内饰颜色下存在车型配置");
             }
         }
-        return toAjax(interiorAppService.deleteModelByIds(interiorIds));
+        return toAjax(interiorAppService.deleteInteriorByIds(interiorIds));
     }
 
 }

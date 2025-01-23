@@ -12,6 +12,7 @@
         <result column="modify_by" property="modifyBy" />
         <result column="row_version" property="rowVersion" />
         <result column="row_valid" property="rowValid" />
+        <result column="platform_code" property="platformCode" />
         <result column="series_code" property="seriesCode" />
         <result column="code" property="code" />
         <result column="name" property="name" />
@@ -22,18 +23,18 @@
 
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
-        id, series_code, code, name, name_en, enable, sort, 
+        id, platform_code, series_code, code, name, name_en, enable, sort,
         description, create_time, create_by, modify_time, modify_by, row_version, row_valid
     </sql>
 
     <!-- 插入 -->
     <insert id="insertPo" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_veh_wheel (
-            id, series_code, code, name, name_en, enable, sort, 
+            id, platform_code, series_code, code, name, name_en, enable, sort,
             description, create_time, create_by, modify_time, modify_by, row_version, row_valid
         )
         VALUES (
-            #{id}, #{seriesCode}, #{code}, #{name}, #{nameEn}, #{enable}, #{sort}, 
+            #{id}, #{platformCode}, #{seriesCode}, #{code}, #{name}, #{nameEn}, #{enable}, #{sort},
             #{description}, now(), #{createBy}, now(), #{modifyBy}, 1, 1
         )
     </insert>
@@ -41,13 +42,13 @@
     <!-- 批量插入 -->
     <insert id="batchInsertPo" useGeneratedKeys="true" keyProperty="id" parameterType="java.util.List">
         INSERT INTO tb_veh_wheel (
-            id, series_code, code, name, name_en, enable, sort, 
+            id, platform_code, series_code, code, name, name_en, enable, sort,
             description, create_time, create_by, modify_time, modify_by, row_version, row_valid
         )
         VALUES
         <foreach collection="list" item="item" index="index" separator=",">
         (
-            #{item.id}, #{item.seriesCode}, #{item.code}, #{item.name}, #{item.nameEn}, #{item.enable}, #{item.sort}, 
+            #{item.id}, #{item.platformCode}, #{item.seriesCode}, #{item.code}, #{item.name}, #{item.nameEn}, #{item.enable}, #{item.sort},
             #{item.description}, now(), #{item.createBy}, now(), #{item.modifyBy}, 1, 1
         )
         </foreach>
@@ -56,12 +57,6 @@
     <!-- 更新 -->
     <update id="updatePo" parameterType="net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehWheelPo">
         UPDATE tb_veh_wheel t SET
-        <if test="seriesCode != null and seriesCode != ''">
-            t.series_code = #{seriesCode},
-        </if>
-        <if test="code != null and code != ''">
-            t.code = #{code},
-        </if>
         <if test="name != null and name != ''">
             t.name = #{name},
         </if>
@@ -100,6 +95,15 @@
         WHERE t.id = #{value}
     </delete>
 
+    <!-- 批量物理删除 -->
+    <delete id="batchPhysicalDeletePo" parameterType="Long">
+        DELETE FROM tb_veh_wheel t
+        WHERE t.id IN
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
     <!-- 根据主键获取对应数据 -->
     <select id="selectPoById" parameterType="Long" resultMap="baseResultMap">
         SELECT <include refid="baseColumnList"/>
@@ -115,6 +119,9 @@
         WHERE t.row_valid = 1
         <if test="id != null">
             AND t.id = #{id}
+        </if>
+        <if test="platformCode != null and platformCode != ''">
+            AND t.platform_code = #{platformCode}
         </if>
         <if test="seriesCode != null and seriesCode != ''">
             AND t.series_code = #{seriesCode}
@@ -161,7 +168,28 @@
         FROM tb_veh_wheel t
         WHERE t.row_valid = 1
         <!-- 添加自定义条件 -->
-        ORDER BY t.id DESC
+        <if test="platformCode != null and platformCode != ''">
+            AND t.platform_code = #{platformCode}
+        </if>
+        <if test="seriesCode != null and seriesCode != ''">
+            AND t.series_code = #{seriesCode}
+        </if>
+        <if test="code != null and code != ''">
+            AND t.code = #{code}
+        </if>
+        <if test="name != null and name != ''">
+            AND t.name LIKE #{name}
+        </if>
+        ORDER BY t.sort ASC, t.id DESC
+    </select>
+
+    <!-- 通过code查询轮胎轮毂信息 -->
+    <select id="selectPoByCode" parameterType="java.util.Map" resultMap="baseResultMap">
+        SELECT <include refid="baseColumnList"/>
+        FROM tb_veh_wheel t
+        WHERE t.row_valid = 1
+        AND t.code = #{code}
+        LIMIT 1
     </select>
 
     <!-- 根据Map对象统计记录数 -->

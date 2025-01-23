@@ -123,7 +123,7 @@ public class ExteriorAppService {
      * @param ids 车身颜色ID数组
      * @return 结果
      */
-    public int deleteModelByIds(Long[] ids) {
+    public int deleteExteriorByIds(Long[] ids) {
         return vehExteriorDao.batchPhysicalDeletePo(ids);
     }
 
