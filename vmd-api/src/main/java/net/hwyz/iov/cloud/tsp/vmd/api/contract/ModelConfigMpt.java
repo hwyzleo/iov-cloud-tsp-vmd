@@ -83,6 +83,11 @@ public class ModelConfigMpt extends BaseRequest {
     private String adasCode;
 
     /**
+     * 座椅代码
+     */
+    private String seatCode;
+
+    /**
      * 是否启用
      */
     private Boolean enable;

@@ -174,6 +174,7 @@ CREATE TABLE `db_vmd`.`tb_veh_model_config`
     `wheel_code`       VARCHAR(50)           DEFAULT NULL COMMENT '车轮代码',
     `spare_tire_code`  VARCHAR(50)           DEFAULT NULL COMMENT '备胎代码',
     `adas_code`        VARCHAR(50)           DEFAULT NULL COMMENT '智驾代码',
+    `seat_code`        VARCHAR(50)           DEFAULT NULL COMMENT '座椅代码',
     `enable`           TINYINT               DEFAULT 1 COMMENT '是否启用',
     `sort`             INT                   DEFAULT 99 COMMENT '排序',
     `description`      VARCHAR(255)          DEFAULT NULL COMMENT '备注',

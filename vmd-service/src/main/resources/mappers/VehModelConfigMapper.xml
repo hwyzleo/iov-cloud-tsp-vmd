@@ -24,24 +24,25 @@
         <result column="wheel_code" property="wheelCode" />
         <result column="spare_tire_code" property="spareTireCode" />
         <result column="adas_code" property="adasCode" />
+        <result column="seat_code" property="seatCode" />
         <result column="enable" property="enable" />
         <result column="sort" property="sort" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
-        id, platform_code, series_code, model_code, basic_model_code, code, name, name_en, exterior_code, interior_code, wheel_code, spare_tire_code, adas_code, enable, sort,
+        id, platform_code, series_code, model_code, basic_model_code, code, name, name_en, exterior_code, interior_code, wheel_code, spare_tire_code, adas_code, seat_code, enable, sort,
         description, create_time, create_by, modify_time, modify_by, row_version, row_valid
     </sql>
 
     <!-- 插入 -->
     <insert id="insertPo" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_veh_model_config (
-            id, platform_code, series_code, model_code, basic_model_code, code, name, name_en, exterior_code, interior_code, wheel_code, spare_tire_code, adas_code, enable, sort,
+            id, platform_code, series_code, model_code, basic_model_code, code, name, name_en, exterior_code, interior_code, wheel_code, spare_tire_code, adas_code, seat_code, enable, sort,
             description, create_time, create_by, modify_time, modify_by, row_version, row_valid
         )
         VALUES (
-            #{id}, #{platformCode}, #{seriesCode}, #{modelCode}, #{basicModelCode}, #{code}, #{name}, #{nameEn}, #{exteriorCode}, #{interiorCode}, #{wheelCode}, #{spareTireCode}, #{adasCode}, #{enable}, #{sort},
+            #{id}, #{platformCode}, #{seriesCode}, #{modelCode}, #{basicModelCode}, #{code}, #{name}, #{nameEn}, #{exteriorCode}, #{interiorCode}, #{wheelCode}, #{spareTireCode}, #{adasCode}, #{seatCode}, #{enable}, #{sort},
             #{description}, now(), #{createBy}, now(), #{modifyBy}, 1, 1
         )
     </insert>
@@ -49,13 +50,13 @@
     <!-- 批量插入 -->
     <insert id="batchInsertPo" useGeneratedKeys="true" keyProperty="id" parameterType="java.util.List">
         INSERT INTO tb_veh_model_config (
-            id, platform_code, series_code, model_code, basic_model_code, code, name, name_en, exterior_code, interior_code, wheel_code, spare_tire_code, adas_code, enable, sort,
+            id, platform_code, series_code, model_code, basic_model_code, code, name, name_en, exterior_code, interior_code, wheel_code, spare_tire_code, adas_code, seat_code, enable, sort,
             description, create_time, create_by, modify_time, modify_by, row_version, row_valid
         )
         VALUES
         <foreach collection="list" item="item" index="index" separator=",">
         (
-            #{item.id}, #{item.platformCode}, #{item.seriesCode}, #{item.modelCode}, #{item.basicModelCode}, #{item.code}, #{item.name}, #{item.nameEn}, #{item.exteriorCode}, #{item.interiorCode}, #{item.wheelCode}, #{item.spareTireCode}, #{item.adasCode}, #{item.enable}, #{item.sort},
+            #{item.id}, #{item.platformCode}, #{item.seriesCode}, #{item.modelCode}, #{item.basicModelCode}, #{item.code}, #{item.name}, #{item.nameEn}, #{item.exteriorCode}, #{item.interiorCode}, #{item.wheelCode}, #{item.spareTireCode}, #{item.adasCode}, #{item.seatCode}, #{item.enable}, #{item.sort},
             #{item.description}, now(), #{item.createBy}, now(), #{item.modifyBy}, 1, 1
         )
         </foreach>
@@ -84,6 +85,9 @@
         </if>
         <if test="adasCode != null and adasCode != ''">
             t.adas_code = #{adasCode},
+        </if>
+        <if test="seatCode != null and seatCode != ''">
+            t.seat_code = #{seatCode},
         </if>
         <if test="enable != null">
             t.enable = #{enable},
@@ -177,6 +181,9 @@
         </if>
         <if test="adasCode != null and adasCode != ''">
             AND t.adas_code = #{adasCode}
+        </if>
+        <if test="seatCode != null and seatCode != ''">
+            AND t.seat_code = #{seatCode}
         </if>
         <if test="enable != null">
             AND t.enable = #{enable}

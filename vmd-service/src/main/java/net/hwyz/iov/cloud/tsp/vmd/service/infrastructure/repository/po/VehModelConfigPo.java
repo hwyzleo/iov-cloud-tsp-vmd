@@ -108,6 +108,12 @@ public class VehModelConfigPo extends BasePo {
     private String adasCode;
 
     /**
+     * 座椅代码
+     */
+    @TableField("seat_code")
+    private String seatCode;
+
+    /**
      * 是否启用
      */
     @TableField("enable")
