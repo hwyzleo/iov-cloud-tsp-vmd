@@ -29,10 +29,11 @@ public class VehicleModelConfigAppService {
      * @param wheelCode     车轮编码
      * @param spareTireCode 备胎编码
      * @param adasCode      智驾编码
+     * @param seatCode      座椅编码
      * @return 车型配置编码
      */
     public String getModelConfigCodeByType(String modelCode, String exteriorCode, String interiorCode, String wheelCode,
-                                           String spareTireCode, String adasCode) {
+                                           String spareTireCode, String adasCode, String seatCode) {
         List<VehModelConfigPo> vehModelConfigPoList = vehModelConfigDao.selectPoByExample(VehModelConfigPo.builder()
                 .modelCode(modelCode)
                 .exteriorCode(exteriorCode)
@@ -40,6 +41,7 @@ public class VehicleModelConfigAppService {
                 .wheelCode(wheelCode)
                 .spareTireCode(spareTireCode)
                 .adasCode(adasCode)
+                .seatCode(seatCode)
                 .build());
         if (vehModelConfigPoList.isEmpty()) {
             return null;

@@ -23,11 +23,13 @@ public interface ExVehicleModelConfigService {
      * @param wheelCode     车轮代码
      * @param spareTireCode 备胎代码
      * @param adasCode      智驾代码
+     * @param seatCode      座椅代码
      * @return 车型配置代码
      */
     @GetMapping("/modelConfigCode")
     String getVehicleModeConfigCode(@RequestParam String modelCode, @RequestParam String exteriorCode,
                                     @RequestParam String interiorCode, @RequestParam String wheelCode,
-                                    @RequestParam String spareTireCode, @RequestParam String adasCode);
+                                    @RequestParam String spareTireCode, @RequestParam String adasCode,
+                                    @RequestParam String seatCode);
 
 }
