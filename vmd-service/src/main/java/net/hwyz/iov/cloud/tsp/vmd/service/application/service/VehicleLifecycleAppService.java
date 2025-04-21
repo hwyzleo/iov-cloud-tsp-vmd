@@ -31,6 +31,18 @@ public class VehicleLifecycleAppService {
     private final VehPresetOwnerDao vehPresetOwnerDao;
 
     /**
+     * 生产车辆
+     *
+     * @param vin 车架号
+     */
+    public void produce(String vin) {
+        logger.info("车辆[{}]生产", vin);
+        VehicleDo vehicleDo = vehicleRepository.getByVin(vin);
+        vehicleDo.produce();
+        vehicleRepository.save(vehicleDo);
+    }
+
+    /**
      * 绑定订单
      *
      * @param vin      车架号

@@ -58,15 +58,25 @@ public class VehicleDo extends BaseDo<String> implements DomainObj<VehicleDo> {
     }
 
     /**
+     * 生产车辆
+     */
+    public void produce() {
+        VehicleLifecycleNodeDo node = newLifecycleNode(VehicleLifecycleNode.PRODUCE);
+        allNodeList.add(node);
+        nodeTimeMap.put(VehicleLifecycleNode.PRODUCE, node.getReachTime());
+        stateChange();
+    }
+
+    /**
      * 绑定订单
      *
      * @param orderNum 订单号
      */
     public void bindOrder(String orderNum) {
         this.orderNum = orderNum;
-        VehicleLifecycleNodeDo node = newLifecycleNode(VehicleLifecycleNode.BIND_ORDER);
+        VehicleLifecycleNodeDo node = newLifecycleNode(VehicleLifecycleNode.ORDER_BIND);
         allNodeList.add(node);
-        nodeTimeMap.put(VehicleLifecycleNode.BIND_ORDER, node.getReachTime());
+        nodeTimeMap.put(VehicleLifecycleNode.ORDER_BIND, node.getReachTime());
         stateChange();
     }
 
