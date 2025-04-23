@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.hwyz.iov.cloud.framework.common.util.DateUtil;
 import net.hwyz.iov.cloud.framework.common.util.ParamHelper;
 import net.hwyz.iov.cloud.framework.common.util.StrUtil;
+import net.hwyz.iov.cloud.tsp.vmd.service.application.event.publish.VehiclePublish;
 import net.hwyz.iov.cloud.tsp.vmd.service.domain.contract.enums.VehicleLifecycleNode;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.MesVehicleDataDao;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehBasicInfoDao;
@@ -35,10 +36,10 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class VehicleAppService {
 
+    private final VehiclePublish vehiclePublish;
     private final VehBasicInfoDao vehBasicInfoDao;
     private final VehLifecycleDao vehLifecycleDao;
     private final MesVehicleDataDao mesVehicleDataDao;
-    private final VehicleLifecycleAppService vehicleLifecycleAppService;
 
     /**
      * 查询车辆信息
@@ -51,8 +52,7 @@ public class VehicleAppService {
      * @param isOrder         是否有订单
      * @return 车辆平台列表
      */
-    public List<VehBasicInfoPo> search(String vin, String modelConfigCode, Date beginTime, Date endTime, Boolean isEol,
-                                       Boolean isOrder) {
+    public List<VehBasicInfoPo> search(String vin, String modelConfigCode, Date beginTime, Date endTime, Boolean isEol, Boolean isOrder) {
         Map<String, Object> map = new HashMap<>();
         map.put("vin", ParamHelper.fuzzyQueryParam(vin));
         map.put("modelConfigCode", modelConfigCode);
@@ -207,14 +207,20 @@ public class VehicleAppService {
         }
         JSONObject dataJson = JSONUtil.parseObj(dataStr);
         mesVehicleDataPo.setHandle(true);
-        switch (type.toUpperCase()) {
-            case "PRODUCE" -> parseMesVehicleProduceData(batchNum, version, dataJson);
-            case "EOL" -> parseMesVehicleEolData(batchNum, version, dataJson);
-            default -> {
-                logger.warn("MES车辆数据批次号[{}]类型[{}]暂未处理", batchNum, mesVehicleDataPo.getType());
-                mesVehicleDataPo.setHandle(false);
-                mesVehicleDataPo.setDescription("未知类型：" + mesVehicleDataPo.getType());
+        try {
+            switch (type.toUpperCase()) {
+                case "PRODUCE" -> parseMesVehicleProduceData(batchNum, version, dataJson);
+                case "EOL" -> parseMesVehicleEolData(batchNum, version, dataJson);
+                default -> {
+                    logger.warn("MES车辆数据批次号[{}]类型[{}]暂未处理", batchNum, mesVehicleDataPo.getType());
+                    mesVehicleDataPo.setHandle(false);
+                    mesVehicleDataPo.setDescription("未知类型：" + mesVehicleDataPo.getType());
+                }
             }
+        } catch (Exception e) {
+            logger.error("MES车辆数据批次号[{}]处理失败", batchNum, e);
+            mesVehicleDataPo.setHandle(false);
+            mesVehicleDataPo.setDescription("MES车辆数据批次号[" + batchNum + "]处理失败:" + e.getMessage());
         }
         mesVehicleDataDao.updatePo(mesVehicleDataPo);
     }
@@ -248,8 +254,7 @@ public class VehicleAppService {
                 if (StrUtil.isBlank(vehBasicInfoPo.getManufacturerCode())) {
                     vehBasicInfoPo.setManufacturerCode(manufacturer.trim().toUpperCase());
                 } else if (!manufacturer.trim().equalsIgnoreCase(vehBasicInfoPo.getManufacturerCode())) {
-                    logger.warn("MES车辆数据批次号[{}]车辆[{}]工厂数据[{}]与原数据[{}]不一致", batchNum, vin, manufacturer.trim(),
-                            vehBasicInfoPo.getManufacturerCode());
+                    logger.warn("MES车辆数据批次号[{}]车辆[{}]工厂数据[{}]与原数据[{}]不一致", batchNum, vin, manufacturer.trim(), vehBasicInfoPo.getManufacturerCode());
                 }
             } else {
                 logger.warn("MES车辆数据批次号[{}]车辆[{}]工厂为空", batchNum, vin);
@@ -259,8 +264,7 @@ public class VehicleAppService {
                 if (StrUtil.isBlank(vehBasicInfoPo.getBrandCode())) {
                     vehBasicInfoPo.setBrandCode(brand.trim().toUpperCase());
                 } else if (!brand.trim().equalsIgnoreCase(vehBasicInfoPo.getBrandCode())) {
-                    logger.warn("MES车辆数据批次号[{}]车辆[{}]品牌数据[{}]与原数据[{}]不一致", batchNum, vin, brand.trim(),
-                            vehBasicInfoPo.getBrandCode());
+                    logger.warn("MES车辆数据批次号[{}]车辆[{}]品牌数据[{}]与原数据[{}]不一致", batchNum, vin, brand.trim(), vehBasicInfoPo.getBrandCode());
                 }
             } else {
                 logger.warn("MES车辆数据批次号[{}]车辆[{}]品牌为空", batchNum, vin);
@@ -270,8 +274,7 @@ public class VehicleAppService {
                 if (StrUtil.isBlank(vehBasicInfoPo.getPlatformCode())) {
                     vehBasicInfoPo.setPlatformCode(platform.trim().toUpperCase());
                 } else if (!platform.trim().equalsIgnoreCase(vehBasicInfoPo.getPlatformCode())) {
-                    logger.warn("MES车辆数据批次号[{}]车辆[{}]平台数据[{}]与原数据[{}]不一致", batchNum, vin, platform.trim(),
-                            vehBasicInfoPo.getPlatformCode());
+                    logger.warn("MES车辆数据批次号[{}]车辆[{}]平台数据[{}]与原数据[{}]不一致", batchNum, vin, platform.trim(), vehBasicInfoPo.getPlatformCode());
                 }
             } else {
                 logger.warn("MES车辆数据批次号[{}]车辆[{}]平台为空", batchNum, vin);
@@ -281,8 +284,7 @@ public class VehicleAppService {
                 if (StrUtil.isBlank(vehBasicInfoPo.getSeriesCode())) {
                     vehBasicInfoPo.setSeriesCode(series.trim().toUpperCase());
                 } else if (!series.trim().equalsIgnoreCase(vehBasicInfoPo.getSeriesCode())) {
-                    logger.warn("MES车辆数据批次号[{}]车辆[{}]车系数据[{}]与原数据[{}]不一致", batchNum, vin, series.trim(),
-                            vehBasicInfoPo.getSeriesCode());
+                    logger.warn("MES车辆数据批次号[{}]车辆[{}]车系数据[{}]与原数据[{}]不一致", batchNum, vin, series.trim(), vehBasicInfoPo.getSeriesCode());
                 }
             } else {
                 logger.warn("MES车辆数据批次号[{}]车辆[{}]车系为空", batchNum, vin);
@@ -292,8 +294,7 @@ public class VehicleAppService {
                 if (StrUtil.isBlank(vehBasicInfoPo.getModelCode())) {
                     vehBasicInfoPo.setModelCode(model.trim().toUpperCase());
                 } else if (!model.trim().equalsIgnoreCase(vehBasicInfoPo.getModelCode())) {
-                    logger.warn("MES车辆数据批次号[{}]车辆[{}]车型数据[{}]与原数据[{}]不一致", batchNum, vin, model.trim(),
-                            vehBasicInfoPo.getModelCode());
+                    logger.warn("MES车辆数据批次号[{}]车辆[{}]车型数据[{}]与原数据[{}]不一致", batchNum, vin, model.trim(), vehBasicInfoPo.getModelCode());
                 }
             } else {
                 logger.warn("MES车辆数据批次号[{}]车辆[{}]车型为空", batchNum, vin);
@@ -303,8 +304,7 @@ public class VehicleAppService {
                 if (StrUtil.isBlank(vehBasicInfoPo.getBasicModelCode())) {
                     vehBasicInfoPo.setBasicModelCode(basicModel.trim().toUpperCase());
                 } else if (!basicModel.trim().equalsIgnoreCase(vehBasicInfoPo.getBasicModelCode())) {
-                    logger.warn("MES车辆数据批次号[{}]车辆[{}]基础车型数据[{}]与原数据[{}]不一致", batchNum, vin, basicModel.trim(),
-                            vehBasicInfoPo.getBasicModelCode());
+                    logger.warn("MES车辆数据批次号[{}]车辆[{}]基础车型数据[{}]与原数据[{}]不一致", batchNum, vin, basicModel.trim(), vehBasicInfoPo.getBasicModelCode());
                 }
             } else {
                 logger.warn("MES车辆数据批次号[{}]车辆[{}]基础车型为空", batchNum, vin);
@@ -314,8 +314,7 @@ public class VehicleAppService {
                 if (StrUtil.isBlank(vehBasicInfoPo.getModelConfigCode())) {
                     vehBasicInfoPo.setModelConfigCode(modelConfig.trim().toUpperCase());
                 } else if (!modelConfig.trim().equalsIgnoreCase(vehBasicInfoPo.getModelConfigCode())) {
-                    logger.warn("MES车辆数据批次号[{}]车辆[{}]车型配置数据[{}]与原数据[{}]不一致", batchNum, vin, modelConfig.trim(),
-                            vehBasicInfoPo.getModelConfigCode());
+                    logger.warn("MES车辆数据批次号[{}]车辆[{}]车型配置数据[{}]与原数据[{}]不一致", batchNum, vin, modelConfig.trim(), vehBasicInfoPo.getModelConfigCode());
                 }
             } else {
                 logger.warn("MES车辆数据批次号[{}]车辆[{}]车型配置为空", batchNum, vin);
@@ -325,8 +324,8 @@ public class VehicleAppService {
             } else {
                 vehBasicInfoDao.updatePo(vehBasicInfoPo);
             }
-            // 同时产生生命周期节点
-            vehicleLifecycleAppService.produce(vin);
+            // 发布事件
+            vehiclePublish.produce(vin);
         }
     }
 
@@ -354,8 +353,7 @@ public class VehicleAppService {
             if (StrUtil.isBlank(vehBasicInfoPo.getManufacturerCode())) {
                 vehBasicInfoPo.setManufacturerCode(manufacturer.trim().toUpperCase());
             } else if (!manufacturer.trim().equalsIgnoreCase(vehBasicInfoPo.getManufacturerCode())) {
-                logger.warn("MES车辆数据批次号[{}]工厂数据[{}]与原数据[{}]不一致", batchNum, manufacturer.trim(),
-                        vehBasicInfoPo.getManufacturerCode());
+                logger.warn("MES车辆数据批次号[{}]工厂数据[{}]与原数据[{}]不一致", batchNum, manufacturer.trim(), vehBasicInfoPo.getManufacturerCode());
             }
         } else {
             logger.warn("MES车辆数据批次号[{}]工厂为空", batchNum);
@@ -365,8 +363,7 @@ public class VehicleAppService {
             if (StrUtil.isBlank(vehBasicInfoPo.getBrandCode())) {
                 vehBasicInfoPo.setBrandCode(brand.trim().toUpperCase());
             } else if (!brand.trim().equalsIgnoreCase(vehBasicInfoPo.getBrandCode())) {
-                logger.warn("MES车辆数据批次号[{}]品牌数据[{}]与原数据[{}]不一致", batchNum, brand.trim(),
-                        vehBasicInfoPo.getBrandCode());
+                logger.warn("MES车辆数据批次号[{}]品牌数据[{}]与原数据[{}]不一致", batchNum, brand.trim(), vehBasicInfoPo.getBrandCode());
             }
         } else {
             logger.warn("MES车辆数据批次号[{}]品牌为空", batchNum);
@@ -376,8 +373,7 @@ public class VehicleAppService {
             if (StrUtil.isBlank(vehBasicInfoPo.getPlatformCode())) {
                 vehBasicInfoPo.setPlatformCode(platform.trim().toUpperCase());
             } else if (!platform.trim().equalsIgnoreCase(vehBasicInfoPo.getPlatformCode())) {
-                logger.warn("MES车辆数据批次号[{}]平台数据[{}]与原数据[{}]不一致", batchNum, platform.trim(),
-                        vehBasicInfoPo.getPlatformCode());
+                logger.warn("MES车辆数据批次号[{}]平台数据[{}]与原数据[{}]不一致", batchNum, platform.trim(), vehBasicInfoPo.getPlatformCode());
             }
         } else {
             logger.warn("MES车辆数据批次号[{}]平台为空", batchNum);
@@ -387,8 +383,7 @@ public class VehicleAppService {
             if (StrUtil.isBlank(vehBasicInfoPo.getSeriesCode())) {
                 vehBasicInfoPo.setSeriesCode(series.trim().toUpperCase());
             } else if (!series.trim().equalsIgnoreCase(vehBasicInfoPo.getSeriesCode())) {
-                logger.warn("MES车辆数据批次号[{}]车系数据[{}]与原数据[{}]不一致", batchNum, series.trim(),
-                        vehBasicInfoPo.getSeriesCode());
+                logger.warn("MES车辆数据批次号[{}]车系数据[{}]与原数据[{}]不一致", batchNum, series.trim(), vehBasicInfoPo.getSeriesCode());
             }
         } else {
             logger.warn("MES车辆数据批次号[{}]车系为空", batchNum);
@@ -398,8 +393,7 @@ public class VehicleAppService {
             if (StrUtil.isBlank(vehBasicInfoPo.getModelCode())) {
                 vehBasicInfoPo.setModelCode(model.trim().toUpperCase());
             } else if (!model.trim().equalsIgnoreCase(vehBasicInfoPo.getModelCode())) {
-                logger.warn("MES车辆数据批次号[{}]车型数据[{}]与原数据[{}]不一致", batchNum, model.trim(),
-                        vehBasicInfoPo.getModelCode());
+                logger.warn("MES车辆数据批次号[{}]车型数据[{}]与原数据[{}]不一致", batchNum, model.trim(), vehBasicInfoPo.getModelCode());
             }
         } else {
             logger.warn("MES车辆数据批次号[{}]车型为空", batchNum);
@@ -409,8 +403,7 @@ public class VehicleAppService {
             if (StrUtil.isBlank(vehBasicInfoPo.getBasicModelCode())) {
                 vehBasicInfoPo.setBasicModelCode(basicModel.trim().toUpperCase());
             } else if (!basicModel.trim().equalsIgnoreCase(vehBasicInfoPo.getBasicModelCode())) {
-                logger.warn("MES车辆数据批次号[{}]基础车型数据[{}]与原数据[{}]不一致", batchNum, basicModel.trim(),
-                        vehBasicInfoPo.getBasicModelCode());
+                logger.warn("MES车辆数据批次号[{}]基础车型数据[{}]与原数据[{}]不一致", batchNum, basicModel.trim(), vehBasicInfoPo.getBasicModelCode());
             }
         } else {
             logger.warn("MES车辆数据批次号[{}]基础车型为空", batchNum);
@@ -420,8 +413,7 @@ public class VehicleAppService {
             if (StrUtil.isBlank(vehBasicInfoPo.getModelConfigCode())) {
                 vehBasicInfoPo.setModelConfigCode(modelConfig.trim().toUpperCase());
             } else if (!modelConfig.trim().equalsIgnoreCase(vehBasicInfoPo.getModelConfigCode())) {
-                logger.warn("MES车辆数据批次号[{}]车型配置数据[{}]与原数据[{}]不一致", batchNum, modelConfig.trim(),
-                        vehBasicInfoPo.getModelConfigCode());
+                logger.warn("MES车辆数据批次号[{}]车型配置数据[{}]与原数据[{}]不一致", batchNum, modelConfig.trim(), vehBasicInfoPo.getModelConfigCode());
             }
         } else {
             logger.warn("MES车辆数据批次号[{}]车型配置为空", batchNum);

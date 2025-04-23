@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.hwyz.iov.cloud.tsp.vmd.api.contract.enums.QrcodeType;
 import net.hwyz.iov.cloud.tsp.vmd.service.application.event.event.QrcodeConfirmEvent;
 import net.hwyz.iov.cloud.tsp.vmd.service.application.event.event.QrcodeValidateEvent;
+import net.hwyz.iov.cloud.tsp.vmd.service.application.event.event.VehicleProduceEvent;
 import net.hwyz.iov.cloud.tsp.vmd.service.application.service.VehicleLifecycleAppService;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -43,6 +44,16 @@ public class VehicleLifecycleSubscribe {
         if (event.getType() == QrcodeType.VEHICLE_ACTIVE) {
             vehicleLifecycleAppService.vehicleActive(event.getVin(), event.getAccountId());
         }
+    }
+
+    /**
+     * 订阅车辆生产事件
+     *
+     * @param event 车辆生产事件
+     */
+    @EventListener
+    public void onQrcodeConfirmEvent(VehicleProduceEvent event) {
+        vehicleLifecycleAppService.produce(event.getVin());
     }
 
 }

@@ -14,7 +14,7 @@ public enum VehicleLifecycleNode {
 
     /** 车辆生产 **/
     PRODUCE,
-    /** 生成发动机防盗密钥 **/
+    /** 车辆生成密钥及安全常量 **/
     IMMO_SK,
     /** TBox申请证书 **/
     TBOX_CERT,
