@@ -12,11 +12,11 @@ import net.hwyz.iov.cloud.framework.common.util.ParamHelper;
 import net.hwyz.iov.cloud.framework.common.util.StrUtil;
 import net.hwyz.iov.cloud.tsp.vmd.service.application.event.publish.VehiclePublish;
 import net.hwyz.iov.cloud.tsp.vmd.service.domain.contract.enums.VehicleLifecycleNode;
-import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.MesVehicleDataDao;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehBasicInfoDao;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehImportDataDao;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehLifecycleDao;
-import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.MesVehicleDataPo;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehBasicInfoPo;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehImportDataPo;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehLifecyclePo;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -39,7 +39,7 @@ public class VehicleAppService {
     private final VehiclePublish vehiclePublish;
     private final VehBasicInfoDao vehBasicInfoDao;
     private final VehLifecycleDao vehLifecycleDao;
-    private final MesVehicleDataDao mesVehicleDataDao;
+    private final VehImportDataDao vehImportDataDao;
 
     /**
      * 查询车辆信息
@@ -175,64 +175,64 @@ public class VehicleAppService {
     }
 
     /**
-     * 解析MES车辆数据
+     * 解析车辆导入数据
      *
      * @param batchNum 批次号
      */
     @Async
-    public void parseMesVehicleData(String batchNum) {
-        MesVehicleDataPo mesVehicleDataPo = mesVehicleDataDao.selectPoByBatchNum(batchNum);
-        if (ObjUtil.isNull(mesVehicleDataPo)) {
-            logger.warn("MES车辆数据批次号[{}]不存在", batchNum);
+    public void parseVehicleImportData(String batchNum) {
+        VehImportDataPo vehImportDataPo = vehImportDataDao.selectPoByBatchNum(batchNum);
+        if (ObjUtil.isNull(vehImportDataPo)) {
+            logger.warn("车辆导入数据批次号[{}]不存在", batchNum);
             return;
         }
-        if (mesVehicleDataPo.getHandle()) {
-            logger.warn("MES车辆数据批次号[{}]已处理", batchNum);
+        if (vehImportDataPo.getHandle()) {
+            logger.warn("车辆导入数据批次号[{}]已处理", batchNum);
             return;
         }
-        String dataStr = mesVehicleDataPo.getData();
+        String dataStr = vehImportDataPo.getData();
         if (StrUtil.isBlank(dataStr)) {
-            logger.warn("MES车辆数据批次号[{}]数据为空", batchNum);
+            logger.warn("车辆导入数据批次号[{}]数据为空", batchNum);
             return;
         }
-        String type = mesVehicleDataPo.getType();
+        String type = vehImportDataPo.getType();
         if (StrUtil.isBlank(type)) {
-            logger.warn("MES车辆数据批次号[{}]数据类型为空", batchNum);
+            logger.warn("车辆导入数据批次号[{}]数据类型为空", batchNum);
             return;
         }
-        String version = mesVehicleDataPo.getVersion();
+        String version = vehImportDataPo.getVersion();
         if (StrUtil.isBlank(version)) {
-            logger.warn("MES车辆数据批次号[{}]版本为空", batchNum);
+            logger.warn("车辆导入数据批次号[{}]版本为空", batchNum);
             return;
         }
         JSONObject dataJson = JSONUtil.parseObj(dataStr);
-        mesVehicleDataPo.setHandle(true);
+        vehImportDataPo.setHandle(true);
         try {
             switch (type.toUpperCase()) {
-                case "PRODUCE" -> parseMesVehicleProduceData(batchNum, version, dataJson);
-                case "EOL" -> parseMesVehicleEolData(batchNum, version, dataJson);
+                case "PRODUCE" -> parseVehicleProduceImportData(batchNum, version, dataJson);
+                case "EOL" -> parseVehicleEolImportData(batchNum, version, dataJson);
                 default -> {
-                    logger.warn("MES车辆数据批次号[{}]类型[{}]暂未处理", batchNum, mesVehicleDataPo.getType());
-                    mesVehicleDataPo.setHandle(false);
-                    mesVehicleDataPo.setDescription("未知类型：" + mesVehicleDataPo.getType());
+                    logger.warn("车辆导入数据批次号[{}]类型[{}]暂未处理", batchNum, vehImportDataPo.getType());
+                    vehImportDataPo.setHandle(false);
+                    vehImportDataPo.setDescription("未知类型：" + vehImportDataPo.getType());
                 }
             }
         } catch (Exception e) {
-            logger.error("MES车辆数据批次号[{}]处理失败", batchNum, e);
-            mesVehicleDataPo.setHandle(false);
-            mesVehicleDataPo.setDescription("MES车辆数据批次号[" + batchNum + "]处理失败:" + e.getMessage());
+            logger.error("车辆导入数据批次号[{}]处理失败", batchNum, e);
+            vehImportDataPo.setHandle(false);
+            vehImportDataPo.setDescription("车辆导入数据批次号[" + batchNum + "]处理失败:" + e.getMessage());
         }
-        mesVehicleDataDao.updatePo(mesVehicleDataPo);
+        vehImportDataDao.updatePo(vehImportDataPo);
     }
 
     /**
-     * 解析MES车辆生产数据
+     * 解析车辆生产导入数据
      *
      * @param batchNum 批次号
      * @param version  版本
-     * @param dataJson MES车辆数据
+     * @param dataJson 车辆导入数据
      */
-    private void parseMesVehicleProduceData(String batchNum, String version, JSONObject dataJson) {
+    private void parseVehicleProduceImportData(String batchNum, String version, JSONObject dataJson) {
         // 生产数据现在没有多版本，暂时不用关心
         JSONObject request = dataJson.getJSONObject("REQUEST");
         JSONObject data = request.getJSONObject("DATA");
@@ -241,7 +241,7 @@ public class VehicleAppService {
             JSONObject itemJson = JSONUtil.parseObj(item);
             String vin = itemJson.getStr("VIN");
             if (StrUtil.isBlank(vin)) {
-                logger.warn("MES车辆数据批次号[{}]车架号为空", batchNum);
+                logger.warn("车辆导入数据批次号[{}]车架号为空", batchNum);
                 continue;
             }
             VehBasicInfoPo vehBasicInfoPo = getVehicleByVin(vin);
@@ -254,70 +254,70 @@ public class VehicleAppService {
                 if (StrUtil.isBlank(vehBasicInfoPo.getManufacturerCode())) {
                     vehBasicInfoPo.setManufacturerCode(manufacturer.trim().toUpperCase());
                 } else if (!manufacturer.trim().equalsIgnoreCase(vehBasicInfoPo.getManufacturerCode())) {
-                    logger.warn("MES车辆数据批次号[{}]车辆[{}]工厂数据[{}]与原数据[{}]不一致", batchNum, vin, manufacturer.trim(), vehBasicInfoPo.getManufacturerCode());
+                    logger.warn("车辆导入数据批次号[{}]车辆[{}]工厂数据[{}]与原数据[{}]不一致", batchNum, vin, manufacturer.trim(), vehBasicInfoPo.getManufacturerCode());
                 }
             } else {
-                logger.warn("MES车辆数据批次号[{}]车辆[{}]工厂为空", batchNum, vin);
+                logger.warn("车辆导入数据批次号[{}]车辆[{}]工厂为空", batchNum, vin);
             }
             String brand = itemJson.getStr("BRAND");
             if (StrUtil.isNotBlank(brand)) {
                 if (StrUtil.isBlank(vehBasicInfoPo.getBrandCode())) {
                     vehBasicInfoPo.setBrandCode(brand.trim().toUpperCase());
                 } else if (!brand.trim().equalsIgnoreCase(vehBasicInfoPo.getBrandCode())) {
-                    logger.warn("MES车辆数据批次号[{}]车辆[{}]品牌数据[{}]与原数据[{}]不一致", batchNum, vin, brand.trim(), vehBasicInfoPo.getBrandCode());
+                    logger.warn("车辆导入数据批次号[{}]车辆[{}]品牌数据[{}]与原数据[{}]不一致", batchNum, vin, brand.trim(), vehBasicInfoPo.getBrandCode());
                 }
             } else {
-                logger.warn("MES车辆数据批次号[{}]车辆[{}]品牌为空", batchNum, vin);
+                logger.warn("车辆导入数据批次号[{}]车辆[{}]品牌为空", batchNum, vin);
             }
             String platform = itemJson.getStr("PLATFORM");
             if (StrUtil.isNotBlank(platform)) {
                 if (StrUtil.isBlank(vehBasicInfoPo.getPlatformCode())) {
                     vehBasicInfoPo.setPlatformCode(platform.trim().toUpperCase());
                 } else if (!platform.trim().equalsIgnoreCase(vehBasicInfoPo.getPlatformCode())) {
-                    logger.warn("MES车辆数据批次号[{}]车辆[{}]平台数据[{}]与原数据[{}]不一致", batchNum, vin, platform.trim(), vehBasicInfoPo.getPlatformCode());
+                    logger.warn("车辆导入数据批次号[{}]车辆[{}]平台数据[{}]与原数据[{}]不一致", batchNum, vin, platform.trim(), vehBasicInfoPo.getPlatformCode());
                 }
             } else {
-                logger.warn("MES车辆数据批次号[{}]车辆[{}]平台为空", batchNum, vin);
+                logger.warn("车辆导入数据批次号[{}]车辆[{}]平台为空", batchNum, vin);
             }
             String series = itemJson.getStr("SERIES");
             if (StrUtil.isNotBlank(series)) {
                 if (StrUtil.isBlank(vehBasicInfoPo.getSeriesCode())) {
                     vehBasicInfoPo.setSeriesCode(series.trim().toUpperCase());
                 } else if (!series.trim().equalsIgnoreCase(vehBasicInfoPo.getSeriesCode())) {
-                    logger.warn("MES车辆数据批次号[{}]车辆[{}]车系数据[{}]与原数据[{}]不一致", batchNum, vin, series.trim(), vehBasicInfoPo.getSeriesCode());
+                    logger.warn("车辆导入数据批次号[{}]车辆[{}]车系数据[{}]与原数据[{}]不一致", batchNum, vin, series.trim(), vehBasicInfoPo.getSeriesCode());
                 }
             } else {
-                logger.warn("MES车辆数据批次号[{}]车辆[{}]车系为空", batchNum, vin);
+                logger.warn("车辆导入数据批次号[{}]车辆[{}]车系为空", batchNum, vin);
             }
             String model = itemJson.getStr("MODEL");
             if (StrUtil.isNotBlank(model)) {
                 if (StrUtil.isBlank(vehBasicInfoPo.getModelCode())) {
                     vehBasicInfoPo.setModelCode(model.trim().toUpperCase());
                 } else if (!model.trim().equalsIgnoreCase(vehBasicInfoPo.getModelCode())) {
-                    logger.warn("MES车辆数据批次号[{}]车辆[{}]车型数据[{}]与原数据[{}]不一致", batchNum, vin, model.trim(), vehBasicInfoPo.getModelCode());
+                    logger.warn("车辆导入数据批次号[{}]车辆[{}]车型数据[{}]与原数据[{}]不一致", batchNum, vin, model.trim(), vehBasicInfoPo.getModelCode());
                 }
             } else {
-                logger.warn("MES车辆数据批次号[{}]车辆[{}]车型为空", batchNum, vin);
+                logger.warn("车辆导入数据批次号[{}]车辆[{}]车型为空", batchNum, vin);
             }
             String basicModel = itemJson.getStr("BASIC_MODEL");
             if (StrUtil.isNotBlank(basicModel)) {
                 if (StrUtil.isBlank(vehBasicInfoPo.getBasicModelCode())) {
                     vehBasicInfoPo.setBasicModelCode(basicModel.trim().toUpperCase());
                 } else if (!basicModel.trim().equalsIgnoreCase(vehBasicInfoPo.getBasicModelCode())) {
-                    logger.warn("MES车辆数据批次号[{}]车辆[{}]基础车型数据[{}]与原数据[{}]不一致", batchNum, vin, basicModel.trim(), vehBasicInfoPo.getBasicModelCode());
+                    logger.warn("车辆导入数据批次号[{}]车辆[{}]基础车型数据[{}]与原数据[{}]不一致", batchNum, vin, basicModel.trim(), vehBasicInfoPo.getBasicModelCode());
                 }
             } else {
-                logger.warn("MES车辆数据批次号[{}]车辆[{}]基础车型为空", batchNum, vin);
+                logger.warn("车辆导入数据批次号[{}]车辆[{}]基础车型为空", batchNum, vin);
             }
             String modelConfig = itemJson.getStr("MODEL_CONFIG");
             if (StrUtil.isNotBlank(modelConfig)) {
                 if (StrUtil.isBlank(vehBasicInfoPo.getModelConfigCode())) {
                     vehBasicInfoPo.setModelConfigCode(modelConfig.trim().toUpperCase());
                 } else if (!modelConfig.trim().equalsIgnoreCase(vehBasicInfoPo.getModelConfigCode())) {
-                    logger.warn("MES车辆数据批次号[{}]车辆[{}]车型配置数据[{}]与原数据[{}]不一致", batchNum, vin, modelConfig.trim(), vehBasicInfoPo.getModelConfigCode());
+                    logger.warn("车辆导入数据批次号[{}]车辆[{}]车型配置数据[{}]与原数据[{}]不一致", batchNum, vin, modelConfig.trim(), vehBasicInfoPo.getModelConfigCode());
                 }
             } else {
-                logger.warn("MES车辆数据批次号[{}]车辆[{}]车型配置为空", batchNum, vin);
+                logger.warn("车辆导入数据批次号[{}]车辆[{}]车型配置为空", batchNum, vin);
             }
             if (ObjUtil.isNull(vehBasicInfoPo.getId())) {
                 vehBasicInfoDao.insertPo(vehBasicInfoPo);
@@ -330,17 +330,17 @@ public class VehicleAppService {
     }
 
     /**
-     * 解析MES车辆下线数据
+     * 解析车辆下线导入数据
      *
      * @param batchNum 批次号
      * @param version  版本
-     * @param dataJson MES车辆数据
+     * @param dataJson 车辆导入数据
      */
-    private void parseMesVehicleEolData(String batchNum, String version, JSONObject dataJson) {
+    private void parseVehicleEolImportData(String batchNum, String version, JSONObject dataJson) {
         // 下线数据现在没有多版本，暂时不用关心
         String vin = dataJson.getByPath("$.REQUEST.DATA.ITEM.VIN", String[].class)[0];
         if (StrUtil.isBlank(vin)) {
-            logger.warn("MES车辆数据批次号[{}]车架号为空", batchNum);
+            logger.warn("车辆导入数据批次号[{}]车架号为空", batchNum);
             return;
         }
         VehBasicInfoPo vehBasicInfoPo = getVehicleByVin(vin);
@@ -353,70 +353,70 @@ public class VehicleAppService {
             if (StrUtil.isBlank(vehBasicInfoPo.getManufacturerCode())) {
                 vehBasicInfoPo.setManufacturerCode(manufacturer.trim().toUpperCase());
             } else if (!manufacturer.trim().equalsIgnoreCase(vehBasicInfoPo.getManufacturerCode())) {
-                logger.warn("MES车辆数据批次号[{}]工厂数据[{}]与原数据[{}]不一致", batchNum, manufacturer.trim(), vehBasicInfoPo.getManufacturerCode());
+                logger.warn("车辆导入数据批次号[{}]工厂数据[{}]与原数据[{}]不一致", batchNum, manufacturer.trim(), vehBasicInfoPo.getManufacturerCode());
             }
         } else {
-            logger.warn("MES车辆数据批次号[{}]工厂为空", batchNum);
+            logger.warn("车辆导入数据批次号[{}]工厂为空", batchNum);
         }
         String brand = dataJson.getByPath("$.REQUEST.DATA.ITEM.BRAND", String[].class)[0];
         if (StrUtil.isNotBlank(brand)) {
             if (StrUtil.isBlank(vehBasicInfoPo.getBrandCode())) {
                 vehBasicInfoPo.setBrandCode(brand.trim().toUpperCase());
             } else if (!brand.trim().equalsIgnoreCase(vehBasicInfoPo.getBrandCode())) {
-                logger.warn("MES车辆数据批次号[{}]品牌数据[{}]与原数据[{}]不一致", batchNum, brand.trim(), vehBasicInfoPo.getBrandCode());
+                logger.warn("车辆导入数据批次号[{}]品牌数据[{}]与原数据[{}]不一致", batchNum, brand.trim(), vehBasicInfoPo.getBrandCode());
             }
         } else {
-            logger.warn("MES车辆数据批次号[{}]品牌为空", batchNum);
+            logger.warn("车辆导入数据批次号[{}]品牌为空", batchNum);
         }
         String platform = dataJson.getByPath("$.REQUEST.DATA.ITEM.PLATFORM", String[].class)[0];
         if (StrUtil.isNotBlank(platform)) {
             if (StrUtil.isBlank(vehBasicInfoPo.getPlatformCode())) {
                 vehBasicInfoPo.setPlatformCode(platform.trim().toUpperCase());
             } else if (!platform.trim().equalsIgnoreCase(vehBasicInfoPo.getPlatformCode())) {
-                logger.warn("MES车辆数据批次号[{}]平台数据[{}]与原数据[{}]不一致", batchNum, platform.trim(), vehBasicInfoPo.getPlatformCode());
+                logger.warn("车辆导入数据批次号[{}]平台数据[{}]与原数据[{}]不一致", batchNum, platform.trim(), vehBasicInfoPo.getPlatformCode());
             }
         } else {
-            logger.warn("MES车辆数据批次号[{}]平台为空", batchNum);
+            logger.warn("车辆导入数据批次号[{}]平台为空", batchNum);
         }
         String series = dataJson.getByPath("$.REQUEST.DATA.ITEM.SERIES", String[].class)[0];
         if (StrUtil.isNotBlank(series)) {
             if (StrUtil.isBlank(vehBasicInfoPo.getSeriesCode())) {
                 vehBasicInfoPo.setSeriesCode(series.trim().toUpperCase());
             } else if (!series.trim().equalsIgnoreCase(vehBasicInfoPo.getSeriesCode())) {
-                logger.warn("MES车辆数据批次号[{}]车系数据[{}]与原数据[{}]不一致", batchNum, series.trim(), vehBasicInfoPo.getSeriesCode());
+                logger.warn("车辆导入数据批次号[{}]车系数据[{}]与原数据[{}]不一致", batchNum, series.trim(), vehBasicInfoPo.getSeriesCode());
             }
         } else {
-            logger.warn("MES车辆数据批次号[{}]车系为空", batchNum);
+            logger.warn("车辆导入数据批次号[{}]车系为空", batchNum);
         }
         String model = dataJson.getByPath("$.REQUEST.DATA.ITEM.MODEL", String[].class)[0];
         if (StrUtil.isNotBlank(model)) {
             if (StrUtil.isBlank(vehBasicInfoPo.getModelCode())) {
                 vehBasicInfoPo.setModelCode(model.trim().toUpperCase());
             } else if (!model.trim().equalsIgnoreCase(vehBasicInfoPo.getModelCode())) {
-                logger.warn("MES车辆数据批次号[{}]车型数据[{}]与原数据[{}]不一致", batchNum, model.trim(), vehBasicInfoPo.getModelCode());
+                logger.warn("车辆导入数据批次号[{}]车型数据[{}]与原数据[{}]不一致", batchNum, model.trim(), vehBasicInfoPo.getModelCode());
             }
         } else {
-            logger.warn("MES车辆数据批次号[{}]车型为空", batchNum);
+            logger.warn("车辆导入数据批次号[{}]车型为空", batchNum);
         }
         String basicModel = dataJson.getByPath("$.REQUEST.DATA.ITEM.BASIC_MODEL", String[].class)[0];
         if (StrUtil.isNotBlank(basicModel)) {
             if (StrUtil.isBlank(vehBasicInfoPo.getBasicModelCode())) {
                 vehBasicInfoPo.setBasicModelCode(basicModel.trim().toUpperCase());
             } else if (!basicModel.trim().equalsIgnoreCase(vehBasicInfoPo.getBasicModelCode())) {
-                logger.warn("MES车辆数据批次号[{}]基础车型数据[{}]与原数据[{}]不一致", batchNum, basicModel.trim(), vehBasicInfoPo.getBasicModelCode());
+                logger.warn("车辆导入数据批次号[{}]基础车型数据[{}]与原数据[{}]不一致", batchNum, basicModel.trim(), vehBasicInfoPo.getBasicModelCode());
             }
         } else {
-            logger.warn("MES车辆数据批次号[{}]基础车型为空", batchNum);
+            logger.warn("车辆导入数据批次号[{}]基础车型为空", batchNum);
         }
         String modelConfig = dataJson.getByPath("$.REQUEST.DATA.ITEM.MODEL_CONFIG", String[].class)[0];
         if (StrUtil.isNotBlank(modelConfig)) {
             if (StrUtil.isBlank(vehBasicInfoPo.getModelConfigCode())) {
                 vehBasicInfoPo.setModelConfigCode(modelConfig.trim().toUpperCase());
             } else if (!modelConfig.trim().equalsIgnoreCase(vehBasicInfoPo.getModelConfigCode())) {
-                logger.warn("MES车辆数据批次号[{}]车型配置数据[{}]与原数据[{}]不一致", batchNum, modelConfig.trim(), vehBasicInfoPo.getModelConfigCode());
+                logger.warn("车辆导入数据批次号[{}]车型配置数据[{}]与原数据[{}]不一致", batchNum, modelConfig.trim(), vehBasicInfoPo.getModelConfigCode());
             }
         } else {
-            logger.warn("MES车辆数据批次号[{}]车型配置为空", batchNum);
+            logger.warn("车辆导入数据批次号[{}]车型配置为空", batchNum);
         }
         String eolDateStr = dataJson.getByPath("$.REQUEST.DATA.ITEM.EOL_DATE", String[].class)[0];
         if (StrUtil.isNotBlank(eolDateStr)) {
@@ -431,9 +431,9 @@ public class VehicleAppService {
                 vehLifecyclePo.setSort(99);
                 vehLifecycleDao.insertPo(vehLifecyclePo);
             } else if (eolDate.isBefore(vehBasicInfoPo.getEolTime()) || eolDate.isAfter(vehBasicInfoPo.getEolTime())) {
-                logger.warn("MES车辆数据批次号[{}]下线日期数据[{}]与原数据[{}]不一致", batchNum, eolDateStr, DateUtil.formatDate(vehBasicInfoPo.getEolTime()));
+                logger.warn("车辆导入数据批次号[{}]下线日期数据[{}]与原数据[{}]不一致", batchNum, eolDateStr, DateUtil.formatDate(vehBasicInfoPo.getEolTime()));
             } else {
-                logger.warn("MES车辆数据批次号[{}]下线日期为空", batchNum);
+                logger.warn("车辆导入数据批次号[{}]下线日期为空", batchNum);
             }
         }
         if (ObjUtil.isNull(vehBasicInfoPo.getId())) {

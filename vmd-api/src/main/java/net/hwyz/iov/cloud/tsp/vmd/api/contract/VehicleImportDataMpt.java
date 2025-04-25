@@ -6,7 +6,7 @@ import net.hwyz.iov.cloud.framework.common.web.domain.BaseRequest;
 import java.util.Date;
 
 /**
- * 管理后台工厂车辆数据
+ * 管理后台车辆导入数据
  *
  * @author hwyz_leo
  */
@@ -15,7 +15,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class MesVehicleDataMpt extends BaseRequest {
+public class VehicleImportDataMpt extends BaseRequest {
 
     /**
      * 主键

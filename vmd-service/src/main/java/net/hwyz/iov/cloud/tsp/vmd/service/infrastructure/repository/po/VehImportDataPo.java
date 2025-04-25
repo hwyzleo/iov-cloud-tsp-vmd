@@ -11,19 +11,19 @@ import lombok.experimental.SuperBuilder;
 
 /**
  * <p>
- * MES车辆数据表 数据对象
+ * 车辆导入数据表 数据对象
  * </p>
  *
  * @author hwyz_leo
- * @since 2024-12-12
+ * @since 2025-04-25
  */
 @Getter
 @Setter
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("tb_mes_vehicle_data")
-public class MesVehicleDataPo extends BasePo {
+@TableName("tb_veh_import_data")
+public class VehImportDataPo extends BasePo {
 
     private static final long serialVersionUID = 1L;
 
@@ -52,7 +52,7 @@ public class MesVehicleDataPo extends BasePo {
     private String version;
 
     /**
-     * MES车辆数据
+     * 车辆导入数据
      */
     @TableField("data")
     private String data;

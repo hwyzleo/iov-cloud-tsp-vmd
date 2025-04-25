@@ -316,14 +316,14 @@ CREATE TABLE `db_vmd`.`tb_veh_optional`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='车辆选装表';
 
-DROP TABLE IF EXISTS `db_vmd`.`tb_mes_vehicle_data`;
-CREATE TABLE `db_vmd`.`tb_mes_vehicle_data`
+DROP TABLE IF EXISTS `db_vmd`.`tb_veh_import_data`;
+CREATE TABLE `db_vmd`.`tb_veh_import_data`
 (
     `id`          BIGINT       NOT NULL AUTO_INCREMENT COMMENT '主键',
     `batch_num`   VARCHAR(255) NOT NULL COMMENT '批次号',
     `type`        VARCHAR(100) NOT NULL COMMENT '数据类型',
     `version`     VARCHAR(100) NOT NULL COMMENT '数据版本',
-    `data`        TEXT         NOT NULL COMMENT 'MES车辆数据',
+    `data`        TEXT         NOT NULL COMMENT '车辆导入数据',
     `handle`      TINYINT               DEFAULT 0 COMMENT '是否处理',
     `description` VARCHAR(255)          DEFAULT NULL COMMENT '备注',
     `create_time` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -335,4 +335,4 @@ CREATE TABLE `db_vmd`.`tb_mes_vehicle_data`
     PRIMARY KEY (`id`),
     UNIQUE KEY (`batch_num`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4 COMMENT ='MES车辆数据表';
+  DEFAULT CHARSET = utf8mb4 COMMENT ='车辆导入数据表';
