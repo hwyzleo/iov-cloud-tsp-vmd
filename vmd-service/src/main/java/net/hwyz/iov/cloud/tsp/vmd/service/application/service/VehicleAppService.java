@@ -334,7 +334,7 @@ public class VehicleAppService {
                         }
                     }
                 }
-                tboxPo.setExtra(JSONUtil.toJsonStr(extra));
+                tboxPo.setExtra(JSONUtil.toJsonStr(extraMap));
                 if (ObjUtil.isNull(tboxPo.getId())) {
                     vehiclePartAppService.createPart(tboxPo);
                 } else {
