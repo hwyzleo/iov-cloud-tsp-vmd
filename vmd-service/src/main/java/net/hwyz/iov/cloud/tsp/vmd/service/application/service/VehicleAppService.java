@@ -262,6 +262,7 @@ public class VehicleAppService {
             VehPartPo tboxPo = vehiclePartAppService.getPartBySn(EcuType.TBOX, sn);
             if (ObjUtil.isNull(tboxPo)) {
                 tboxPo = new VehPartPo();
+                tboxPo.setEcu(EcuType.TBOX.name());
                 tboxPo.setSn(sn);
             }
             if (StrUtil.isNotBlank(supplier)) {
