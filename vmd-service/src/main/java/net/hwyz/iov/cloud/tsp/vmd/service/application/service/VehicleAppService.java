@@ -1,6 +1,7 @@
 package net.hwyz.iov.cloud.tsp.vmd.service.application.service;
 
 import cn.hutool.core.date.DateTime;
+import cn.hutool.core.lang.TypeReference;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
@@ -10,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.hwyz.iov.cloud.framework.common.util.DateUtil;
 import net.hwyz.iov.cloud.framework.common.util.ParamHelper;
 import net.hwyz.iov.cloud.framework.common.util.StrUtil;
+import net.hwyz.iov.cloud.tsp.vmd.api.contract.enums.EcuType;
 import net.hwyz.iov.cloud.tsp.vmd.service.application.event.publish.VehiclePublish;
 import net.hwyz.iov.cloud.tsp.vmd.service.domain.contract.enums.VehicleLifecycleNode;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehBasicInfoDao;
@@ -18,6 +20,7 @@ import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehLifec
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehBasicInfoPo;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehImportDataPo;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehLifecyclePo;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehPartPo;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +43,7 @@ public class VehicleAppService {
     private final VehBasicInfoDao vehBasicInfoDao;
     private final VehLifecycleDao vehLifecycleDao;
     private final VehImportDataDao vehImportDataDao;
+    private final VehiclePartAppService vehiclePartAppService;
 
     /**
      * 查询车辆信息
@@ -209,6 +213,7 @@ public class VehicleAppService {
         vehImportDataPo.setHandle(true);
         try {
             switch (type.toUpperCase()) {
+                case "TBOX" -> parseTboxImportData(batchNum, version, dataJson);
                 case "PRODUCE" -> parseVehicleProduceImportData(batchNum, version, dataJson);
                 case "EOL" -> parseVehicleEolImportData(batchNum, version, dataJson);
                 default -> {
@@ -226,11 +231,119 @@ public class VehicleAppService {
     }
 
     /**
+     * 解析Tbox导入数据
+     *
+     * @param batchNum 批次号
+     * @param version  版本
+     * @param dataJson Tbox导入数据
+     */
+    private void parseTboxImportData(String batchNum, String version, JSONObject dataJson) {
+        // Tbox导入数据现在没有多版本，暂时不用关心version
+        JSONObject request = dataJson.getJSONObject("REQUEST");
+        JSONObject header = request.getJSONObject("HEADER");
+        String supplier = header.getStr("ACCOUNT");
+        if (StrUtil.isBlank(supplier)) {
+            logger.warn("TBox导入数据批次号[{}]供应商代码为空", batchNum);
+        }
+        JSONObject data = request.getJSONObject("DATA");
+        JSONArray items = data.getJSONArray("ITEMS");
+        for (Object item : items) {
+            JSONObject itemJson = JSONUtil.parseObj(item);
+            String sn = itemJson.getStr("SN");
+            if (StrUtil.isBlank(sn)) {
+                logger.warn("TBox导入数据批次号[{}]SN为空", batchNum);
+                continue;
+            }
+            VehPartPo tboxPo = vehiclePartAppService.getPartBySn(EcuType.TBOX, sn);
+            if (ObjUtil.isNull(tboxPo)) {
+                tboxPo = new VehPartPo();
+                tboxPo.setSn(sn);
+            }
+            if (StrUtil.isNotBlank(supplier)) {
+                if (StrUtil.isBlank(tboxPo.getSupplierCode())) {
+                    tboxPo.setSupplierCode(supplier.trim().toUpperCase());
+                } else if (!supplier.trim().equalsIgnoreCase(tboxPo.getSupplierCode())) {
+                    logger.warn("TBox导入数据批次号[{}]SN[{}]供应商[{}]与原数据[{}]不一致", batchNum, sn, supplier.trim(), tboxPo.getSupplierCode());
+                }
+            }
+            String no = itemJson.getStr("NO");
+            if (StrUtil.isNotBlank(no)) {
+                if (StrUtil.isBlank(tboxPo.getNo())) {
+                    tboxPo.setNo(no.trim());
+                } else if (!no.trim().equalsIgnoreCase(tboxPo.getNo())) {
+                    logger.warn("TBox导入数据批次号[{}]SN[{}]零件号[{}]与原数据[{}]不一致", batchNum, sn, no.trim(), tboxPo.getNo());
+                }
+            } else {
+                logger.warn("TBox导入数据批次号[{}]SN[{}]零件号为空", batchNum, sn);
+            }
+            String hsm = itemJson.getStr("HSM");
+            if (StrUtil.isNotBlank(hsm)) {
+                if (StrUtil.isBlank(tboxPo.getHsm())) {
+                    tboxPo.setHsm(hsm.trim());
+                } else if (!hsm.trim().equalsIgnoreCase(tboxPo.getHsm())) {
+                    logger.warn("TBox导入数据批次号[{}]SN[{}]硬件安全模块[{}]与原数据[{}]不一致", batchNum, sn, hsm.trim(), tboxPo.getHsm());
+                }
+            } else {
+                logger.warn("TBox导入数据批次号[{}]SN[{}]硬件安全模块为空", batchNum, sn);
+            }
+            String imei = itemJson.getStr("IMEI");
+            String iccid1 = itemJson.getStr("ICCID1");
+            String iccid2 = itemJson.getStr("ICCID2");
+            if (StrUtil.isNotBlank(imei) || StrUtil.isNotBlank(iccid1) || StrUtil.isNotBlank(iccid2)) {
+                String extra = tboxPo.getExtra();
+                Map<String, String> extraMap;
+                if (StrUtil.isBlank(tboxPo.getExtra())) {
+                    extraMap = new HashMap<>();
+                    if (StrUtil.isNotBlank(imei)) {
+                        extraMap.put("IMEI", imei.trim());
+                    }
+                    if (StrUtil.isNotBlank(iccid1)) {
+                        extraMap.put("ICCID1", iccid1.trim());
+                    }
+                    if (StrUtil.isNotBlank(iccid2)) {
+                        extraMap.put("ICCID2", iccid2.trim());
+                    }
+                } else {
+                    extraMap = JSONUtil.toBean(tboxPo.getExtra(), new TypeReference<>() {
+                    }, true);
+                    if (StrUtil.isNotBlank(imei)) {
+                        if (StrUtil.isBlank(extraMap.get("IMEI"))) {
+                            extraMap.put("IMEI", imei.trim());
+                        } else if (!imei.trim().equalsIgnoreCase(extraMap.get("IMEI"))) {
+                            logger.warn("TBox导入数据批次号[{}]SN[{}]IMEI[{}]与原数据[{}]不一致", batchNum, sn, imei.trim(), extraMap.get("IMEI"));
+                        }
+                    }
+                    if (StrUtil.isNotBlank(iccid1)) {
+                        if (StrUtil.isBlank(extraMap.get("ICCID1"))) {
+                            extraMap.put("ICCID1", iccid1.trim());
+                        } else if (!iccid1.trim().equalsIgnoreCase(extraMap.get("ICCID1"))) {
+                            logger.warn("TBox导入数据批次号[{}]SN[{}]ICCID1[{}]与原数据[{}]不一致", batchNum, sn, iccid1.trim(), extraMap.get("ICCID1"));
+                        }
+                    }
+                    if (StrUtil.isNotBlank(iccid2)) {
+                        if (StrUtil.isBlank(extraMap.get("ICCID2"))) {
+                            extraMap.put("ICCID2", iccid2.trim());
+                        } else if (!iccid2.trim().equalsIgnoreCase(extraMap.get("ICCID2"))) {
+                            logger.warn("TBox导入数据批次号[{}]SN[{}]ICCID2[{}]与原数据[{}]不一致", batchNum, sn, iccid2.trim(), extraMap.get("ICCID2"));
+                        }
+                    }
+                }
+                tboxPo.setExtra(JSONUtil.toJsonStr(extra));
+                if (ObjUtil.isNull(tboxPo.getId())) {
+                    vehiclePartAppService.createPart(tboxPo);
+                } else {
+                    vehiclePartAppService.modifyPart(tboxPo);
+                }
+            }
+        }
+    }
+
+    /**
      * 解析车辆生产导入数据
      *
      * @param batchNum 批次号
      * @param version  版本
-     * @param dataJson 车辆导入数据
+     * @param dataJson 车辆生产导入数据
      */
     private void parseVehicleProduceImportData(String batchNum, String version, JSONObject dataJson) {
         // 生产数据现在没有多版本，暂时不用关心
