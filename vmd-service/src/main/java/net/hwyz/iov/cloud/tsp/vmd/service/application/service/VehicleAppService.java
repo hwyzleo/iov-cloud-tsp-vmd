@@ -240,10 +240,15 @@ public class VehicleAppService {
     private void parseTboxImportData(String batchNum, String version, JSONObject dataJson) {
         // Tbox导入数据现在没有多版本，暂时不用关心version
         JSONObject request = dataJson.getJSONObject("REQUEST");
-        JSONObject header = request.getJSONObject("HEADER");
-        String supplier = header.getStr("ACCOUNT");
-        if (StrUtil.isBlank(supplier)) {
-            logger.warn("TBox导入数据批次号[{}]供应商代码为空", batchNum);
+        JSONObject head = request.getJSONObject("HEAD");
+        String supplier = null;
+        if (ObjUtil.isNotNull(head)) {
+            supplier = head.getStr("ACCOUNT");
+            if (StrUtil.isBlank(supplier)) {
+                logger.warn("TBox导入数据批次号[{}]供应商代码为空", batchNum);
+            }
+        } else {
+            logger.warn("TBox导入数据批次号[{}]HEAD为空", batchNum);
         }
         JSONObject data = request.getJSONObject("DATA");
         JSONArray items = data.getJSONArray("ITEMS");
