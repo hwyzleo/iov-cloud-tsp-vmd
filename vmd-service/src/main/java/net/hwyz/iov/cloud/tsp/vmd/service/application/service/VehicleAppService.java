@@ -211,6 +211,7 @@ public class VehicleAppService {
         }
         JSONObject dataJson = JSONUtil.parseObj(dataStr);
         vehImportDataPo.setHandle(true);
+        vehImportDataPo.setDescription("");
         try {
             switch (type.toUpperCase()) {
                 case "TBOX" -> parseTboxImportData(batchNum, version, dataJson);

@@ -70,7 +70,7 @@
         <if test="handle != null">
             t.handle = #{handle},
         </if>
-        <if test="description != null and description != ''">
+        <if test="description != null">
             t.description = #{description},
         </if>
         <if test="modifyBy != null">
