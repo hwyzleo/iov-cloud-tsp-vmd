@@ -1,8 +1,8 @@
 package net.hwyz.iov.cloud.tsp.vmd.api.feign.service.factory;
 
 import lombok.extern.slf4j.Slf4j;
+import net.hwyz.iov.cloud.framework.common.enums.EcuType;
 import net.hwyz.iov.cloud.tsp.vmd.api.contract.VehiclePartExService;
-import net.hwyz.iov.cloud.tsp.vmd.api.contract.enums.EcuType;
 import net.hwyz.iov.cloud.tsp.vmd.api.feign.service.ExVehiclePartService;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;

@@ -2,8 +2,8 @@ package net.hwyz.iov.cloud.tsp.vmd.service.facade.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.hwyz.iov.cloud.framework.common.enums.EcuType;
 import net.hwyz.iov.cloud.tsp.vmd.api.contract.VehiclePartExService;
-import net.hwyz.iov.cloud.tsp.vmd.api.contract.enums.EcuType;
 import net.hwyz.iov.cloud.tsp.vmd.service.application.service.VehiclePartAppService;
 import net.hwyz.iov.cloud.tsp.vmd.service.facade.assembler.VehiclePartExServiceAssembler;
 import org.springframework.web.bind.annotation.GetMapping;

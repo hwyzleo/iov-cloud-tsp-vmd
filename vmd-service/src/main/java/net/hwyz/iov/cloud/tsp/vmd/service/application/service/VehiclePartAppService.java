@@ -2,7 +2,7 @@ package net.hwyz.iov.cloud.tsp.vmd.service.application.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.hwyz.iov.cloud.tsp.vmd.api.contract.enums.EcuType;
+import net.hwyz.iov.cloud.framework.common.enums.EcuType;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehPartDao;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehPartPo;
 import org.springframework.stereotype.Service;

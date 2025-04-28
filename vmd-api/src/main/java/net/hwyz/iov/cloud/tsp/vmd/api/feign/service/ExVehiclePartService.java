@@ -1,8 +1,8 @@
 package net.hwyz.iov.cloud.tsp.vmd.api.feign.service;
 
 import net.hwyz.iov.cloud.framework.common.constant.ServiceNameConstants;
+import net.hwyz.iov.cloud.framework.common.enums.EcuType;
 import net.hwyz.iov.cloud.tsp.vmd.api.contract.VehiclePartExService;
-import net.hwyz.iov.cloud.tsp.vmd.api.contract.enums.EcuType;
 import net.hwyz.iov.cloud.tsp.vmd.api.feign.service.factory.ExVehiclePartServiceFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
