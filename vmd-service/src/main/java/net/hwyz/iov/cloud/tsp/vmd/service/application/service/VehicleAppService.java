@@ -214,6 +214,7 @@ public class VehicleAppService {
         try {
             switch (type.toUpperCase()) {
                 case "TBOX" -> parseTboxImportData(batchNum, version, dataJson);
+                case "CCP" -> parseCcpImportData(batchNum, version, dataJson);
                 case "PRODUCE" -> parseVehicleProduceImportData(batchNum, version, dataJson);
                 case "EOL" -> parseVehicleEolImportData(batchNum, version, dataJson);
                 default -> {
@@ -231,14 +232,14 @@ public class VehicleAppService {
     }
 
     /**
-     * 解析Tbox导入数据
+     * 解析TBox导入数据
      *
      * @param batchNum 批次号
      * @param version  版本
-     * @param dataJson Tbox导入数据
+     * @param dataJson TBox导入数据
      */
     private void parseTboxImportData(String batchNum, String version, JSONObject dataJson) {
-        // Tbox导入数据现在没有多版本，暂时不用关心version
+        // TBox导入数据现在没有多版本，暂时不用关心version
         JSONObject request = dataJson.getJSONObject("REQUEST");
         JSONObject head = request.getJSONObject("HEAD");
         String supplier = null;
@@ -335,11 +336,71 @@ public class VehicleAppService {
                     }
                 }
                 tboxPo.setExtra(JSONUtil.toJsonStr(extraMap));
-                if (ObjUtil.isNull(tboxPo.getId())) {
-                    vehiclePartAppService.createPart(tboxPo);
-                } else {
-                    vehiclePartAppService.modifyPart(tboxPo);
+            }
+            if (ObjUtil.isNull(tboxPo.getId())) {
+                vehiclePartAppService.createPart(tboxPo);
+            } else {
+                vehiclePartAppService.modifyPart(tboxPo);
+            }
+        }
+    }
+
+    /**
+     * 解析CCP导入数据
+     *
+     * @param batchNum 批次号
+     * @param version  版本
+     * @param dataJson CCP导入数据
+     */
+    private void parseCcpImportData(String batchNum, String version, JSONObject dataJson) {
+        // CCP导入数据现在没有多版本，暂时不用关心version
+        JSONObject request = dataJson.getJSONObject("REQUEST");
+        JSONObject head = request.getJSONObject("HEAD");
+        String supplier = null;
+        if (ObjUtil.isNotNull(head)) {
+            supplier = head.getStr("ACCOUNT");
+            if (StrUtil.isBlank(supplier)) {
+                logger.warn("CCP导入数据批次号[{}]供应商代码为空", batchNum);
+            }
+        } else {
+            logger.warn("CCP导入数据批次号[{}]HEAD为空", batchNum);
+        }
+        JSONObject data = request.getJSONObject("DATA");
+        JSONArray items = data.getJSONArray("ITEMS");
+        for (Object item : items) {
+            JSONObject itemJson = JSONUtil.parseObj(item);
+            String sn = itemJson.getStr("SN");
+            if (StrUtil.isBlank(sn)) {
+                logger.warn("CCP导入数据批次号[{}]SN为空", batchNum);
+                continue;
+            }
+            VehPartPo ccpPo = vehiclePartAppService.getPartBySn(EcuType.CCP, sn);
+            if (ObjUtil.isNull(ccpPo)) {
+                ccpPo = new VehPartPo();
+                ccpPo.setEcu(EcuType.CCP.name());
+                ccpPo.setSn(sn);
+            }
+            if (StrUtil.isNotBlank(supplier)) {
+                if (StrUtil.isBlank(ccpPo.getSupplierCode())) {
+                    ccpPo.setSupplierCode(supplier.trim().toUpperCase());
+                } else if (!supplier.trim().equalsIgnoreCase(ccpPo.getSupplierCode())) {
+                    logger.warn("CCP导入数据批次号[{}]SN[{}]供应商[{}]与原数据[{}]不一致", batchNum, sn, supplier.trim(), ccpPo.getSupplierCode());
                 }
+            }
+            String no = itemJson.getStr("NO");
+            if (StrUtil.isNotBlank(no)) {
+                if (StrUtil.isBlank(ccpPo.getNo())) {
+                    ccpPo.setNo(no.trim());
+                } else if (!no.trim().equalsIgnoreCase(ccpPo.getNo())) {
+                    logger.warn("CCP导入数据批次号[{}]SN[{}]零件号[{}]与原数据[{}]不一致", batchNum, sn, no.trim(), ccpPo.getNo());
+                }
+            } else {
+                logger.warn("CCP导入数据批次号[{}]SN[{}]零件号为空", batchNum, sn);
+            }
+            if (ObjUtil.isNull(ccpPo.getId())) {
+                vehiclePartAppService.createPart(ccpPo);
+            } else {
+                vehiclePartAppService.modifyPart(ccpPo);
             }
         }
     }

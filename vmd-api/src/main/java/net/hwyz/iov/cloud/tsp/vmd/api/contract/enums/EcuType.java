@@ -13,7 +13,9 @@ import java.util.Arrays;
 public enum EcuType {
 
     /** TBox **/
-    TBOX;
+    TBOX,
+    /** CCP **/
+    CCP;
 
     public static EcuType valOf(String val) {
         return Arrays.stream(EcuType.values())
