@@ -217,6 +217,7 @@ public class VehicleAppService {
                 case "TBOX" -> parseTboxImportData(batchNum, version, dataJson);
                 case "CCP" -> parseCcpImportData(batchNum, version, dataJson);
                 case "BTM" -> parseBtmImportData(batchNum, version, dataJson);
+                case "IDCM" -> parseIdcmImportData(batchNum, version, dataJson);
                 case "PRODUCE" -> parseVehicleProduceImportData(batchNum, version, dataJson);
                 case "EOL" -> parseVehicleEolImportData(batchNum, version, dataJson);
                 default -> {
@@ -483,6 +484,66 @@ public class VehicleAppService {
                 vehiclePartAppService.createPart(btmPo);
             } else {
                 vehiclePartAppService.modifyPart(btmPo);
+            }
+        }
+    }
+
+    /**
+     * 解析IDCM导入数据
+     *
+     * @param batchNum 批次号
+     * @param version  版本
+     * @param dataJson IDCM导入数据
+     */
+    private void parseIdcmImportData(String batchNum, String version, JSONObject dataJson) {
+        // IDCM导入数据现在没有多版本，暂时不用关心version
+        JSONObject request = dataJson.getJSONObject("REQUEST");
+        JSONObject head = request.getJSONObject("HEAD");
+        String supplier = null;
+        if (ObjUtil.isNotNull(head)) {
+            supplier = head.getStr("ACCOUNT");
+            if (StrUtil.isBlank(supplier)) {
+                logger.warn("IDCM导入数据批次号[{}]供应商代码为空", batchNum);
+            }
+        } else {
+            logger.warn("IDCM导入数据批次号[{}]HEAD为空", batchNum);
+        }
+        JSONObject data = request.getJSONObject("DATA");
+        JSONArray items = data.getJSONArray("ITEMS");
+        for (Object item : items) {
+            JSONObject itemJson = JSONUtil.parseObj(item);
+            String sn = itemJson.getStr("SN");
+            if (StrUtil.isBlank(sn)) {
+                logger.warn("IDCM导入数据批次号[{}]SN为空", batchNum);
+                continue;
+            }
+            VehPartPo idcmPo = vehiclePartAppService.getPartBySn(EcuType.IDCM, sn);
+            if (ObjUtil.isNull(idcmPo)) {
+                idcmPo = new VehPartPo();
+                idcmPo.setEcu(EcuType.IDCM.name());
+                idcmPo.setSn(sn);
+            }
+            if (StrUtil.isNotBlank(supplier)) {
+                if (StrUtil.isBlank(idcmPo.getSupplierCode())) {
+                    idcmPo.setSupplierCode(supplier.trim().toUpperCase());
+                } else if (!supplier.trim().equalsIgnoreCase(idcmPo.getSupplierCode())) {
+                    logger.warn("IDCM导入数据批次号[{}]SN[{}]供应商[{}]与原数据[{}]不一致", batchNum, sn, supplier.trim(), idcmPo.getSupplierCode());
+                }
+            }
+            String no = itemJson.getStr("NO");
+            if (StrUtil.isNotBlank(no)) {
+                if (StrUtil.isBlank(idcmPo.getNo())) {
+                    idcmPo.setNo(no.trim());
+                } else if (!no.trim().equalsIgnoreCase(idcmPo.getNo())) {
+                    logger.warn("IDCM导入数据批次号[{}]SN[{}]零件号[{}]与原数据[{}]不一致", batchNum, sn, no.trim(), idcmPo.getNo());
+                }
+            } else {
+                logger.warn("IDCM导入数据批次号[{}]SN[{}]零件号为空", batchNum, sn);
+            }
+            if (ObjUtil.isNull(idcmPo.getId())) {
+                vehiclePartAppService.createPart(idcmPo);
+            } else {
+                vehiclePartAppService.modifyPart(idcmPo);
             }
         }
     }
