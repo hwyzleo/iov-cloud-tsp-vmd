@@ -48,6 +48,11 @@ public class VehicleImportDataMpt extends BaseRequest {
     private Boolean handle;
 
     /**
+     * 备注
+     */
+    private String description;
+
+    /**
      * 创建时间
      */
     private Date createTime;
