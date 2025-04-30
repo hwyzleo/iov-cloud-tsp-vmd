@@ -52,7 +52,7 @@ public class VehicleLifecycleSubscribe {
      * @param event 车辆生产事件
      */
     @EventListener
-    public void onQrcodeConfirmEvent(VehicleProduceEvent event) {
+    public void onVehicleProduceEvent(VehicleProduceEvent event) {
         vehicleLifecycleAppService.produce(event.getVin());
     }
 

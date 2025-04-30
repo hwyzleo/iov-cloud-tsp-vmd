@@ -43,6 +43,18 @@ public class VehicleLifecycleAppService {
     }
 
     /**
+     * 生成车辆密钥
+     *
+     * @param vin 车架号
+     */
+    public void generateVehicleSk(String vin) {
+        logger.info("车辆[{}]生成车辆密钥", vin);
+        VehicleDo vehicleDo = vehicleRepository.getByVin(vin);
+        vehicleDo.generateVehicleSk();
+        vehicleRepository.save(vehicleDo);
+    }
+
+    /**
      * 绑定订单
      *
      * @param vin      车架号

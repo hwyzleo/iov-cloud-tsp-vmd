@@ -68,6 +68,16 @@ public class VehicleDo extends BaseDo<String> implements DomainObj<VehicleDo> {
     }
 
     /**
+     * 生成车辆密钥
+     */
+    public void generateVehicleSk() {
+        VehicleLifecycleNodeDo node = newLifecycleNode(VehicleLifecycleNode.IMMO_SK);
+        allNodeList.add(node);
+        nodeTimeMap.put(VehicleLifecycleNode.IMMO_SK, node.getReachTime());
+        stateChange();
+    }
+
+    /**
      * 绑定订单
      *
      * @param orderNum 订单号
