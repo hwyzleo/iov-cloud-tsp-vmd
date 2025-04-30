@@ -16,22 +16,22 @@ public enum VehicleLifecycleNode {
     PRODUCE,
     /** 车辆生成密钥及安全常量 **/
     IMMO_SK,
-    /** TBox申请证书 **/
+    /** 车联终端申请证书 **/
     TBOX_CERT,
-    /** TBox申请密钥 **/
+    /** 车联终端申请密钥 **/
     TBOX_SK,
-    /** CCU申请证书 **/
-    CCU_CERT,
-    /** CCU申请密钥 **/
-    CCU_SK,
-    /** ADCU申请证书 **/
-    ADCU_CERT,
-    /** ADCU申请密钥 **/
-    ADCU_SK,
-    /** IDCU申请证书 **/
-    IDCU_CERT,
-    /** IDCU申请密钥 **/
-    IDCU_SK,
+    /** 中央计算平台申请证书 **/
+    CCP_CERT,
+    /** 中央计算平台申请密钥 **/
+    CCP_SK,
+    /** 智驾模块申请证书 **/
+    ADCM_CERT,
+    /** 智驾模块申请密钥 **/
+    ADCM_SK,
+    /** 信息娱乐模块申请证书 **/
+    IDCM_CERT,
+    /** 信息娱乐模块申请密钥 **/
+    IDCM_SK,
     /** 车辆下线 **/
     EOL,
     /** 打印合格证 **/
