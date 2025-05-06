@@ -26,6 +26,16 @@ public class ExVehicleLifecycleServiceFallbackFactory implements FallbackFactory
             public void recordApplyCcpCertNode(String vin) {
                 logger.error("车辆生命周期服务记录车辆[{}]申请中央计算平台证书节点调用失败", vin, throwable);
             }
+
+            @Override
+            public void recordApplyIdcmCertNode(String vin) {
+                logger.error("车辆生命周期服务记录车辆[{}]申请信息娱乐模块证书节点调用失败", vin, throwable);
+            }
+
+            @Override
+            public void recordApplyAdcmCertNode(String vin) {
+                logger.error("车辆生命周期服务记录车辆[{}]申请智驾模块证书节点调用失败", vin, throwable);
+            }
         };
     }
 }

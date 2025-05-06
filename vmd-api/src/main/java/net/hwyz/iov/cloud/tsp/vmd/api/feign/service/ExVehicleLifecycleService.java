@@ -30,4 +30,20 @@ public interface ExVehicleLifecycleService {
     @PostMapping("/{vin}/recordApplyCcpCertNode")
     void recordApplyCcpCertNode(@PathVariable String vin);
 
+    /**
+     * 记录申请信息娱乐模块平台证书节点
+     *
+     * @param vin 车架号
+     */
+    @PostMapping("/{vin}/recordApplyIdcmCertNode")
+    void recordApplyIdcmCertNode(@PathVariable String vin);
+
+    /**
+     * 记录申请智驾模块平台证书节点
+     *
+     * @param vin 车架号
+     */
+    @PostMapping("/{vin}/recordApplyAdcmCertNode")
+    void recordApplyAdcmCertNode(@PathVariable String vin);
+
 }

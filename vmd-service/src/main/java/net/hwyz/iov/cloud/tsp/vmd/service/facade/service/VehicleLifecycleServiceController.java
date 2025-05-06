@@ -43,4 +43,26 @@ public class VehicleLifecycleServiceController {
         vehicleLifecycleAppService.applyCcpCert(vin);
     }
 
+    /**
+     * 记录申请信息娱乐模块证书节点
+     *
+     * @param vin 车架号
+     */
+    @PostMapping("/{vin}/recordApplyIdcmCertNode")
+    public void recordApplyIdcmCertNode(@PathVariable String vin) {
+        logger.info("记录车辆[{}]申请信息娱乐模块证书节点", vin);
+        vehicleLifecycleAppService.applyIdcmCert(vin);
+    }
+
+    /**
+     * 记录申请智驾模块证书节点
+     *
+     * @param vin 车架号
+     */
+    @PostMapping("/{vin}/recordApplyAdcmCertNode")
+    public void recordApplyAdcmCertNode(@PathVariable String vin) {
+        logger.info("记录车辆[{}]申请智驾模块证书节点", vin);
+        vehicleLifecycleAppService.applyAdcmCert(vin);
+    }
+
 }

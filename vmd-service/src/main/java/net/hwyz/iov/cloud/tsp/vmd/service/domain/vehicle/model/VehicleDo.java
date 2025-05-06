@@ -98,6 +98,26 @@ public class VehicleDo extends BaseDo<String> implements DomainObj<VehicleDo> {
     }
 
     /**
+     * 申请信息娱乐模块证书
+     */
+    public void applyIdcmCert() {
+        VehicleLifecycleNodeDo node = newLifecycleNode(VehicleLifecycleNode.IDCM_CERT);
+        allNodeList.add(node);
+        nodeTimeMap.put(VehicleLifecycleNode.IDCM_CERT, node.getReachTime());
+        stateChange();
+    }
+
+    /**
+     * 申请智驾模块证书
+     */
+    public void applyAdcmCert() {
+        VehicleLifecycleNodeDo node = newLifecycleNode(VehicleLifecycleNode.ADCM_CERT);
+        allNodeList.add(node);
+        nodeTimeMap.put(VehicleLifecycleNode.ADCM_CERT, node.getReachTime());
+        stateChange();
+    }
+
+    /**
      * 绑定订单
      *
      * @param orderNum 订单号

@@ -79,6 +79,30 @@ public class VehicleLifecycleAppService {
     }
 
     /**
+     * 申请信息娱乐模块证书
+     *
+     * @param vin 车架号
+     */
+    public void applyIdcmCert(String vin) {
+        logger.info("车辆[{}]申请信息娱乐模块证书", vin);
+        VehicleDo vehicleDo = vehicleRepository.getByVin(vin);
+        vehicleDo.applyIdcmCert();
+        vehicleRepository.save(vehicleDo);
+    }
+
+    /**
+     * 申请智驾模块证书
+     *
+     * @param vin 车架号
+     */
+    public void applyAdcmCert(String vin) {
+        logger.info("车辆[{}]申请智驾模块证书", vin);
+        VehicleDo vehicleDo = vehicleRepository.getByVin(vin);
+        vehicleDo.applyAdcmCert();
+        vehicleRepository.save(vehicleDo);
+    }
+
+    /**
      * 绑定订单
      *
      * @param vin      车架号
