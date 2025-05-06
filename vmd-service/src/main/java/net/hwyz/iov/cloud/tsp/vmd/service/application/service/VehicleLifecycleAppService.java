@@ -55,6 +55,30 @@ public class VehicleLifecycleAppService {
     }
 
     /**
+     * 申请车联终端证书
+     *
+     * @param vin 车架号
+     */
+    public void applyTboxCert(String vin) {
+        logger.info("车辆[{}]申请车联终端证书", vin);
+        VehicleDo vehicleDo = vehicleRepository.getByVin(vin);
+        vehicleDo.applyTboxCert();
+        vehicleRepository.save(vehicleDo);
+    }
+
+    /**
+     * 申请中央计算平台证书
+     *
+     * @param vin 车架号
+     */
+    public void applyCcpCert(String vin) {
+        logger.info("车辆[{}]申请中央计算平台证书", vin);
+        VehicleDo vehicleDo = vehicleRepository.getByVin(vin);
+        vehicleDo.applyCcpCert();
+        vehicleRepository.save(vehicleDo);
+    }
+
+    /**
      * 绑定订单
      *
      * @param vin      车架号
