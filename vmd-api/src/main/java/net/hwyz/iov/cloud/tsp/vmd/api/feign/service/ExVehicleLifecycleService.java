@@ -23,12 +23,28 @@ public interface ExVehicleLifecycleService {
     void recordFirstApplyTboxCertNode(@PathVariable String vin);
 
     /**
+     * 记录第一次申请车联终端通讯密钥节点
+     *
+     * @param vin 车架号
+     */
+    @PostMapping("/{vin}/recordFirstApplyTboxCommSkNode")
+    void recordFirstApplyTboxCommSkNode(@PathVariable String vin);
+
+    /**
      * 记录第一次申请中央计算平台证书节点
      *
      * @param vin 车架号
      */
     @PostMapping("/{vin}/recordFirstApplyCcpCertNode")
     void recordFirstApplyCcpCertNode(@PathVariable String vin);
+
+    /**
+     * 记录第一次申请中央计算平台通讯密钥节点
+     *
+     * @param vin 车架号
+     */
+    @PostMapping("/{vin}/recordFirstApplyCcpCommSkNode")
+    void recordFirstApplyCcpCommSkNode(@PathVariable String vin);
 
     /**
      * 记录第一次申请信息娱乐模块平台证书节点
@@ -39,11 +55,27 @@ public interface ExVehicleLifecycleService {
     void recordFirstApplyIdcmCertNode(@PathVariable String vin);
 
     /**
+     * 记录第一次申请信息娱乐模块平台通讯密钥节点
+     *
+     * @param vin 车架号
+     */
+    @PostMapping("/{vin}/recordFirstApplyIdcmCommSkNode")
+    void recordFirstApplyIdcmCommSkNode(@PathVariable String vin);
+
+    /**
      * 记录第一次申请智驾模块平台证书节点
      *
      * @param vin 车架号
      */
     @PostMapping("/{vin}/recordFirstApplyAdcmCertNode")
     void recordFirstApplyAdcmCertNode(@PathVariable String vin);
+
+    /**
+     * 记录第一次申请智驾模块平台通讯密钥节点
+     *
+     * @param vin 车架号
+     */
+    @PostMapping("/{vin}/recordFirstApplyAdcmCommSkNode")
+    void recordFirstApplyAdcmCommSkNode(@PathVariable String vin);
 
 }

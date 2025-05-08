@@ -61,6 +61,7 @@ public class VehicleLifecycleAppService {
      * @param reachTime 达到时间
      */
     public void createVehicleLifecycle(String vin, VehicleLifecycleNode node, Date reachTime) {
+        logger.info("新增车辆[{}]生命周期节点[{}][{}]", vin, node, reachTime);
         createVehicleLifecycle(VehLifecyclePo.builder()
                 .vin(vin)
                 .node(node.name())
@@ -127,46 +128,6 @@ public class VehicleLifecycleAppService {
     public void recordGenerateVehicleSkNode(String vin) {
         logger.info("记录车辆[{}]生成车辆密钥节点", vin);
         createVehicleLifecycle(vin, VehicleLifecycleNode.IMMO_SK);
-    }
-
-    /**
-     * 记录第一次申请车联终端证书节点
-     *
-     * @param vin 车架号
-     */
-    public void recordFirstApplyTboxCertNode(String vin) {
-        logger.info("记录车辆[{}]第一次申请车联终端证书节点", vin);
-        createVehicleLifecycle(vin, VehicleLifecycleNode.TBOX_CERT);
-    }
-
-    /**
-     * 记录第一次申请中央计算平台证书节点
-     *
-     * @param vin 车架号
-     */
-    public void recordFirstApplyCcpCertNode(String vin) {
-        logger.info("记录车辆[{}]第一次申请中央计算平台证书节点", vin);
-        createVehicleLifecycle(vin, VehicleLifecycleNode.CCP_CERT);
-    }
-
-    /**
-     * 记录第一次申请信息娱乐模块证书节点
-     *
-     * @param vin 车架号
-     */
-    public void recordFirstApplyIdcmCertNode(String vin) {
-        logger.info("记录车辆[{}]第一次申请信息娱乐模块证书节点", vin);
-        createVehicleLifecycle(vin, VehicleLifecycleNode.IDCM_CERT);
-    }
-
-    /**
-     * 记录第一次申请智驾模块证书节点
-     *
-     * @param vin 车架号
-     */
-    public void recordFirstApplyAdcmCertNode(String vin) {
-        logger.info("记录车辆[{}]第一次申请智驾模块证书节点", vin);
-        createVehicleLifecycle(vin, VehicleLifecycleNode.ADCM_CERT);
     }
 
     /**

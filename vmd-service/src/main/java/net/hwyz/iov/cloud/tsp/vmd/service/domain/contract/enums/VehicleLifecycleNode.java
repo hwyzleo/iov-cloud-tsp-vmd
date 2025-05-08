@@ -18,20 +18,20 @@ public enum VehicleLifecycleNode {
     IMMO_SK,
     /** 车联终端申请证书 **/
     TBOX_CERT,
-    /** 车联终端申请密钥 **/
-    TBOX_SK,
+    /** 车联终端申请通讯密钥 **/
+    TBOX_COMM_SK,
     /** 中央计算平台申请证书 **/
     CCP_CERT,
-    /** 中央计算平台申请密钥 **/
-    CCP_SK,
+    /** 中央计算平台申请通讯密钥 **/
+    CCP_COMM_SK,
     /** 智驾模块申请证书 **/
     ADCM_CERT,
-    /** 智驾模块申请密钥 **/
-    ADCM_SK,
+    /** 智驾模块申请通讯密钥 **/
+    ADCM_COMM_SK,
     /** 信息娱乐模块申请证书 **/
     IDCM_CERT,
-    /** 信息娱乐模块申请密钥 **/
-    IDCM_SK,
+    /** 信息娱乐模块申请通讯密钥 **/
+    IDCM_COMM_SK,
     /** 车辆下线 **/
     EOL,
     /** 打印合格证 **/
