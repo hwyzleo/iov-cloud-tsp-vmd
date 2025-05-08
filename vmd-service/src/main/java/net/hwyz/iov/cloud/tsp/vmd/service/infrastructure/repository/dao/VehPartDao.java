@@ -24,4 +24,13 @@ public interface VehPartDao extends BaseDao<VehPartPo, Long> {
      */
     VehPartPo selectPoBySn(String ecu, String sn);
 
+    /**
+     * 根据ECU与车架号查询对应零部件
+     *
+     * @param ecu ECU
+     * @param vin 车架号
+     * @return 零部件
+     */
+    VehPartPo selectPoByVin(String ecu, String vin);
+
 }

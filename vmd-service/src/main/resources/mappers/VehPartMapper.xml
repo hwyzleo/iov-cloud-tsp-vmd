@@ -230,6 +230,16 @@
         LIMIT 1
     </select>
 
+    <!-- 根据ECU与车架号查询对应零部件 -->
+    <select id="selectPoByVin" parameterType="java.util.Map" resultMap="baseResultMap">
+        SELECT <include refid="baseColumnList"/>
+        FROM tb_veh_part t
+        WHERE t.row_valid = 1
+        AND ecu = #{ecu}
+        AND vin = #{vin}
+        LIMIT 1
+    </select>
+
     <!-- 根据Map对象统计记录数 -->
     <select id="countPoByMap" parameterType="java.util.Map" resultType="int">
         SELECT COUNT(*)

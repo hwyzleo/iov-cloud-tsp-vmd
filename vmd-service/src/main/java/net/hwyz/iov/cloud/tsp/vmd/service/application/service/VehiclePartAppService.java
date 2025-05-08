@@ -31,6 +31,17 @@ public class VehiclePartAppService {
     }
 
     /**
+     * 根据零部件类型及车架号获取零部件
+     *
+     * @param ecuType 零部件类型
+     * @param vin     车架号
+     * @return 零部件
+     */
+    public VehPartPo getPartByVin(EcuType ecuType, String vin) {
+        return vehPartDao.selectPoByVin(ecuType.name(), vin);
+    }
+
+    /**
      * 新增车辆零部件
      *
      * @param vehPartPo 车辆零部件

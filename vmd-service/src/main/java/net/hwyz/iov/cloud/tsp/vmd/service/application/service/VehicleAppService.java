@@ -682,6 +682,80 @@ public class VehicleAppService {
                     vehicleLifecycleAppService.recordCertificateNode(vin, certDate);
                 }
             }
+            JSONArray parts = data.getJSONArray("PARTS");
+            for (Object part : parts) {
+                JSONObject partJson = JSONUtil.parseObj(part);
+                String ecuType = partJson.getStr("ECU_TYPE");
+                if (StrUtil.isBlank(ecuType)) {
+                    logger.warn("车辆导入数据批次号[{}]车架号[{}]零部件类型为空", batchNum, vin);
+                    continue;
+                }
+                String partVin = partJson.getStr("VIN");
+                if (!vin.equalsIgnoreCase(partVin)) {
+                    logger.warn("车辆导入数据批次号[{}]车架号[{}]零部件[{}]车架号[{}]不一致", batchNum, vin, ecuType, partVin);
+                    continue;
+                }
+                String sn = partJson.getStr("PART_NO");
+                VehPartPo partPo;
+                if (StrUtil.isNotBlank(sn)) {
+                    partPo = vehiclePartAppService.getPartBySn(EcuType.valOf(ecuType), sn);
+                } else {
+                    partPo = vehiclePartAppService.getPartByVin(EcuType.valOf(ecuType), vin);
+                }
+                if (ObjUtil.isNull(partPo)) {
+                    partPo = new VehPartPo();
+                    partPo.setEcu(ecuType);
+                    partPo.setSn(sn);
+                }
+                handlePartInfo(partJson, partPo, "HARDWARE_VERSION", "hardwareVer", "硬件版本号", batchNum, vin, ecuType);
+                handlePartInfo(partJson, partPo, "SOFTWARE_VERSION", "softwareVer", "软件版本号", batchNum, vin, ecuType);
+                handlePartInfo(partJson, partPo, "HARDWARE_NO", "hardwareNo", "硬件零件号", batchNum, vin, ecuType);
+                handlePartInfo(partJson, partPo, "SOFTWARE_NO", "softwareNo", "软件零件号", batchNum, vin, ecuType);
+                handlePartInfo(partJson, partPo, "SUPPLIER_CODE", "supplierCode", "供应商编码", batchNum, vin, ecuType);
+                handlePartInfoOptional(partJson, partPo, "CONFIG_WORD", "ecuConfigWord", "ECU配置字", batchNum, vin, ecuType);
+                handlePartInfoOptional(partJson, partPo, "PART_SN", "no", "零件号", batchNum, vin, ecuType);
+                handlePartInfoOptional(partJson, partPo, "SECURITY_CHIP_NO", "hsm", "硬件安全模块", batchNum, vin, ecuType);
+                handlePartInfoOptional(partJson, partPo, "MAC_ADDRESS", "mac", "MAC地址", batchNum, vin, ecuType);
+                if (EcuType.TBOX.name().equalsIgnoreCase(ecuType)) {
+                    String extra = partPo.getExtra();
+                    if (StrUtil.isNotBlank(extra)) {
+                        JSONObject extraJson = JSONUtil.parseObj(extra);
+                        String iccid1 = itemJson.getStr("ICCID1");
+                        if (StrUtil.isNotBlank(iccid1)) {
+                            if (StrUtil.isBlank(extraJson.getStr("iccid1"))) {
+                                extraJson.set("iccid1", iccid1);
+                            } else if (!iccid1.trim().equalsIgnoreCase(extraJson.getStr("iccid1"))) {
+                                logger.warn("车辆导入数据批次号[{}]车辆[{}]零部件[TBOX]ICCID1[{}]与原数据[{}]不一致", batchNum,
+                                        vin, iccid1.trim(), extraJson.getStr("iccid1"));
+                            }
+                        } else {
+                            logger.warn("车辆导入数据批次号[{}]车辆[{}]零部件[TBOX]ICCID1为空", batchNum, vin);
+                        }
+                        String iccid2 = itemJson.getStr("ICCID2");
+                        if (StrUtil.isNotBlank(iccid2)) {
+                            if (StrUtil.isBlank(extraJson.getStr("iccid2"))) {
+                                extraJson.set("iccid2", iccid2);
+                            } else if (!iccid2.trim().equalsIgnoreCase(extraJson.getStr("iccid2"))) {
+                                logger.warn("车辆导入数据批次号[{}]车辆[{}]零部件[TBOX]ICCID2[{}]与原数据[{}]不一致", batchNum,
+                                        vin, iccid2.trim(), extraJson.getStr("iccid2"));
+                            }
+                        } else {
+                            logger.warn("车辆导入数据批次号[{}]车辆[{}]零部件[TBOX]ICCID2为空", batchNum, vin);
+                        }
+                        String imei = itemJson.getStr("IMEI");
+                        if (StrUtil.isNotBlank(imei)) {
+                            if (StrUtil.isBlank(extraJson.getStr("imei"))) {
+                                extraJson.set("imei", imei);
+                            } else if (!imei.trim().equalsIgnoreCase(extraJson.getStr("imei"))) {
+                                logger.warn("车辆导入数据批次号[{}]车辆[{}]零部件[TBOX]ICCID1[{}]与原数据[{}]不一致", batchNum,
+                                        vin, imei.trim(), extraJson.getStr("imei"));
+                            }
+                        } else {
+                            logger.warn("车辆导入数据批次号[{}]车辆[{}]零部件[TBOX]IMEI为空", batchNum, vin);
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -708,6 +782,58 @@ public class VehicleAppService {
             }
         } else {
             logger.warn("车辆导入数据批次号[{}]车辆[{}]{}为空", batchNum, vin, keyDesc);
+        }
+    }
+
+    /**
+     * 处理零部件信息数据
+     *
+     * @param partJson     零部件JSON数据
+     * @param partPo       零部件对象
+     * @param jsonKey      解析JSON KEY
+     * @param propertyName 对象属性名
+     * @param keyDesc      KEY描述
+     * @param batchNum     批次号
+     * @param vin          车架号
+     * @param ecuType      零部件
+     */
+    private void handlePartInfo(JSONObject partJson, VehPartPo partPo, String jsonKey, String propertyName, String keyDesc,
+                                String batchNum, String vin, String ecuType) {
+        String keyValue = partJson.getStr(jsonKey);
+        if (StrUtil.isNotBlank(keyValue)) {
+            if (StrUtil.isBlank(BeanUtil.getFieldValue(partPo, propertyName).toString())) {
+                BeanUtil.setFieldValue(partPo, propertyName, keyValue.trim().toUpperCase());
+            } else if (!keyValue.trim().equalsIgnoreCase(BeanUtil.getFieldValue(partPo, propertyName).toString())) {
+                logger.warn("车辆导入数据批次号[{}]车辆[{}]零部件[{}]{}[{}]与原数据[{}]不一致", batchNum, vin, ecuType, keyDesc,
+                        keyValue.trim(), BeanUtil.getFieldValue(partPo, propertyName).toString());
+            }
+        } else {
+            logger.warn("车辆导入数据批次号[{}]车辆[{}]零部件[{}]{}为空", batchNum, vin, ecuType, keyDesc);
+        }
+    }
+
+    /**
+     * 处理零部件信息数据（可选）
+     *
+     * @param partJson     零部件JSON数据
+     * @param partPo       零部件对象
+     * @param jsonKey      解析JSON KEY
+     * @param propertyName 对象属性名
+     * @param keyDesc      KEY描述
+     * @param batchNum     批次号
+     * @param vin          车架号
+     * @param ecuType      零部件
+     */
+    private void handlePartInfoOptional(JSONObject partJson, VehPartPo partPo, String jsonKey, String propertyName, String keyDesc,
+                                        String batchNum, String vin, String ecuType) {
+        String keyValue = partJson.getStr(jsonKey);
+        if (StrUtil.isNotBlank(keyValue)) {
+            if (StrUtil.isBlank(BeanUtil.getFieldValue(partPo, propertyName).toString())) {
+                BeanUtil.setFieldValue(partPo, propertyName, keyValue.trim().toUpperCase());
+            } else if (!keyValue.trim().equalsIgnoreCase(BeanUtil.getFieldValue(partPo, propertyName).toString())) {
+                logger.warn("车辆导入数据批次号[{}]车辆[{}]零部件[{}]{}[{}]与原数据[{}]不一致", batchNum, vin, ecuType, keyDesc,
+                        keyValue.trim(), BeanUtil.getFieldValue(partPo, propertyName).toString());
+            }
         }
     }
 
