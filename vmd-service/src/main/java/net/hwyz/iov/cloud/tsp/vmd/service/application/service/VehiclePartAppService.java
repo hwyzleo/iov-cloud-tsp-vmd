@@ -1,5 +1,6 @@
 package net.hwyz.iov.cloud.tsp.vmd.service.application.service;
 
+import cn.hutool.core.util.ObjUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.hwyz.iov.cloud.framework.common.enums.EcuType;
@@ -48,6 +49,9 @@ public class VehiclePartAppService {
      * @return 结果
      */
     public int createPart(VehPartPo vehPartPo) {
+        if (ObjUtil.isNull(vehPartPo.getSort())) {
+            vehPartPo.setSort(99);
+        }
         return vehPartDao.insertPo(vehPartPo);
     }
 

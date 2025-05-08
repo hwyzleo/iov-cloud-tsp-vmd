@@ -710,6 +710,7 @@ public class VehicleAppService {
                     partPo = new VehPartPo();
                     partPo.setEcu(ecuType);
                     partPo.setSn(sn);
+                    partPo.setVin(vin);
                 }
                 handlePartInfo(partJson, partPo, "HARDWARE_VERSION", "hardwareVer", "硬件版本号", batchNum, vin, ecuType);
                 handlePartInfo(partJson, partPo, "SOFTWARE_VERSION", "softwareVer", "软件版本号", batchNum, vin, ecuType);
