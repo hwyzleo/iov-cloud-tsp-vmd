@@ -40,7 +40,8 @@ public class VehicleLifecycleAppService {
      * @return 车辆生命周期节点
      */
     public VehLifecyclePo getLifecycle(String vin, VehicleLifecycleNode node) {
-        return vehLifecycleDao.selectPoByExample(VehLifecyclePo.builder().vin(vin).node(node.name()).build()).get(0);
+        List<VehLifecyclePo> vehLifecyclePoList = vehLifecycleDao.selectPoByExample(VehLifecyclePo.builder().vin(vin).node(node.name()).build());
+        return vehLifecyclePoList.isEmpty() ? null : vehLifecyclePoList.get(0);
     }
 
     /**
@@ -62,12 +63,7 @@ public class VehicleLifecycleAppService {
      */
     public void createVehicleLifecycle(String vin, VehicleLifecycleNode node, Date reachTime) {
         logger.info("新增车辆[{}]生命周期节点[{}][{}]", vin, node, reachTime);
-        createVehicleLifecycle(VehLifecyclePo.builder()
-                .vin(vin)
-                .node(node.name())
-                .reachTime(reachTime)
-                .sort(99)
-                .build());
+        createVehicleLifecycle(VehLifecyclePo.builder().vin(vin).node(node.name()).reachTime(reachTime).sort(99).build());
     }
 
     /**
