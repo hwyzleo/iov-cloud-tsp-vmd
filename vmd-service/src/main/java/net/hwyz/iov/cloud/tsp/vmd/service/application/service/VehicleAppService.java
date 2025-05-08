@@ -759,6 +759,11 @@ public class VehicleAppService {
                         }
                     }
                 }
+                if (ObjUtil.isNull(partPo.getId())) {
+                    vehiclePartAppService.createPart(partPo);
+                } else {
+                    vehiclePartAppService.modifyPart(partPo);
+                }
             }
         }
     }
