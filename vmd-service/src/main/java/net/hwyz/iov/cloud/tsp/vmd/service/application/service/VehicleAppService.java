@@ -697,10 +697,14 @@ public class VehicleAppService {
                 }
                 String sn = partJson.getStr("PART_NO");
                 VehPartPo partPo;
+                EcuType ecuTypeEnum = EcuType.valOf(ecuType);
+                if (ObjUtil.isNull(ecuTypeEnum)) {
+                    logger.warn("车辆导入数据批次号[{}]车架号[{}]零部件类型[{}]异常", batchNum, vin, ecuType);
+                }
                 if (StrUtil.isNotBlank(sn)) {
-                    partPo = vehiclePartAppService.getPartBySn(EcuType.valOf(ecuType), sn);
+                    partPo = vehiclePartAppService.getPartBySn(ecuTypeEnum, sn);
                 } else {
-                    partPo = vehiclePartAppService.getPartByVin(EcuType.valOf(ecuType), vin);
+                    partPo = vehiclePartAppService.getPartByVin(ecuTypeEnum, vin);
                 }
                 if (ObjUtil.isNull(partPo)) {
                     partPo = new VehPartPo();
