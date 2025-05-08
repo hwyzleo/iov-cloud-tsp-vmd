@@ -774,11 +774,12 @@ public class VehicleAppService {
                                    String keyDesc, String batchNum, String vin) {
         String keyValue = itemJson.getStr(jsonKey);
         if (StrUtil.isNotBlank(keyValue)) {
-            if (StrUtil.isBlank(BeanUtil.getFieldValue(vehicleInfoPo, propertyName).toString())) {
+            Object fieldValue = BeanUtil.getFieldValue(vehicleInfoPo, propertyName);
+            if (ObjUtil.isNull(fieldValue) || StrUtil.isBlank(fieldValue.toString())) {
                 BeanUtil.setFieldValue(vehicleInfoPo, propertyName, keyValue.trim().toUpperCase());
-            } else if (!keyValue.trim().equalsIgnoreCase(BeanUtil.getFieldValue(vehicleInfoPo, propertyName).toString())) {
+            } else if (!keyValue.trim().equalsIgnoreCase(fieldValue.toString())) {
                 logger.warn("车辆导入数据批次号[{}]车辆[{}]{}[{}]与原数据[{}]不一致", batchNum, vin, keyDesc, keyValue.trim(),
-                        BeanUtil.getFieldValue(itemJson, propertyName).toString());
+                        fieldValue);
             }
         } else {
             logger.warn("车辆导入数据批次号[{}]车辆[{}]{}为空", batchNum, vin, keyDesc);
@@ -801,11 +802,12 @@ public class VehicleAppService {
                                 String batchNum, String vin, String ecuType) {
         String keyValue = partJson.getStr(jsonKey);
         if (StrUtil.isNotBlank(keyValue)) {
-            if (StrUtil.isBlank(BeanUtil.getFieldValue(partPo, propertyName).toString())) {
+            Object fieldValue = BeanUtil.getFieldValue(partPo, propertyName);
+            if (ObjUtil.isNull(fieldValue) || StrUtil.isBlank(fieldValue.toString())) {
                 BeanUtil.setFieldValue(partPo, propertyName, keyValue.trim().toUpperCase());
-            } else if (!keyValue.trim().equalsIgnoreCase(BeanUtil.getFieldValue(partPo, propertyName).toString())) {
+            } else if (!keyValue.trim().equalsIgnoreCase(fieldValue.toString())) {
                 logger.warn("车辆导入数据批次号[{}]车辆[{}]零部件[{}]{}[{}]与原数据[{}]不一致", batchNum, vin, ecuType, keyDesc,
-                        keyValue.trim(), BeanUtil.getFieldValue(partPo, propertyName).toString());
+                        keyValue.trim(), fieldValue);
             }
         } else {
             logger.warn("车辆导入数据批次号[{}]车辆[{}]零部件[{}]{}为空", batchNum, vin, ecuType, keyDesc);
@@ -828,11 +830,12 @@ public class VehicleAppService {
                                         String batchNum, String vin, String ecuType) {
         String keyValue = partJson.getStr(jsonKey);
         if (StrUtil.isNotBlank(keyValue)) {
-            if (StrUtil.isBlank(BeanUtil.getFieldValue(partPo, propertyName).toString())) {
+            Object fieldValue = BeanUtil.getFieldValue(partPo, propertyName);
+            if (ObjUtil.isNull(fieldValue) || StrUtil.isBlank(fieldValue.toString())) {
                 BeanUtil.setFieldValue(partPo, propertyName, keyValue.trim().toUpperCase());
-            } else if (!keyValue.trim().equalsIgnoreCase(BeanUtil.getFieldValue(partPo, propertyName).toString())) {
+            } else if (!keyValue.trim().equalsIgnoreCase(fieldValue.toString())) {
                 logger.warn("车辆导入数据批次号[{}]车辆[{}]零部件[{}]{}[{}]与原数据[{}]不一致", batchNum, vin, ecuType, keyDesc,
-                        keyValue.trim(), BeanUtil.getFieldValue(partPo, propertyName).toString());
+                        keyValue.trim(), fieldValue);
             }
         }
     }
