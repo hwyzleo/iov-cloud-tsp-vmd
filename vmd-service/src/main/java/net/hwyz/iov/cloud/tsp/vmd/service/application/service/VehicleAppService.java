@@ -682,7 +682,7 @@ public class VehicleAppService {
                     vehicleLifecycleAppService.recordCertificateNode(vin, certDate);
                 }
             }
-            JSONArray parts = data.getJSONArray("PARTS");
+            JSONArray parts = itemJson.getJSONArray("PARTS");
             for (Object part : parts) {
                 JSONObject partJson = JSONUtil.parseObj(part);
                 String ecuType = partJson.getStr("ECU_TYPE");
