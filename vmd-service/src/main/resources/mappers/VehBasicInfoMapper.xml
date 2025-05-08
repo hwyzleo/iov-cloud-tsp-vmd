@@ -23,22 +23,23 @@
         <result column="eol_time" property="eolTime" />
         <result column="pdi_time" property="pdiTime" />
         <result column="order_num" property="orderNum" />
+        <result column="vehicle_base_version" property="vehicleBaseVersion" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
-        id, vin, manufacturer_code, brand_code, platform_code, series_code, model_code, basic_model_code, model_config_code, eol_time, pdi_time, order_num,
+        id, vin, manufacturer_code, brand_code, platform_code, series_code, model_code, basic_model_code, model_config_code, eol_time, pdi_time, order_num, vehicle_base_version,
         description, create_time, create_by, modify_time, modify_by, row_version, row_valid
     </sql>
 
     <!-- 插入 -->
     <insert id="insertPo" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_veh_basic_info (
-            id, vin, manufacturer_code, brand_code, platform_code, series_code, model_code, basic_model_code, model_config_code, eol_time, pdi_time, order_num,
+            id, vin, manufacturer_code, brand_code, platform_code, series_code, model_code, basic_model_code, model_config_code, eol_time, pdi_time, order_num, vehicle_base_version,
             description, create_time, create_by, modify_time, modify_by, row_version, row_valid
         )
         VALUES (
-            #{id}, #{vin}, #{manufacturerCode}, #{brandCode}, #{platformCode}, #{seriesCode}, #{modelCode}, #{basicModelCode}, #{modelConfigCode}, #{eolTime}, #{pdiTime}, #{orderNum},
+            #{id}, #{vin}, #{manufacturerCode}, #{brandCode}, #{platformCode}, #{seriesCode}, #{modelCode}, #{basicModelCode}, #{modelConfigCode}, #{eolTime}, #{pdiTime}, #{orderNum}, #{vehicleBaseVersion},
             #{description}, now(), #{createBy}, now(), #{modifyBy}, 1, 1
         )
     </insert>
@@ -46,13 +47,13 @@
     <!-- 批量插入 -->
     <insert id="batchInsertPo" useGeneratedKeys="true" keyProperty="id" parameterType="java.util.List">
         INSERT INTO tb_veh_basic_info (
-            id, vin, manufacturer_code, brand_code, platform_code, series_code, model_code, basic_model_code, model_config_code, eol_time, pdi_time, order_num,
+            id, vin, manufacturer_code, brand_code, platform_code, series_code, model_code, basic_model_code, model_config_code, eol_time, pdi_time, order_num, vehicle_base_version,
             description, create_time, create_by, modify_time, modify_by, row_version, row_valid
         )
         VALUES
         <foreach collection="list" item="item" index="index" separator=",">
         (
-            #{item.id}, #{item.vin}, #{item.manufacturerCode}, #{item.brandCode}, #{item.platformCode}, #{item.seriesCode}, #{item.modelCode}, #{item.basicModelCode}, #{item.modelConfigCode}, #{item.eolTime}, #{item.pdiTime}, #{item.orderNum},
+            #{item.id}, #{item.vin}, #{item.manufacturerCode}, #{item.brandCode}, #{item.platformCode}, #{item.seriesCode}, #{item.modelCode}, #{item.basicModelCode}, #{item.modelConfigCode}, #{item.eolTime}, #{item.pdiTime}, #{item.orderNum}, #{item.vehicleBaseVersion},
             #{item.description}, now(), #{item.createBy}, now(), #{item.modifyBy}, 1, 1
         )
         </foreach>
@@ -90,6 +91,9 @@
         </if>
         <if test="orderNum != null and orderNum != ''">
             t.order_num = #{orderNum},
+        </if>
+        <if test="vehicleBaseVersion != null and vehicleBaseVersion != ''">
+            t.vehicle_base_version = #{vehicleBaseVersion},
         </if>
         <if test="description != null and description != ''">
             t.description = #{description},
@@ -174,6 +178,9 @@
         </if>
         <if test="orderNum != null and orderNum != ''">
             AND t.order_num = #{orderNum}
+        </if>
+        <if test="vehicleBaseVersion != null and vehicleBaseVersion != ''">
+            AND t.vehicle_base_version = #{vehicleBaseVersion}
         </if>
         <if test="description != null and description != ''">
             AND t.description = #{description}

@@ -22,47 +22,47 @@ public class VehicleLifecycleServiceController {
     private final VehicleLifecycleAppService vehicleLifecycleAppService;
 
     /**
-     * 记录申请车联终端证书节点
+     * 记录第一次申请车联终端证书节点
      *
      * @param vin 车架号
      */
-    @PostMapping("/{vin}/recordApplyTboxCertNode")
-    public void recordApplyTboxCertNode(@PathVariable String vin) {
-        logger.info("记录车辆[{}]申请车联终端证书节点", vin);
-        vehicleLifecycleAppService.applyTboxCert(vin);
+    @PostMapping("/{vin}/recordFirstApplyTboxCertNode")
+    public void recordFirstApplyTboxCertNode(@PathVariable String vin) {
+        logger.info("记录车辆[{}]第一次申请车联终端证书节点", vin);
+        vehicleLifecycleAppService.recordFirstApplyTboxCertNode(vin);
     }
 
     /**
-     * 记录申请中央计算平台证书节点
+     * 记录第一次申请中央计算平台证书节点
      *
      * @param vin 车架号
      */
-    @PostMapping("/{vin}/recordApplyCcpCertNode")
-    public void recordApplyCcpCertNode(@PathVariable String vin) {
+    @PostMapping("/{vin}/recordFirstApplyCcpCertNode")
+    public void recordFirstApplyCcpCertNode(@PathVariable String vin) {
         logger.info("记录车辆[{}]申请中央计算平台证书节点", vin);
-        vehicleLifecycleAppService.applyCcpCert(vin);
+        vehicleLifecycleAppService.recordFirstApplyCcpCertNode(vin);
     }
 
     /**
-     * 记录申请信息娱乐模块证书节点
+     * 记录第一次申请信息娱乐模块证书节点
      *
      * @param vin 车架号
      */
-    @PostMapping("/{vin}/recordApplyIdcmCertNode")
-    public void recordApplyIdcmCertNode(@PathVariable String vin) {
+    @PostMapping("/{vin}/recordFirstApplyIdcmCertNode")
+    public void recordFirstApplyIdcmCertNode(@PathVariable String vin) {
         logger.info("记录车辆[{}]申请信息娱乐模块证书节点", vin);
-        vehicleLifecycleAppService.applyIdcmCert(vin);
+        vehicleLifecycleAppService.recordFirstApplyIdcmCertNode(vin);
     }
 
     /**
-     * 记录申请智驾模块证书节点
+     * 记录第一次申请智驾模块证书节点
      *
      * @param vin 车架号
      */
-    @PostMapping("/{vin}/recordApplyAdcmCertNode")
-    public void recordApplyAdcmCertNode(@PathVariable String vin) {
+    @PostMapping("/{vin}/recordFirstApplyAdcmCertNode")
+    public void recordFirstApplyAdcmCertNode(@PathVariable String vin) {
         logger.info("记录车辆[{}]申请智驾模块证书节点", vin);
-        vehicleLifecycleAppService.applyAdcmCert(vin);
+        vehicleLifecycleAppService.recordFirstApplyAdcmCertNode(vin);
     }
 
 }

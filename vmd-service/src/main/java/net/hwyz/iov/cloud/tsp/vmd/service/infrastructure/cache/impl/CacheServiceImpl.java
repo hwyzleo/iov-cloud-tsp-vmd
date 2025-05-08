@@ -50,23 +50,10 @@ public class CacheServiceImpl implements CacheService {
             return Optional.empty();
         }
         JSONObject jsonObject = JSONUtil.parseObj(vehicleDoJson);
-        List<VehicleLifecycleNodeDo> allNodeList = new ArrayList<>();
-        for (Object o : jsonObject.getJSONArray("allNodeList")) {
-            JSONObject node = JSONUtil.parseObj(o, true);
-            VehicleLifecycleNodeDo nodeDo = VehicleLifecycleNodeDo.builder()
-                    .vin(node.getStr("vin"))
-                    .node(VehicleLifecycleNode.valOf(node.getStr("node")))
-                    .reachTime(new Date(node.getLong("reachTime")))
-                    .sort(node.getInt("sort"))
-                    .build();
-            nodeDo.stateLoad();
-            allNodeList.add(nodeDo);
-        }
         return Optional.ofNullable(VehicleDo.builder()
                 .vin(jsonObject.getStr("vin"))
-                .allNodeList(allNodeList)
-                .nodeTimeMap(jsonObject.getJSONObject("nodeTimeMap").toBean(new TypeReference<>() {
-                }))
+                .eolTime(jsonObject.getDate("eolTime"))
+                .orderNum(jsonObject.getStr("orderNum"))
                 .build());
     }
 

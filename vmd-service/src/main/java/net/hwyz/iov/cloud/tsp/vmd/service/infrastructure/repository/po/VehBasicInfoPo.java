@@ -100,4 +100,10 @@ public class VehBasicInfoPo extends BasePo {
      */
     @TableField("order_num")
     private String orderNum;
+
+    /**
+     * 整车基线版本
+     */
+    @TableField("vehicle_base_version")
+    private String vehicleBaseVersion;
 }

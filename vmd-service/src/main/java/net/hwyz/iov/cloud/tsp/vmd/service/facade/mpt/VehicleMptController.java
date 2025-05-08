@@ -14,6 +14,7 @@ import net.hwyz.iov.cloud.tsp.vmd.api.contract.VehicleLifecycleMpt;
 import net.hwyz.iov.cloud.tsp.vmd.api.contract.VehicleMpt;
 import net.hwyz.iov.cloud.tsp.vmd.api.feign.mpt.VehicleMptApi;
 import net.hwyz.iov.cloud.tsp.vmd.service.application.service.VehicleAppService;
+import net.hwyz.iov.cloud.tsp.vmd.service.application.service.VehicleLifecycleAppService;
 import net.hwyz.iov.cloud.tsp.vmd.service.facade.assembler.VehicleLifecycleMptAssembler;
 import net.hwyz.iov.cloud.tsp.vmd.service.facade.assembler.VehicleMptAssembler;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehBasicInfoPo;
@@ -35,6 +36,7 @@ import java.util.List;
 public class VehicleMptController extends BaseController implements VehicleMptApi {
 
     private final VehicleAppService vehicleAppService;
+    private final VehicleLifecycleAppService vehicleLifecycleAppService;
 
     /**
      * 分页查询车辆信息
@@ -83,7 +85,7 @@ public class VehicleMptController extends BaseController implements VehicleMptAp
     @GetMapping(value = "/{vin}/lifecycle")
     public List<VehicleLifecycleMpt> listLifecycle(@PathVariable String vin) {
         logger.info("管理后台用户[{}]分页查询车辆[{}]生命周期", SecurityUtils.getUsername(), vin);
-        List<VehLifecyclePo> vehLifecyclePoList = vehicleAppService.listLifecycle(vin);
+        List<VehLifecyclePo> vehLifecyclePoList = vehicleLifecycleAppService.listLifecycle(vin);
         return VehicleLifecycleMptAssembler.INSTANCE.fromPoList(vehLifecyclePoList);
     }
 
@@ -151,7 +153,7 @@ public class VehicleMptController extends BaseController implements VehicleMptAp
         logger.info("管理后台用户[{}]新增车辆[{}]生命周期[{}]", SecurityUtils.getUsername(), vin, vehicleLifecycle.getNode());
         VehLifecyclePo vehLifecyclePo = VehicleLifecycleMptAssembler.INSTANCE.toPo(vehicleLifecycle);
         vehLifecyclePo.setCreateBy(SecurityUtils.getUserId().toString());
-        return toAjax(vehicleAppService.createVehicleLifecycle(vehLifecyclePo));
+        return toAjax(vehicleLifecycleAppService.createVehicleLifecycle(vehLifecyclePo));
     }
 
     /**
@@ -189,7 +191,7 @@ public class VehicleMptController extends BaseController implements VehicleMptAp
         logger.info("管理后台用户[{}]修改保存车辆[{}]生命周期[{}]", SecurityUtils.getUsername(), vin, vehicleLifecycle.getNode());
         VehLifecyclePo vehLifecyclePo = VehicleLifecycleMptAssembler.INSTANCE.toPo(vehicleLifecycle);
         vehLifecyclePo.setModifyBy(SecurityUtils.getUserId().toString());
-        return toAjax(vehicleAppService.modifyVehicleLifecycle(vehLifecyclePo));
+        return toAjax(vehicleLifecycleAppService.modifyVehicleLifecycle(vehLifecyclePo));
     }
 
     /**
@@ -219,6 +221,6 @@ public class VehicleMptController extends BaseController implements VehicleMptAp
     @DeleteMapping("/{vin}/lifecycle/{lifecycleIds}")
     public AjaxResult removeLifecycle(@PathVariable String vin, @PathVariable Long[] lifecycleIds) {
         logger.info("管理后台用户[{}]删除车辆[{}]生命周期节点[{}]", SecurityUtils.getUsername(), vin, lifecycleIds);
-        return toAjax(vehicleAppService.deleteVehicleLifecycleByIds(lifecycleIds));
+        return toAjax(vehicleLifecycleAppService.deleteVehicleLifecycleByIds(lifecycleIds));
     }
 }

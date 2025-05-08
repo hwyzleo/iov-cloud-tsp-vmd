@@ -18,23 +18,23 @@ public class ExVehicleLifecycleServiceFallbackFactory implements FallbackFactory
     public ExVehicleLifecycleService create(Throwable throwable) {
         return new ExVehicleLifecycleService() {
             @Override
-            public void recordApplyTboxCertNode(String vin) {
-                logger.error("车辆生命周期服务记录车辆[{}]申请车联终端证书节点调用失败", vin, throwable);
+            public void recordFirstApplyTboxCertNode(String vin) {
+                logger.error("车辆生命周期服务记录车辆[{}]第一次申请车联终端证书节点调用失败", vin, throwable);
             }
 
             @Override
-            public void recordApplyCcpCertNode(String vin) {
-                logger.error("车辆生命周期服务记录车辆[{}]申请中央计算平台证书节点调用失败", vin, throwable);
+            public void recordFirstApplyCcpCertNode(String vin) {
+                logger.error("车辆生命周期服务记录车辆[{}]第一次申请中央计算平台证书节点调用失败", vin, throwable);
             }
 
             @Override
-            public void recordApplyIdcmCertNode(String vin) {
-                logger.error("车辆生命周期服务记录车辆[{}]申请信息娱乐模块证书节点调用失败", vin, throwable);
+            public void recordFirstApplyIdcmCertNode(String vin) {
+                logger.error("车辆生命周期服务记录车辆[{}]第一次申请信息娱乐模块证书节点调用失败", vin, throwable);
             }
 
             @Override
-            public void recordApplyAdcmCertNode(String vin) {
-                logger.error("车辆生命周期服务记录车辆[{}]申请智驾模块证书节点调用失败", vin, throwable);
+            public void recordFirstApplyAdcmCertNode(String vin) {
+                logger.error("车辆生命周期服务记录车辆[{}]第一次申请智驾模块证书节点调用失败", vin, throwable);
             }
         };
     }

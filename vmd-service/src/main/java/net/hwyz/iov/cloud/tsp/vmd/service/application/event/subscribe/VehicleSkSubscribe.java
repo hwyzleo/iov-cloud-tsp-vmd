@@ -33,7 +33,7 @@ public class VehicleSkSubscribe {
     public void onVehicleProduceEvent(VehicleProduceEvent event) {
         Map<String, String> skMap = exSkService.generateVehicleSk(event.getVin());
         if (ObjUtil.isNotNull(skMap) && !skMap.isEmpty()) {
-            vehicleLifecycleAppService.generateVehicleSk(event.getVin());
+            vehicleLifecycleAppService.recordGenerateVehicleSkNode(event.getVin());
         }
     }
 

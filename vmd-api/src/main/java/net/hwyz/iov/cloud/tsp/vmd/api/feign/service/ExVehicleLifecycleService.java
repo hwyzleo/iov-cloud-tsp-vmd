@@ -15,35 +15,35 @@ import org.springframework.web.bind.annotation.PostMapping;
 public interface ExVehicleLifecycleService {
 
     /**
-     * 记录申请车联终端证书节点
+     * 记录第一次申请车联终端证书节点
      *
      * @param vin 车架号
      */
-    @PostMapping("/{vin}/recordApplyTboxCertNode")
-    void recordApplyTboxCertNode(@PathVariable String vin);
+    @PostMapping("/{vin}/recordFirstApplyTboxCertNode")
+    void recordFirstApplyTboxCertNode(@PathVariable String vin);
 
     /**
-     * 记录申请中央计算平台证书节点
+     * 记录第一次申请中央计算平台证书节点
      *
      * @param vin 车架号
      */
-    @PostMapping("/{vin}/recordApplyCcpCertNode")
-    void recordApplyCcpCertNode(@PathVariable String vin);
+    @PostMapping("/{vin}/recordFirstApplyCcpCertNode")
+    void recordFirstApplyCcpCertNode(@PathVariable String vin);
 
     /**
-     * 记录申请信息娱乐模块平台证书节点
+     * 记录第一次申请信息娱乐模块平台证书节点
      *
      * @param vin 车架号
      */
-    @PostMapping("/{vin}/recordApplyIdcmCertNode")
-    void recordApplyIdcmCertNode(@PathVariable String vin);
+    @PostMapping("/{vin}/recordFirstApplyIdcmCertNode")
+    void recordFirstApplyIdcmCertNode(@PathVariable String vin);
 
     /**
-     * 记录申请智驾模块平台证书节点
+     * 记录第一次申请智驾模块平台证书节点
      *
      * @param vin 车架号
      */
-    @PostMapping("/{vin}/recordApplyAdcmCertNode")
-    void recordApplyAdcmCertNode(@PathVariable String vin);
+    @PostMapping("/{vin}/recordFirstApplyAdcmCertNode")
+    void recordFirstApplyAdcmCertNode(@PathVariable String vin);
 
 }

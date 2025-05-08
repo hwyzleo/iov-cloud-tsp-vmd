@@ -1,5 +1,6 @@
 package net.hwyz.iov.cloud.tsp.vmd.service.application.service;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.lang.TypeReference;
 import cn.hutool.core.util.ObjUtil;
@@ -12,15 +13,20 @@ import net.hwyz.iov.cloud.framework.common.enums.EcuType;
 import net.hwyz.iov.cloud.framework.common.util.DateUtil;
 import net.hwyz.iov.cloud.framework.common.util.ParamHelper;
 import net.hwyz.iov.cloud.framework.common.util.StrUtil;
+import net.hwyz.iov.cloud.tsp.account.api.contract.Account;
+import net.hwyz.iov.cloud.tsp.account.api.feign.service.ExAccountService;
 import net.hwyz.iov.cloud.tsp.vmd.service.application.event.publish.VehiclePublish;
 import net.hwyz.iov.cloud.tsp.vmd.service.domain.contract.enums.VehicleLifecycleNode;
+import net.hwyz.iov.cloud.tsp.vmd.service.domain.vehicle.model.VehicleDo;
+import net.hwyz.iov.cloud.tsp.vmd.service.domain.vehicle.repository.VehicleRepository;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.exception.VehicleHasBindOrderException;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.exception.VehiclePresetOwnerNotMatchException;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.exception.VehicleWithoutPresetOwnerException;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehBasicInfoDao;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehDetailInfoDao;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehImportDataDao;
-import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehLifecycleDao;
-import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehBasicInfoPo;
-import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehImportDataPo;
-import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehLifecyclePo;
-import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehPartPo;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehPresetOwnerDao;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.*;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -41,9 +47,13 @@ public class VehicleAppService {
 
     private final VehiclePublish vehiclePublish;
     private final VehBasicInfoDao vehBasicInfoDao;
-    private final VehLifecycleDao vehLifecycleDao;
     private final VehImportDataDao vehImportDataDao;
+    private final VehDetailInfoDao vehDetailInfoDao;
+    private final ExAccountService exAccountService;
+    private final VehicleRepository vehicleRepository;
+    private final VehPresetOwnerDao vehPresetOwnerDao;
     private final VehiclePartAppService vehiclePartAppService;
+    private final VehicleLifecycleAppService vehicleLifecycleAppService;
 
     /**
      * 查询车辆信息
@@ -65,16 +75,6 @@ public class VehicleAppService {
         map.put("isEol", isEol);
         map.put("isOrder", isOrder);
         return vehBasicInfoDao.selectPoByMap(map);
-    }
-
-    /**
-     * 查询车辆生命周期
-     *
-     * @param vin 车架号
-     * @return 车辆生命周期列表
-     */
-    public List<VehLifecyclePo> listLifecycle(String vin) {
-        return vehLifecycleDao.selectPoByExample(VehLifecyclePo.builder().vin(vin).build());
     }
 
     /**
@@ -113,6 +113,16 @@ public class VehicleAppService {
     }
 
     /**
+     * 根据车架号获取车辆详细信息
+     *
+     * @param vin 车架号
+     * @return 车辆详细信息
+     */
+    public VehDetailInfoPo getVehicleDetailByVin(String vin) {
+        return vehDetailInfoDao.selectPoByVin(vin);
+    }
+
+    /**
      * 新增车辆
      *
      * @param vehBasicInfo 车辆信息
@@ -120,16 +130,6 @@ public class VehicleAppService {
      */
     public int createVehicle(VehBasicInfoPo vehBasicInfo) {
         return vehBasicInfoDao.insertPo(vehBasicInfo);
-    }
-
-    /**
-     * 新增车辆生命周期
-     *
-     * @param vehLifecyclePo 车辆生命周期
-     * @return 结果
-     */
-    public int createVehicleLifecycle(VehLifecyclePo vehLifecyclePo) {
-        return vehLifecycleDao.insertPo(vehLifecyclePo);
     }
 
     /**
@@ -143,16 +143,6 @@ public class VehicleAppService {
     }
 
     /**
-     * 修改车辆生命周期
-     *
-     * @param vehLifecyclePo 车辆生命周期
-     * @return 结果
-     */
-    public int modifyVehicleLifecycle(VehLifecyclePo vehLifecyclePo) {
-        return vehLifecycleDao.updatePo(vehLifecyclePo);
-    }
-
-    /**
      * 批量删除车辆
      *
      * @param ids 车辆ID数组
@@ -162,20 +152,27 @@ public class VehicleAppService {
         for (Long id : ids) {
             VehBasicInfoPo vehiclePo = getVehicleById(id);
             if (ObjUtil.isNotNull(vehiclePo)) {
-                vehLifecycleDao.batchPhysicalDeletePoByVin(vehiclePo.getVin());
+                vehicleLifecycleAppService.deleteVehicleLifecycleByVin(vehiclePo.getVin());
             }
         }
         return vehBasicInfoDao.batchPhysicalDeletePo(ids);
     }
 
     /**
-     * 批量删除车辆生命周期
+     * 绑定订单
      *
-     * @param ids 车辆生命周期ID数组
-     * @return 结果
+     * @param vin      车架号
+     * @param orderNum 订单编号
      */
-    public int deleteVehicleLifecycleByIds(Long[] ids) {
-        return vehLifecycleDao.batchPhysicalDeletePo(ids);
+    public void bindOrder(String vin, String orderNum) {
+        logger.info("车辆[{}]绑定订单[{}]", vin, orderNum);
+        VehicleDo vehicleDo = vehicleRepository.getByVin(vin);
+        if (vehicleDo.hasOrder()) {
+            throw new VehicleHasBindOrderException(vin, vehicleDo.getOrderNum());
+        }
+        vehicleDo.bindOrder(orderNum);
+        vehicleRepository.save(vehicleDo);
+        vehicleLifecycleAppService.recordBindOrderNode(vin, orderNum);
     }
 
     /**
@@ -572,76 +569,13 @@ public class VehicleAppService {
                 vehBasicInfoPo = new VehBasicInfoPo();
                 vehBasicInfoPo.setVin(vin);
             }
-            String manufacturer = itemJson.getStr("MANUFACTURER");
-            if (StrUtil.isNotBlank(manufacturer)) {
-                if (StrUtil.isBlank(vehBasicInfoPo.getManufacturerCode())) {
-                    vehBasicInfoPo.setManufacturerCode(manufacturer.trim().toUpperCase());
-                } else if (!manufacturer.trim().equalsIgnoreCase(vehBasicInfoPo.getManufacturerCode())) {
-                    logger.warn("车辆导入数据批次号[{}]车辆[{}]工厂数据[{}]与原数据[{}]不一致", batchNum, vin, manufacturer.trim(), vehBasicInfoPo.getManufacturerCode());
-                }
-            } else {
-                logger.warn("车辆导入数据批次号[{}]车辆[{}]工厂为空", batchNum, vin);
-            }
-            String brand = itemJson.getStr("BRAND");
-            if (StrUtil.isNotBlank(brand)) {
-                if (StrUtil.isBlank(vehBasicInfoPo.getBrandCode())) {
-                    vehBasicInfoPo.setBrandCode(brand.trim().toUpperCase());
-                } else if (!brand.trim().equalsIgnoreCase(vehBasicInfoPo.getBrandCode())) {
-                    logger.warn("车辆导入数据批次号[{}]车辆[{}]品牌数据[{}]与原数据[{}]不一致", batchNum, vin, brand.trim(), vehBasicInfoPo.getBrandCode());
-                }
-            } else {
-                logger.warn("车辆导入数据批次号[{}]车辆[{}]品牌为空", batchNum, vin);
-            }
-            String platform = itemJson.getStr("PLATFORM");
-            if (StrUtil.isNotBlank(platform)) {
-                if (StrUtil.isBlank(vehBasicInfoPo.getPlatformCode())) {
-                    vehBasicInfoPo.setPlatformCode(platform.trim().toUpperCase());
-                } else if (!platform.trim().equalsIgnoreCase(vehBasicInfoPo.getPlatformCode())) {
-                    logger.warn("车辆导入数据批次号[{}]车辆[{}]平台数据[{}]与原数据[{}]不一致", batchNum, vin, platform.trim(), vehBasicInfoPo.getPlatformCode());
-                }
-            } else {
-                logger.warn("车辆导入数据批次号[{}]车辆[{}]平台为空", batchNum, vin);
-            }
-            String series = itemJson.getStr("SERIES");
-            if (StrUtil.isNotBlank(series)) {
-                if (StrUtil.isBlank(vehBasicInfoPo.getSeriesCode())) {
-                    vehBasicInfoPo.setSeriesCode(series.trim().toUpperCase());
-                } else if (!series.trim().equalsIgnoreCase(vehBasicInfoPo.getSeriesCode())) {
-                    logger.warn("车辆导入数据批次号[{}]车辆[{}]车系数据[{}]与原数据[{}]不一致", batchNum, vin, series.trim(), vehBasicInfoPo.getSeriesCode());
-                }
-            } else {
-                logger.warn("车辆导入数据批次号[{}]车辆[{}]车系为空", batchNum, vin);
-            }
-            String model = itemJson.getStr("MODEL");
-            if (StrUtil.isNotBlank(model)) {
-                if (StrUtil.isBlank(vehBasicInfoPo.getModelCode())) {
-                    vehBasicInfoPo.setModelCode(model.trim().toUpperCase());
-                } else if (!model.trim().equalsIgnoreCase(vehBasicInfoPo.getModelCode())) {
-                    logger.warn("车辆导入数据批次号[{}]车辆[{}]车型数据[{}]与原数据[{}]不一致", batchNum, vin, model.trim(), vehBasicInfoPo.getModelCode());
-                }
-            } else {
-                logger.warn("车辆导入数据批次号[{}]车辆[{}]车型为空", batchNum, vin);
-            }
-            String basicModel = itemJson.getStr("BASIC_MODEL");
-            if (StrUtil.isNotBlank(basicModel)) {
-                if (StrUtil.isBlank(vehBasicInfoPo.getBasicModelCode())) {
-                    vehBasicInfoPo.setBasicModelCode(basicModel.trim().toUpperCase());
-                } else if (!basicModel.trim().equalsIgnoreCase(vehBasicInfoPo.getBasicModelCode())) {
-                    logger.warn("车辆导入数据批次号[{}]车辆[{}]基础车型数据[{}]与原数据[{}]不一致", batchNum, vin, basicModel.trim(), vehBasicInfoPo.getBasicModelCode());
-                }
-            } else {
-                logger.warn("车辆导入数据批次号[{}]车辆[{}]基础车型为空", batchNum, vin);
-            }
-            String modelConfig = itemJson.getStr("MODEL_CONFIG");
-            if (StrUtil.isNotBlank(modelConfig)) {
-                if (StrUtil.isBlank(vehBasicInfoPo.getModelConfigCode())) {
-                    vehBasicInfoPo.setModelConfigCode(modelConfig.trim().toUpperCase());
-                } else if (!modelConfig.trim().equalsIgnoreCase(vehBasicInfoPo.getModelConfigCode())) {
-                    logger.warn("车辆导入数据批次号[{}]车辆[{}]车型配置数据[{}]与原数据[{}]不一致", batchNum, vin, modelConfig.trim(), vehBasicInfoPo.getModelConfigCode());
-                }
-            } else {
-                logger.warn("车辆导入数据批次号[{}]车辆[{}]车型配置为空", batchNum, vin);
-            }
+            handleVehicleInfo(itemJson, vehBasicInfoPo, "MANUFACTURER", "manufacturerCode", "工厂数据", batchNum, vin);
+            handleVehicleInfo(itemJson, vehBasicInfoPo, "BRAND", "brandCode", "品牌数据", batchNum, vin);
+            handleVehicleInfo(itemJson, vehBasicInfoPo, "PLATFORM", "platformCode", "平台数据", batchNum, vin);
+            handleVehicleInfo(itemJson, vehBasicInfoPo, "SERIES", "seriesCode", "车系数据", batchNum, vin);
+            handleVehicleInfo(itemJson, vehBasicInfoPo, "MODEL", "modelCode", "车型数据", batchNum, vin);
+            handleVehicleInfo(itemJson, vehBasicInfoPo, "BASIC_MODEL", "basicModelCode", "基础车型数据", batchNum, vin);
+            handleVehicleInfo(itemJson, vehBasicInfoPo, "MODEL_CONFIG", "modelConfigCode", "车型配置数据", batchNum, vin);
             if (ObjUtil.isNull(vehBasicInfoPo.getId())) {
                 vehBasicInfoDao.insertPo(vehBasicInfoPo);
             } else {
@@ -661,108 +595,139 @@ public class VehicleAppService {
      */
     private void parseVehicleEolImportData(String batchNum, String version, JSONObject dataJson) {
         // 下线数据现在没有多版本，暂时不用关心
-        String vin = dataJson.getByPath("$.REQUEST.DATA.ITEM.VIN", String[].class)[0];
-        if (StrUtil.isBlank(vin)) {
-            logger.warn("车辆导入数据批次号[{}]车架号为空", batchNum);
-            return;
-        }
-        VehBasicInfoPo vehBasicInfoPo = getVehicleByVin(vin);
-        if (ObjUtil.isNull(vehBasicInfoPo)) {
-            vehBasicInfoPo = new VehBasicInfoPo();
-            vehBasicInfoPo.setVin(vin);
-        }
-        String manufacturer = dataJson.getByPath("$.REQUEST.DATA.ITEM.MANUFACTURER", String[].class)[0];
-        if (StrUtil.isNotBlank(manufacturer)) {
-            if (StrUtil.isBlank(vehBasicInfoPo.getManufacturerCode())) {
-                vehBasicInfoPo.setManufacturerCode(manufacturer.trim().toUpperCase());
-            } else if (!manufacturer.trim().equalsIgnoreCase(vehBasicInfoPo.getManufacturerCode())) {
-                logger.warn("车辆导入数据批次号[{}]工厂数据[{}]与原数据[{}]不一致", batchNum, manufacturer.trim(), vehBasicInfoPo.getManufacturerCode());
+        JSONObject request = dataJson.getJSONObject("REQUEST");
+        JSONObject data = request.getJSONObject("DATA");
+        JSONArray items = data.getJSONArray("ITEMS");
+        for (Object item : items) {
+            JSONObject itemJson = JSONUtil.parseObj(item);
+            String vin = itemJson.getStr("VIN");
+            if (StrUtil.isBlank(vin)) {
+                logger.warn("车辆导入数据批次号[{}]车架号为空", batchNum);
+                continue;
             }
-        } else {
-            logger.warn("车辆导入数据批次号[{}]工厂为空", batchNum);
-        }
-        String brand = dataJson.getByPath("$.REQUEST.DATA.ITEM.BRAND", String[].class)[0];
-        if (StrUtil.isNotBlank(brand)) {
-            if (StrUtil.isBlank(vehBasicInfoPo.getBrandCode())) {
-                vehBasicInfoPo.setBrandCode(brand.trim().toUpperCase());
-            } else if (!brand.trim().equalsIgnoreCase(vehBasicInfoPo.getBrandCode())) {
-                logger.warn("车辆导入数据批次号[{}]品牌数据[{}]与原数据[{}]不一致", batchNum, brand.trim(), vehBasicInfoPo.getBrandCode());
+            VehBasicInfoPo vehBasicInfoPo = getVehicleByVin(vin);
+            VehDetailInfoPo vehDetailInfoPo = getVehicleDetailByVin(vin);
+            if (ObjUtil.isNull(vehBasicInfoPo)) {
+                vehBasicInfoPo = new VehBasicInfoPo();
+                vehBasicInfoPo.setVin(vin);
             }
-        } else {
-            logger.warn("车辆导入数据批次号[{}]品牌为空", batchNum);
-        }
-        String platform = dataJson.getByPath("$.REQUEST.DATA.ITEM.PLATFORM", String[].class)[0];
-        if (StrUtil.isNotBlank(platform)) {
-            if (StrUtil.isBlank(vehBasicInfoPo.getPlatformCode())) {
-                vehBasicInfoPo.setPlatformCode(platform.trim().toUpperCase());
-            } else if (!platform.trim().equalsIgnoreCase(vehBasicInfoPo.getPlatformCode())) {
-                logger.warn("车辆导入数据批次号[{}]平台数据[{}]与原数据[{}]不一致", batchNum, platform.trim(), vehBasicInfoPo.getPlatformCode());
+            if (ObjUtil.isNull(vehDetailInfoPo)) {
+                vehDetailInfoPo = new VehDetailInfoPo();
+                vehDetailInfoPo.setVin(vin);
             }
-        } else {
-            logger.warn("车辆导入数据批次号[{}]平台为空", batchNum);
-        }
-        String series = dataJson.getByPath("$.REQUEST.DATA.ITEM.SERIES", String[].class)[0];
-        if (StrUtil.isNotBlank(series)) {
-            if (StrUtil.isBlank(vehBasicInfoPo.getSeriesCode())) {
-                vehBasicInfoPo.setSeriesCode(series.trim().toUpperCase());
-            } else if (!series.trim().equalsIgnoreCase(vehBasicInfoPo.getSeriesCode())) {
-                logger.warn("车辆导入数据批次号[{}]车系数据[{}]与原数据[{}]不一致", batchNum, series.trim(), vehBasicInfoPo.getSeriesCode());
+            handleVehicleInfo(itemJson, vehBasicInfoPo, "MANUFACTURER", "manufacturerCode", "工厂数据", batchNum, vin);
+            handleVehicleInfo(itemJson, vehBasicInfoPo, "BRAND", "brandCode", "品牌数据", batchNum, vin);
+            handleVehicleInfo(itemJson, vehBasicInfoPo, "PLATFORM", "platformCode", "平台数据", batchNum, vin);
+            handleVehicleInfo(itemJson, vehBasicInfoPo, "SERIES", "seriesCode", "车系数据", batchNum, vin);
+            handleVehicleInfo(itemJson, vehBasicInfoPo, "MODEL", "modelCode", "车型数据", batchNum, vin);
+            handleVehicleInfo(itemJson, vehBasicInfoPo, "BASIC_MODEL", "basicModelCode", "基础车型数据", batchNum, vin);
+            handleVehicleInfo(itemJson, vehBasicInfoPo, "MODEL_CONFIG", "modelConfigCode", "车型配置数据", batchNum, vin);
+            handleVehicleInfo(itemJson, vehBasicInfoPo, "VEHICLE_BASE_VERSION", "vehicleBaseVersion", "车辆基线版本", batchNum, vin);
+            String eolDateStr = itemJson.getStr("EOL_DATE");
+            DateTime eolDate;
+            boolean firstEol = false;
+            if (StrUtil.isNotBlank(eolDateStr)) {
+                eolDate = DateUtil.parse(eolDateStr, "yyyyMMdd");
+            } else {
+                eolDate = new DateTime();
             }
-        } else {
-            logger.warn("车辆导入数据批次号[{}]车系为空", batchNum);
-        }
-        String model = dataJson.getByPath("$.REQUEST.DATA.ITEM.MODEL", String[].class)[0];
-        if (StrUtil.isNotBlank(model)) {
-            if (StrUtil.isBlank(vehBasicInfoPo.getModelCode())) {
-                vehBasicInfoPo.setModelCode(model.trim().toUpperCase());
-            } else if (!model.trim().equalsIgnoreCase(vehBasicInfoPo.getModelCode())) {
-                logger.warn("车辆导入数据批次号[{}]车型数据[{}]与原数据[{}]不一致", batchNum, model.trim(), vehBasicInfoPo.getModelCode());
-            }
-        } else {
-            logger.warn("车辆导入数据批次号[{}]车型为空", batchNum);
-        }
-        String basicModel = dataJson.getByPath("$.REQUEST.DATA.ITEM.BASIC_MODEL", String[].class)[0];
-        if (StrUtil.isNotBlank(basicModel)) {
-            if (StrUtil.isBlank(vehBasicInfoPo.getBasicModelCode())) {
-                vehBasicInfoPo.setBasicModelCode(basicModel.trim().toUpperCase());
-            } else if (!basicModel.trim().equalsIgnoreCase(vehBasicInfoPo.getBasicModelCode())) {
-                logger.warn("车辆导入数据批次号[{}]基础车型数据[{}]与原数据[{}]不一致", batchNum, basicModel.trim(), vehBasicInfoPo.getBasicModelCode());
-            }
-        } else {
-            logger.warn("车辆导入数据批次号[{}]基础车型为空", batchNum);
-        }
-        String modelConfig = dataJson.getByPath("$.REQUEST.DATA.ITEM.MODEL_CONFIG", String[].class)[0];
-        if (StrUtil.isNotBlank(modelConfig)) {
-            if (StrUtil.isBlank(vehBasicInfoPo.getModelConfigCode())) {
-                vehBasicInfoPo.setModelConfigCode(modelConfig.trim().toUpperCase());
-            } else if (!modelConfig.trim().equalsIgnoreCase(vehBasicInfoPo.getModelConfigCode())) {
-                logger.warn("车辆导入数据批次号[{}]车型配置数据[{}]与原数据[{}]不一致", batchNum, modelConfig.trim(), vehBasicInfoPo.getModelConfigCode());
-            }
-        } else {
-            logger.warn("车辆导入数据批次号[{}]车型配置为空", batchNum);
-        }
-        String eolDateStr = dataJson.getByPath("$.REQUEST.DATA.ITEM.EOL_DATE", String[].class)[0];
-        if (StrUtil.isNotBlank(eolDateStr)) {
-            DateTime eolDate = DateUtil.parse(eolDateStr, "yyyyMMdd");
             if (ObjUtil.isNull(vehBasicInfoPo.getEolTime())) {
                 vehBasicInfoPo.setEolTime(eolDate);
-                // 同时产生生命周期节点
-                VehLifecyclePo vehLifecyclePo = new VehLifecyclePo();
-                vehLifecyclePo.setVin(vin);
-                vehLifecyclePo.setNode(VehicleLifecycleNode.EOL.name());
-                vehLifecyclePo.setReachTime(eolDate);
-                vehLifecyclePo.setSort(99);
-                vehLifecycleDao.insertPo(vehLifecyclePo);
+                firstEol = true;
             } else if (eolDate.isBefore(vehBasicInfoPo.getEolTime()) || eolDate.isAfter(vehBasicInfoPo.getEolTime())) {
                 logger.warn("车辆导入数据批次号[{}]下线日期数据[{}]与原数据[{}]不一致", batchNum, eolDateStr, DateUtil.formatDate(vehBasicInfoPo.getEolTime()));
+            }
+            handleVehicleInfo(itemJson, vehDetailInfoPo, "PRODUCTION_ORDER", "productionOrder", "生产订单", batchNum, vin);
+            handleVehicleInfo(itemJson, vehDetailInfoPo, "MATNR", "matnr", "整车物料编码", batchNum, vin);
+            handleVehicleInfo(itemJson, vehDetailInfoPo, "PROJECT", "project", "车型项目", batchNum, vin);
+            handleVehicleInfo(itemJson, vehDetailInfoPo, "SALES_AREA", "salesArea", "销售区域", batchNum, vin);
+            handleVehicleInfo(itemJson, vehDetailInfoPo, "BODY_FORM", "bodyForm", "车身形式", batchNum, vin);
+            handleVehicleInfo(itemJson, vehDetailInfoPo, "CONFIG_LEVEL", "configLevel", "配置等级", batchNum, vin);
+            handleVehicleInfo(itemJson, vehDetailInfoPo, "MODEL_YEAR", "modelYear", "车型年份", batchNum, vin);
+            handleVehicleInfo(itemJson, vehDetailInfoPo, "STEERING_WHEEL_POSITION", "steeringWheelPosition", "方向盘位置", batchNum, vin);
+            handleVehicleInfo(itemJson, vehDetailInfoPo, "INTERIOR_TYPE", "interiorType", "内饰风格", batchNum, vin);
+            handleVehicleInfo(itemJson, vehDetailInfoPo, "EXTERIOR_COLOR", "exteriorColor", "外饰颜色", batchNum, vin);
+            handleVehicleInfo(itemJson, vehDetailInfoPo, "DRIVE_FORM", "driveForm", "驾驶形式", batchNum, vin);
+            handleVehicleInfo(itemJson, vehDetailInfoPo, "WHEEL", "wheel", "车轮", batchNum, vin);
+            handleVehicleInfo(itemJson, vehDetailInfoPo, "WHEEL_COLOR", "wheelColor", "车轮颜色", batchNum, vin);
+            handleVehicleInfo(itemJson, vehDetailInfoPo, "SEAT_TYPE", "seatType", "座椅类型", batchNum, vin);
+            handleVehicleInfo(itemJson, vehDetailInfoPo, "ASSISTED_DRIVING", "assistedDriving", "辅助驾驶", batchNum, vin);
+            handleVehicleInfo(itemJson, vehDetailInfoPo, "ETC_SYSTEM", "etcSystem", "ETC系统", batchNum, vin);
+            handleVehicleInfo(itemJson, vehDetailInfoPo, "REAR_TOW_BAR", "rearTowBar", "后牵引杆", batchNum, vin);
+            handleVehicleInfo(itemJson, vehDetailInfoPo, "ENGINE_NO", "engineNo", "发动机编码", batchNum, vin);
+            handleVehicleInfo(itemJson, vehDetailInfoPo, "ENGINE_TYPE", "engineType", "发动机类型", batchNum, vin);
+            handleVehicleInfo(itemJson, vehDetailInfoPo, "FRONT_DRIVE_MOTOR_NO", "frontDriveMotorNo", "前驱电机编码", batchNum, vin);
+            handleVehicleInfo(itemJson, vehDetailInfoPo, "FRONT_DRIVE_MOTOR_TYPE", "frontDriveMotorType", "前驱电机类型", batchNum, vin);
+            handleVehicleInfo(itemJson, vehDetailInfoPo, "REAR_DRIVE_MOTOR_NO", "rearDriveMotorNo", "后驱电机编码", batchNum, vin);
+            handleVehicleInfo(itemJson, vehDetailInfoPo, "REAR_DRIVE_MOTOR_TYPE", "rearDriveMotorType", "后驱电机类型", batchNum, vin);
+            handleVehicleInfo(itemJson, vehDetailInfoPo, "GENERATOR_NO", "generatorNo", "发电机编码", batchNum, vin);
+            handleVehicleInfo(itemJson, vehDetailInfoPo, "GENERATOR_TYPE", "generatorType", "发电机类型", batchNum, vin);
+            handleVehicleInfo(itemJson, vehDetailInfoPo, "POWER_BATTERY_PACK_NO", "powerBatteryPackNo", "动力电池包编码", batchNum, vin);
+            handleVehicleInfo(itemJson, vehDetailInfoPo, "POWER_BATTERY_TYPE", "powerBatteryType", "动力电池类型", batchNum, vin);
+            handleVehicleInfo(itemJson, vehDetailInfoPo, "POWER_BATTERY_FACTORY", "powerBatteryFactory", "动力电池厂商", batchNum, vin);
+            if (ObjUtil.isNull(vehBasicInfoPo.getId())) {
+                vehBasicInfoDao.insertPo(vehBasicInfoPo);
+                // 如果车辆是新生成，则补发车辆生产事件
+                vehiclePublish.produce(vin);
             } else {
-                logger.warn("车辆导入数据批次号[{}]下线日期为空", batchNum);
+                vehBasicInfoDao.updatePo(vehBasicInfoPo);
+            }
+            if (firstEol) {
+                vehiclePublish.eol(vin, eolDate);
+            }
+            String certDateStr = itemJson.getStr("CERT_DATE");
+            if (StrUtil.isNotBlank(certDateStr) && ObjUtil.isNull(vehicleLifecycleAppService.getLifecycle(vin, VehicleLifecycleNode.CERTIFICATE))) {
+                DateTime certDate = DateUtil.parse(certDateStr, "yyyyMMdd");
+                if (ObjUtil.isNotNull(certDate)) {
+                    vehicleLifecycleAppService.recordCertificateNode(vin, certDate);
+                }
             }
         }
-        if (ObjUtil.isNull(vehBasicInfoPo.getId())) {
-            vehBasicInfoDao.insertPo(vehBasicInfoPo);
+    }
+
+    /**
+     * 处理车辆信息数据
+     *
+     * @param itemJson      车辆JSON数据
+     * @param vehicleInfoPo 车辆信息对象
+     * @param jsonKey       解析JSON KEY
+     * @param propertyName  对象属性名
+     * @param keyDesc       KEY描述
+     * @param batchNum      批次号
+     * @param vin           车架号
+     */
+    private void handleVehicleInfo(JSONObject itemJson, Object vehicleInfoPo, String jsonKey, String propertyName,
+                                   String keyDesc, String batchNum, String vin) {
+        String keyValue = itemJson.getStr(jsonKey);
+        if (StrUtil.isNotBlank(keyValue)) {
+            if (StrUtil.isBlank(BeanUtil.getFieldValue(vehicleInfoPo, propertyName).toString())) {
+                BeanUtil.setFieldValue(vehicleInfoPo, propertyName, keyValue.trim().toUpperCase());
+            } else if (!keyValue.trim().equalsIgnoreCase(BeanUtil.getFieldValue(vehicleInfoPo, propertyName).toString())) {
+                logger.warn("车辆导入数据批次号[{}]车辆[{}]{}[{}]与原数据[{}]不一致", batchNum, vin, keyDesc, keyValue.trim(),
+                        BeanUtil.getFieldValue(itemJson, propertyName).toString());
+            }
         } else {
-            vehBasicInfoDao.updatePo(vehBasicInfoPo);
+            logger.warn("车辆导入数据批次号[{}]车辆[{}]{}为空", batchNum, vin, keyDesc);
+        }
+    }
+
+    /**
+     * 检查车辆预设车主
+     *
+     * @param vin       车架号
+     * @param accountId 账号ID
+     */
+    public void checkVehiclePresetOwner(String vin, String accountId) {
+        List<VehPresetOwnerPo> vehPresetOwnerPoList = vehPresetOwnerDao.selectPoByExample(VehPresetOwnerPo.builder().vin(vin).build());
+        if (vehPresetOwnerPoList.isEmpty()) {
+            throw new VehicleWithoutPresetOwnerException(vin);
+        }
+        VehPresetOwnerPo vehPresetOwnerPo = vehPresetOwnerPoList.get(0);
+        Account account = exAccountService.getAccountInfo(accountId);
+        if (!vehPresetOwnerPo.getMobile().equals(account.getMobile()) ||
+                !vehPresetOwnerPo.getCountryRegionCode().equals(account.getCountryRegionCode())) {
+            throw new VehiclePresetOwnerNotMatchException(vin, account.getCountryRegionCode(), account.getMobile(),
+                    vehPresetOwnerPo.getCountryRegionCode(), vehPresetOwnerPo.getMobile());
         }
     }
 }

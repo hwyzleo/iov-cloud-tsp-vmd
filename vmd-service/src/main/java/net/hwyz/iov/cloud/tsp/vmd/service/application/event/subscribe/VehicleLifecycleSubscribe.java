@@ -5,7 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import net.hwyz.iov.cloud.tsp.vmd.api.contract.enums.QrcodeType;
 import net.hwyz.iov.cloud.tsp.vmd.service.application.event.event.QrcodeConfirmEvent;
 import net.hwyz.iov.cloud.tsp.vmd.service.application.event.event.QrcodeValidateEvent;
+import net.hwyz.iov.cloud.tsp.vmd.service.application.event.event.VehicleEolEvent;
 import net.hwyz.iov.cloud.tsp.vmd.service.application.event.event.VehicleProduceEvent;
+import net.hwyz.iov.cloud.tsp.vmd.service.application.service.VehicleAppService;
 import net.hwyz.iov.cloud.tsp.vmd.service.application.service.VehicleLifecycleAppService;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class VehicleLifecycleSubscribe {
 
+    private final VehicleAppService vehicleAppService;
     private final VehicleLifecycleAppService vehicleLifecycleAppService;
 
     /**
@@ -30,7 +33,7 @@ public class VehicleLifecycleSubscribe {
     @EventListener
     public void onQrcodeValidateEvent(QrcodeValidateEvent event) {
         if (event.getType() == QrcodeType.VEHICLE_ACTIVE) {
-            vehicleLifecycleAppService.checkVehiclePresetOwner(event.getVin(), event.getAccountId());
+            vehicleAppService.checkVehiclePresetOwner(event.getVin(), event.getAccountId());
         }
     }
 
@@ -42,7 +45,7 @@ public class VehicleLifecycleSubscribe {
     @EventListener
     public void onQrcodeConfirmEvent(QrcodeConfirmEvent event) {
         if (event.getType() == QrcodeType.VEHICLE_ACTIVE) {
-            vehicleLifecycleAppService.vehicleActive(event.getVin(), event.getAccountId());
+            vehicleLifecycleAppService.recordVehicleActiveNode(event.getVin(), event.getAccountId());
         }
     }
 
@@ -53,7 +56,17 @@ public class VehicleLifecycleSubscribe {
      */
     @EventListener
     public void onVehicleProduceEvent(VehicleProduceEvent event) {
-        vehicleLifecycleAppService.produce(event.getVin());
+        vehicleLifecycleAppService.recordProduceNode(event.getVin());
+    }
+
+    /**
+     * 订阅车辆下线事件
+     *
+     * @param event 车辆下线事件
+     */
+    @EventListener
+    public void onVehicleEolEvent(VehicleEolEvent event) {
+        vehicleLifecycleAppService.recordEolNode(event.getVin(), event.getEolTime());
     }
 
 }

@@ -3,7 +3,7 @@ package net.hwyz.iov.cloud.tsp.vmd.service.facade.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.hwyz.iov.cloud.tsp.vmd.api.contract.VehicleOrderExService;
-import net.hwyz.iov.cloud.tsp.vmd.service.application.service.VehicleLifecycleAppService;
+import net.hwyz.iov.cloud.tsp.vmd.service.application.service.VehicleAppService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/service/vehicle")
 public class VehicleServiceController {
 
-    private final VehicleLifecycleAppService vehicleLifecycleAppService;
+    private final VehicleAppService vehicleAppService;
 
     /**
      * 车辆绑定订单
@@ -29,7 +29,7 @@ public class VehicleServiceController {
     @PostMapping("/{vin}/action/bindOrder")
     public void bindOrder(@PathVariable String vin, @RequestBody @Validated VehicleOrderExService vehicleOrder) {
         logger.info("车辆[{}]绑定订单[{}]", vin, vehicleOrder.getOrderNum());
-        vehicleLifecycleAppService.bindOrder(vin, vehicleOrder.getOrderNum());
+        vehicleAppService.bindOrder(vin, vehicleOrder.getOrderNum());
     }
 
 }
