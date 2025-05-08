@@ -44,7 +44,7 @@ CREATE TABLE `db_vmd`.`tb_veh_detail_info`
     `exterior_color`          VARCHAR(255)         DEFAULT NULL COMMENT '外饰颜色',
     `drive_form`              VARCHAR(255)         DEFAULT NULL COMMENT '驱动形式',
     `wheel`                   VARCHAR(255)         DEFAULT NULL COMMENT '车轮',
-    `whee_color`              VARCHAR(255)         DEFAULT NULL COMMENT '车轮颜色',
+    `wheel_color`             VARCHAR(255)         DEFAULT NULL COMMENT '车轮颜色',
     `seat_type`               VARCHAR(255)         DEFAULT NULL COMMENT '座椅类型',
     `assisted_driving`        VARCHAR(255)         DEFAULT NULL COMMENT '辅助驾驶',
     `etc_system`              VARCHAR(255)         DEFAULT NULL COMMENT 'ETC系统',

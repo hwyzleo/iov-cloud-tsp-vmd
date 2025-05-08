@@ -25,7 +25,7 @@
         <result column="exterior_color" property="exteriorColor" />
         <result column="drive_form" property="driveForm" />
         <result column="wheel" property="wheel" />
-        <result column="whee_color" property="wheeColor" />
+        <result column="wheel_color" property="wheelColor" />
         <result column="seat_type" property="seatType" />
         <result column="assisted_driving" property="assistedDriving" />
         <result column="etc_system" property="etcSystem" />
@@ -45,18 +45,18 @@
 
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
-        id, vin, production_order, matnr, project, sales_area, body_form, config_level, model_year, steering_wheel_position, interior_type, exterior_color, drive_form, wheel, whee_color, seat_type, assisted_driving, etc_system, rear_tow_bar, engine_no, engine_type, front_drive_motor_no, front_drive_motor_type, rear_drive_motor_no, rear_drive_motor_type, generator_no, generator_type, power_battery_pack_no, power_battery_type, power_battery_factory, 
+        id, vin, production_order, matnr, project, sales_area, body_form, config_level, model_year, steering_wheel_position, interior_type, exterior_color, drive_form, wheel, wheel_color, seat_type, assisted_driving, etc_system, rear_tow_bar, engine_no, engine_type, front_drive_motor_no, front_drive_motor_type, rear_drive_motor_no, rear_drive_motor_type, generator_no, generator_type, power_battery_pack_no, power_battery_type, power_battery_factory,
         description, create_time, create_by, modify_time, modify_by, row_version, row_valid
     </sql>
 
     <!-- 插入 -->
     <insert id="insertPo" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_veh_detail_info (
-            id, vin, production_order, matnr, project, sales_area, body_form, config_level, model_year, steering_wheel_position, interior_type, exterior_color, drive_form, wheel, whee_color, seat_type, assisted_driving, etc_system, rear_tow_bar, engine_no, engine_type, front_drive_motor_no, front_drive_motor_type, rear_drive_motor_no, rear_drive_motor_type, generator_no, generator_type, power_battery_pack_no, power_battery_type, power_battery_factory, 
+            id, vin, production_order, matnr, project, sales_area, body_form, config_level, model_year, steering_wheel_position, interior_type, exterior_color, drive_form, wheel, wheel_color, seat_type, assisted_driving, etc_system, rear_tow_bar, engine_no, engine_type, front_drive_motor_no, front_drive_motor_type, rear_drive_motor_no, rear_drive_motor_type, generator_no, generator_type, power_battery_pack_no, power_battery_type, power_battery_factory,
             description, create_time, create_by, modify_time, modify_by, row_version, row_valid
         )
         VALUES (
-            #{id}, #{vin}, #{productionOrder}, #{matnr}, #{project}, #{salesArea}, #{bodyForm}, #{configLevel}, #{modelYear}, #{steeringWheelPosition}, #{interiorType}, #{exteriorColor}, #{driveForm}, #{wheel}, #{wheeColor}, #{seatType}, #{assistedDriving}, #{etcSystem}, #{rearTowBar}, #{engineNo}, #{engineType}, #{frontDriveMotorNo}, #{frontDriveMotorType}, #{rearDriveMotorNo}, #{rearDriveMotorType}, #{generatorNo}, #{generatorType}, #{powerBatteryPackNo}, #{powerBatteryType}, #{powerBatteryFactory}, 
+            #{id}, #{vin}, #{productionOrder}, #{matnr}, #{project}, #{salesArea}, #{bodyForm}, #{configLevel}, #{modelYear}, #{steeringWheelPosition}, #{interiorType}, #{exteriorColor}, #{driveForm}, #{wheel}, #{wheelColor}, #{seatType}, #{assistedDriving}, #{etcSystem}, #{rearTowBar}, #{engineNo}, #{engineType}, #{frontDriveMotorNo}, #{frontDriveMotorType}, #{rearDriveMotorNo}, #{rearDriveMotorType}, #{generatorNo}, #{generatorType}, #{powerBatteryPackNo}, #{powerBatteryType}, #{powerBatteryFactory},
             #{description}, now(), #{createBy}, now(), #{modifyBy}, 1, 1
         )
     </insert>
@@ -64,13 +64,13 @@
     <!-- 批量插入 -->
     <insert id="batchInsertPo" useGeneratedKeys="true" keyProperty="id" parameterType="java.util.List">
         INSERT INTO tb_veh_detail_info (
-            id, vin, production_order, matnr, project, sales_area, body_form, config_level, model_year, steering_wheel_position, interior_type, exterior_color, drive_form, wheel, whee_color, seat_type, assisted_driving, etc_system, rear_tow_bar, engine_no, engine_type, front_drive_motor_no, front_drive_motor_type, rear_drive_motor_no, rear_drive_motor_type, generator_no, generator_type, power_battery_pack_no, power_battery_type, power_battery_factory, 
+            id, vin, production_order, matnr, project, sales_area, body_form, config_level, model_year, steering_wheel_position, interior_type, exterior_color, drive_form, wheel, wheel_color, seat_type, assisted_driving, etc_system, rear_tow_bar, engine_no, engine_type, front_drive_motor_no, front_drive_motor_type, rear_drive_motor_no, rear_drive_motor_type, generator_no, generator_type, power_battery_pack_no, power_battery_type, power_battery_factory,
             description, create_time, create_by, modify_time, modify_by, row_version, row_valid
         )
         VALUES
         <foreach collection="list" item="item" index="index" separator=",">
         (
-            #{item.id}, #{item.vin}, #{item.productionOrder}, #{item.matnr}, #{item.project}, #{item.salesArea}, #{item.bodyForm}, #{item.configLevel}, #{item.modelYear}, #{item.steeringWheelPosition}, #{item.interiorType}, #{item.exteriorColor}, #{item.driveForm}, #{item.wheel}, #{item.wheeColor}, #{item.seatType}, #{item.assistedDriving}, #{item.etcSystem}, #{item.rearTowBar}, #{item.engineNo}, #{item.engineType}, #{item.frontDriveMotorNo}, #{item.frontDriveMotorType}, #{item.rearDriveMotorNo}, #{item.rearDriveMotorType}, #{item.generatorNo}, #{item.generatorType}, #{item.powerBatteryPackNo}, #{item.powerBatteryType}, #{item.powerBatteryFactory}, 
+            #{item.id}, #{item.vin}, #{item.productionOrder}, #{item.matnr}, #{item.project}, #{item.salesArea}, #{item.bodyForm}, #{item.configLevel}, #{item.modelYear}, #{item.steeringWheelPosition}, #{item.interiorType}, #{item.exteriorColor}, #{item.driveForm}, #{item.wheel}, #{item.wheelColor}, #{item.seatType}, #{item.assistedDriving}, #{item.etcSystem}, #{item.rearTowBar}, #{item.engineNo}, #{item.engineType}, #{item.frontDriveMotorNo}, #{item.frontDriveMotorType}, #{item.rearDriveMotorNo}, #{item.rearDriveMotorType}, #{item.generatorNo}, #{item.generatorType}, #{item.powerBatteryPackNo}, #{item.powerBatteryType}, #{item.powerBatteryFactory},
             #{item.description}, now(), #{item.createBy}, now(), #{item.modifyBy}, 1, 1
         )
         </foreach>
@@ -118,8 +118,8 @@
         <if test="wheel != null and wheel != ''">
             t.wheel = #{wheel},
         </if>
-        <if test="wheeColor != null and wheeColor != ''">
-            t.whee_color = #{wheeColor},
+        <if test="wheelColor != null and wheelColor != ''">
+            t.wheel_color = #{wheelColor},
         </if>
         <if test="seatType != null and seatType != ''">
             t.seat_type = #{seatType},
@@ -247,8 +247,8 @@
         <if test="wheel != null and wheel != ''">
             AND t.wheel = #{wheel}
         </if>
-        <if test="wheeColor != null and wheeColor != ''">
-            AND t.whee_color = #{wheeColor}
+        <if test="wheelColor != null and wheelColor != ''">
+            AND t.wheel_color = #{wheelColor}
         </if>
         <if test="seatType != null and seatType != ''">
             AND t.seat_type = #{seatType}
