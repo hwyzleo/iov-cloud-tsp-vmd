@@ -1,10 +1,15 @@
 package net.hwyz.iov.cloud.tsp.vmd.service.application.service;
 
 import cn.hutool.core.util.ObjUtil;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.hwyz.iov.cloud.framework.common.util.StrUtil;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.exception.VehicleImportDataException;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehImportDataDao;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehImportDataPo;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -23,6 +28,8 @@ import java.util.Map;
 public class VehicleImportDataAppService {
 
     private final VehImportDataDao vehImportDataDao;
+    private final VehicleAppService vehicleAppService;
+    private final VehiclePartAppService vehiclePartAppService;
 
     /**
      * 查询车辆导入数据
@@ -108,6 +115,58 @@ public class VehicleImportDataAppService {
      */
     public int deleteVehicleImportDataByIds(Long[] ids) {
         return vehImportDataDao.batchPhysicalDeletePo(ids);
+    }
+
+    /**
+     * 解析车辆导入数据
+     *
+     * @param batchNum 批次号
+     */
+    @Async
+    public void parseVehicleImportData(String batchNum) {
+        VehImportDataPo vehImportDataPo = vehImportDataDao.selectPoByBatchNum(batchNum);
+        if (ObjUtil.isNull(vehImportDataPo)) {
+            throw new VehicleImportDataException(batchNum, "车辆导入数据批次号不存在");
+        }
+        if (vehImportDataPo.getHandle()) {
+            throw new VehicleImportDataException(batchNum, "车辆导入数据批次号已处理");
+        }
+        String dataStr = vehImportDataPo.getData();
+        if (StrUtil.isBlank(dataStr)) {
+            throw new VehicleImportDataException(batchNum, "车辆导入数据数据为空");
+        }
+        String type = vehImportDataPo.getType();
+        if (StrUtil.isBlank(type)) {
+            throw new VehicleImportDataException(batchNum, "车辆导入数据数据类型为空");
+        }
+        String version = vehImportDataPo.getVersion();
+        if (StrUtil.isBlank(version)) {
+            throw new VehicleImportDataException(batchNum, "车辆导入数据版本为空");
+        }
+        JSONObject dataJson = JSONUtil.parseObj(dataStr);
+        vehImportDataPo.setHandle(true);
+        vehImportDataPo.setDescription("");
+        try {
+            switch (type.toUpperCase()) {
+                case "SIM" -> vehiclePartAppService.parseSimImportData(batchNum, version, dataJson);
+                case "TBOX" -> vehiclePartAppService.parseTboxImportData(batchNum, version, dataJson);
+                case "CCP" -> vehiclePartAppService.parseCcpImportData(batchNum, version, dataJson);
+                case "BTM" -> vehiclePartAppService.parseBtmImportData(batchNum, version, dataJson);
+                case "IDCM" -> vehiclePartAppService.parseIdcmImportData(batchNum, version, dataJson);
+                case "PRODUCE" -> vehicleAppService.parseVehicleProduceImportData(batchNum, version, dataJson);
+                case "EOL" -> vehicleAppService.parseVehicleEolImportData(batchNum, version, dataJson);
+                default -> {
+                    logger.warn("车辆导入数据批次号[{}]类型[{}]暂未处理", batchNum, vehImportDataPo.getType());
+                    vehImportDataPo.setHandle(false);
+                    vehImportDataPo.setDescription("未知类型：" + vehImportDataPo.getType());
+                }
+            }
+        } catch (Exception e) {
+            logger.error("车辆导入数据批次号[{}]处理失败", batchNum, e);
+            vehImportDataPo.setHandle(false);
+            vehImportDataPo.setDescription("车辆导入数据批次号[" + batchNum + "]处理失败:" + e.getMessage());
+        }
+        vehImportDataDao.updatePo(vehImportDataPo);
     }
 
 }

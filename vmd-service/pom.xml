@@ -18,6 +18,7 @@
         <vmd.version>0.0.1-SNAPSHOT</vmd.version>
         <account.version>0.0.1-SNAPSHOT</account.version>
         <sec.version>0.0.1-SNAPSHOT</sec.version>
+        <mno.version>0.0.1-SNAPSHOT</mno.version>
     </properties>
 
     <dependencies>
@@ -35,6 +36,11 @@
             <groupId>net.hwyz.iov.cloud.tsp</groupId>
             <artifactId>sec-api</artifactId>
             <version>${sec.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.hwyz.iov.cloud.tsp</groupId>
+            <artifactId>mno-api</artifactId>
+            <version>${mno.version}</version>
         </dependency>
 
         <!-- 框架: 异常 -->

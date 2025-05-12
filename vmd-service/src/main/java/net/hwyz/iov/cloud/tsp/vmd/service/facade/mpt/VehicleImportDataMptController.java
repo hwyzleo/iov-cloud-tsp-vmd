@@ -101,7 +101,7 @@ public class VehicleImportDataMptController extends BaseController implements Ve
         vehImportDataPo.setCreateBy(SecurityUtils.getUserId().toString());
         AjaxResult result = toAjax(vehicleImportDataAppService.createVehicleImportData(vehImportDataPo));
         try {
-            vehicleAppService.parseVehicleImportData(vehImportDataPo.getBatchNum());
+            vehicleImportDataAppService.parseVehicleImportData(vehImportDataPo.getBatchNum());
         } catch (Exception e) {
             logger.warn("车辆导入数据'" + vehicleImportData.getBatchNum() + "'解析异常", e);
             return error("车辆导入数据'" + vehicleImportData.getBatchNum() + "'解析异常");
@@ -128,7 +128,7 @@ public class VehicleImportDataMptController extends BaseController implements Ve
         vehImportDataPo.setModifyBy(SecurityUtils.getUserId().toString());
         AjaxResult result = toAjax(vehicleImportDataAppService.modifyVehicleImportData(vehImportDataPo));
         try {
-            vehicleAppService.parseVehicleImportData(vehImportDataPo.getBatchNum());
+            vehicleImportDataAppService.parseVehicleImportData(vehImportDataPo.getBatchNum());
         } catch (Exception e) {
             logger.warn("车辆导入数据'" + vehicleImportData.getBatchNum() + "'解析异常", e);
             return error("车辆导入数据'" + vehicleImportData.getBatchNum() + "'解析异常");
