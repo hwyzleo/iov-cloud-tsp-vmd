@@ -122,7 +122,9 @@ public class VehiclePartAppService {
             String msisdn = itemJson.getStr("MSISDN");
             if (StrUtil.isBlank(iccid) && StrUtil.isBlank(imsi) && StrUtil.isBlank(msisdn)) {
                 simInvalidCount++;
+                continue;
             }
+            simList.add(SimExService.builder().iccid(iccid).imsi(imsi).msisdn(msisdn).build());
         }
         if (simInvalidCount > 0) {
             logger.warn("SIM卡导入数据批次号[{}]存在无效SIM卡数据[{}]", batchNum, simInvalidCount);
