@@ -14,6 +14,8 @@ import net.hwyz.iov.cloud.framework.common.util.ParamHelper;
 import net.hwyz.iov.cloud.framework.common.util.StrUtil;
 import net.hwyz.iov.cloud.tsp.account.api.contract.Account;
 import net.hwyz.iov.cloud.tsp.account.api.feign.service.ExAccountService;
+import net.hwyz.iov.cloud.tsp.mno.api.contract.VehicleNetworkExService;
+import net.hwyz.iov.cloud.tsp.mno.api.feign.service.ExVehicleNetworkService;
 import net.hwyz.iov.cloud.tsp.vmd.service.application.event.publish.VehiclePublish;
 import net.hwyz.iov.cloud.tsp.vmd.service.domain.contract.enums.VehicleLifecycleNode;
 import net.hwyz.iov.cloud.tsp.vmd.service.domain.vehicle.model.VehicleDo;
@@ -52,6 +54,7 @@ public class VehicleAppService {
     private final VehicleRepository vehicleRepository;
     private final VehPresetOwnerDao vehPresetOwnerDao;
     private final VehiclePartAppService vehiclePartAppService;
+    private final ExVehicleNetworkService exVehicleNetworkService;
     private final VehicleLifecycleAppService vehicleLifecycleAppService;
 
     /**
@@ -386,6 +389,13 @@ public class VehicleAppService {
                             }
                         } else {
                             logger.warn("车辆导入数据批次号[{}]车辆[{}]零部件[TBOX]IMEI为空", batchNum, vin);
+                        }
+                        if (StrUtil.isNotBlank(iccid1)) {
+                            exVehicleNetworkService.create(VehicleNetworkExService.builder()
+                                    .vin(vin)
+                                    .iccid1(iccid1)
+                                    .iccid2(iccid2)
+                                    .build());
                         }
                     }
                 }
