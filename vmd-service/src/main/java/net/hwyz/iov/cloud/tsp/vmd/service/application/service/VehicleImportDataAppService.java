@@ -6,10 +6,11 @@ import cn.hutool.json.JSONUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.hwyz.iov.cloud.framework.common.util.StrUtil;
+import net.hwyz.iov.cloud.tsp.vmd.service.application.service.vid.ImportDataParser;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.exception.VehicleImportDataException;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehImportDataDao;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehImportDataPo;
-import org.springframework.scheduling.annotation.Async;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -27,9 +28,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class VehicleImportDataAppService {
 
+    private final ApplicationContext ctx;
     private final VehImportDataDao vehImportDataDao;
-    private final VehicleAppService vehicleAppService;
-    private final VehiclePartAppService vehiclePartAppService;
 
     /**
      * 查询车辆导入数据
@@ -122,7 +122,6 @@ public class VehicleImportDataAppService {
      *
      * @param batchNum 批次号
      */
-    @Async
     public void parseVehicleImportData(String batchNum) {
         VehImportDataPo vehImportDataPo = vehImportDataDao.selectPoByBatchNum(batchNum);
         if (ObjUtil.isNull(vehImportDataPo)) {
@@ -147,26 +146,29 @@ public class VehicleImportDataAppService {
         vehImportDataPo.setHandle(true);
         vehImportDataPo.setDescription("");
         try {
-            switch (type.toUpperCase()) {
-                case "SIM" -> vehiclePartAppService.parseSimImportData(batchNum, version, dataJson);
-                case "TBOX" -> vehiclePartAppService.parseTboxImportData(batchNum, version, dataJson);
-                case "CCP" -> vehiclePartAppService.parseCcpImportData(batchNum, version, dataJson);
-                case "BTM" -> vehiclePartAppService.parseBtmImportData(batchNum, version, dataJson);
-                case "IDCM" -> vehiclePartAppService.parseIdcmImportData(batchNum, version, dataJson);
-                case "PRODUCE" -> vehicleAppService.parseVehicleProduceImportData(batchNum, version, dataJson);
-                case "EOL" -> vehicleAppService.parseVehicleEolImportData(batchNum, version, dataJson);
-                default -> {
-                    logger.warn("车辆导入数据批次号[{}]类型[{}]暂未处理", batchNum, vehImportDataPo.getType());
-                    vehImportDataPo.setHandle(false);
-                    vehImportDataPo.setDescription("未知类型：" + vehImportDataPo.getType());
-                }
+            ImportDataParser parser = getParser(type, version);
+            if (ObjUtil.isNull(parser)) {
+                throw new VehicleImportDataException(batchNum, "没找到数据类型[" + type + "]版本[" + version + "]对应的解析器");
             }
+            parser.parse(batchNum, dataJson);
         } catch (Exception e) {
-            logger.error("车辆导入数据批次号[{}]处理失败", batchNum, e);
             vehImportDataPo.setHandle(false);
             vehImportDataPo.setDescription("车辆导入数据批次号[" + batchNum + "]处理失败:" + e.getMessage());
+            vehImportDataDao.updatePo(vehImportDataPo);
+            throw new VehicleImportDataException(batchNum, e.getMessage());
         }
         vehImportDataDao.updatePo(vehImportDataPo);
+    }
+
+    /**
+     * 获取解析器
+     *
+     * @param dataType    数据类型
+     * @param dataVersion 数据版本
+     * @return 数据解析器
+     */
+    private ImportDataParser getParser(String dataType, String dataVersion) {
+        return ctx.getBean(dataType.toLowerCase() + "DataParserV" + dataVersion, ImportDataParser.class);
     }
 
 }

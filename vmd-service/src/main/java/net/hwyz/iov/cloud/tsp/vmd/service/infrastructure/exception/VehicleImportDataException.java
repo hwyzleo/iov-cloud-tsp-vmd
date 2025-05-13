@@ -14,7 +14,7 @@ public class VehicleImportDataException extends VmdBaseException {
 
     public VehicleImportDataException(String batchNum, String reason) {
         super(ERROR_CODE);
-        logger.warn("车辆导入数据[{}]异常[{}]", batchNum, reason);
+        logger.error("车辆导入数据[{}]异常[{}]", batchNum, reason);
     }
 
 }

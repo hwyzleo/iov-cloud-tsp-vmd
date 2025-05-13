@@ -12,7 +12,6 @@ import net.hwyz.iov.cloud.framework.security.annotation.RequiresPermissions;
 import net.hwyz.iov.cloud.framework.security.util.SecurityUtils;
 import net.hwyz.iov.cloud.tsp.vmd.api.contract.VehicleImportDataMpt;
 import net.hwyz.iov.cloud.tsp.vmd.api.feign.mpt.VehicleImportDataMptApi;
-import net.hwyz.iov.cloud.tsp.vmd.service.application.service.VehicleAppService;
 import net.hwyz.iov.cloud.tsp.vmd.service.application.service.VehicleImportDataAppService;
 import net.hwyz.iov.cloud.tsp.vmd.service.facade.assembler.VehicleImportDataMptAssembler;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehImportDataPo;
@@ -32,7 +31,6 @@ import java.util.List;
 @RequestMapping(value = "/mpt/vehicleImportData")
 public class VehicleImportDataMptController extends BaseController implements VehicleImportDataMptApi {
 
-    private final VehicleAppService vehicleAppService;
     private final VehicleImportDataAppService vehicleImportDataAppService;
 
     /**
@@ -103,7 +101,6 @@ public class VehicleImportDataMptController extends BaseController implements Ve
         try {
             vehicleImportDataAppService.parseVehicleImportData(vehImportDataPo.getBatchNum());
         } catch (Exception e) {
-            logger.warn("车辆导入数据'" + vehicleImportData.getBatchNum() + "'解析异常", e);
             return error("车辆导入数据'" + vehicleImportData.getBatchNum() + "'解析异常");
         }
         return result;
@@ -130,7 +127,6 @@ public class VehicleImportDataMptController extends BaseController implements Ve
         try {
             vehicleImportDataAppService.parseVehicleImportData(vehImportDataPo.getBatchNum());
         } catch (Exception e) {
-            logger.warn("车辆导入数据'" + vehicleImportData.getBatchNum() + "'解析异常", e);
             return error("车辆导入数据'" + vehicleImportData.getBatchNum() + "'解析异常");
         }
         return result;
