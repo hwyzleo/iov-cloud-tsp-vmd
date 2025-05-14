@@ -19,6 +19,7 @@
         <account.version>0.0.1-SNAPSHOT</account.version>
         <sec.version>0.0.1-SNAPSHOT</sec.version>
         <mno.version>0.0.1-SNAPSHOT</mno.version>
+        <tbox.version>0.0.1-SNAPSHOT</tbox.version>
     </properties>
 
     <dependencies>
@@ -41,6 +42,11 @@
             <groupId>net.hwyz.iov.cloud.tsp</groupId>
             <artifactId>mno-api</artifactId>
             <version>${mno.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.hwyz.iov.cloud.tsp</groupId>
+            <artifactId>tbox-api</artifactId>
+            <version>${tbox.version}</version>
         </dependency>
 
         <!-- 框架: 异常 -->

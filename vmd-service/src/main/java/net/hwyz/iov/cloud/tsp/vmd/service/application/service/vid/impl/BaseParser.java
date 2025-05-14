@@ -16,6 +16,32 @@ import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehPartPo
 public class BaseParser {
 
     /**
+     * 获取头部分
+     *
+     * @param dataJson 整体数据JSON对象
+     * @return 头部分JSON对象
+     */
+    protected JSONObject getHeader(JSONObject dataJson) {
+        JSONObject request = dataJson.getJSONObject("REQUEST");
+        return request.getJSONObject("HEAD");
+    }
+
+    /**
+     * 获取供应商
+     *
+     * @param dataJson 整体数据JSON对象
+     * @return 供应商代码
+     */
+    protected String getSupplier(JSONObject dataJson) {
+        JSONObject head = getHeader(dataJson);
+        String supplier = null;
+        if (ObjUtil.isNotNull(head)) {
+            supplier = head.getStr("ACCOUNT");
+        }
+        return supplier;
+    }
+
+    /**
      * 获取数据部分
      *
      * @param dataJson 整体数据JSON对象
@@ -23,7 +49,6 @@ public class BaseParser {
      */
     protected JSONObject getData(JSONObject dataJson) {
         JSONObject request = dataJson.getJSONObject("REQUEST");
-        JSONObject head = request.getJSONObject("HEAD");
         return request.getJSONObject("DATA");
     }
 
@@ -39,7 +64,7 @@ public class BaseParser {
      * @param vin           车架号
      */
     protected void handleVehicleInfo(JSONObject itemJson, Object vehicleInfoPo, String jsonKey, String propertyName,
-                                  String keyDesc, String batchNum, String vin) {
+                                     String keyDesc, String batchNum, String vin) {
         String keyValue = itemJson.getStr(jsonKey);
         if (StrUtil.isNotBlank(keyValue)) {
             Object fieldValue = BeanUtil.getFieldValue(vehicleInfoPo, propertyName);
@@ -67,7 +92,7 @@ public class BaseParser {
      * @param ecuType      零部件
      */
     protected void handlePartInfo(JSONObject partJson, VehPartPo partPo, String jsonKey, String propertyName, String keyDesc,
-                               String batchNum, String vin, String ecuType) {
+                                  String batchNum, String vin, String ecuType) {
         String keyValue = partJson.getStr(jsonKey);
         if (StrUtil.isNotBlank(keyValue)) {
             Object fieldValue = BeanUtil.getFieldValue(partPo, propertyName);
@@ -95,7 +120,7 @@ public class BaseParser {
      * @param ecuType      零部件
      */
     protected void handlePartInfoOptional(JSONObject partJson, VehPartPo partPo, String jsonKey, String propertyName, String keyDesc,
-                                       String batchNum, String vin, String ecuType) {
+                                          String batchNum, String vin, String ecuType) {
         String keyValue = partJson.getStr(jsonKey);
         if (StrUtil.isNotBlank(keyValue)) {
             Object fieldValue = BeanUtil.getFieldValue(partPo, propertyName);
