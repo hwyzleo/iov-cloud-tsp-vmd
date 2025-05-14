@@ -31,7 +31,7 @@ public class CcpDataParserV1_0 extends BaseParser implements ImportDataParser {
     public void parse(String batchNum, JSONObject dataJson) {
         String supplier = getSupplier(dataJson);
         if (StrUtil.isBlank(supplier)) {
-            logger.warn("车联终端导入数据批次号[{}]供应商代码为空", batchNum);
+            logger.warn("中央计算平台导入数据批次号[{}]供应商代码为空", batchNum);
         }
         JSONObject data = getData(dataJson);
         JSONArray items = data.getJSONArray("ITEMS");
