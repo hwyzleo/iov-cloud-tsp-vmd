@@ -20,6 +20,7 @@
         <sec.version>0.0.1-SNAPSHOT</sec.version>
         <mno.version>0.0.1-SNAPSHOT</mno.version>
         <tbox.version>0.0.1-SNAPSHOT</tbox.version>
+        <ccp.version>0.0.1-SNAPSHOT</ccp.version>
     </properties>
 
     <dependencies>
@@ -47,6 +48,11 @@
             <groupId>net.hwyz.iov.cloud.tsp</groupId>
             <artifactId>tbox-api</artifactId>
             <version>${tbox.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.hwyz.iov.cloud.tsp</groupId>
+            <artifactId>ccp-api</artifactId>
+            <version>${ccp.version}</version>
         </dependency>
 
         <!-- 框架: 异常 -->
