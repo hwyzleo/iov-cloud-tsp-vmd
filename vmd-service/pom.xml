@@ -22,6 +22,7 @@
         <tbox.version>0.0.1-SNAPSHOT</tbox.version>
         <ccp.version>0.0.1-SNAPSHOT</ccp.version>
         <idk.version>0.0.1-SNAPSHOT</idk.version>
+        <idcm.version>0.0.1-SNAPSHOT</idcm.version>
     </properties>
 
     <dependencies>
@@ -59,6 +60,11 @@
             <groupId>net.hwyz.iov.cloud.tsp</groupId>
             <artifactId>idk-api</artifactId>
             <version>${idk.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.hwyz.iov.cloud.tsp</groupId>
+            <artifactId>idcm-api</artifactId>
+            <version>${idcm.version}</version>
         </dependency>
 
         <!-- 框架: 异常 -->
