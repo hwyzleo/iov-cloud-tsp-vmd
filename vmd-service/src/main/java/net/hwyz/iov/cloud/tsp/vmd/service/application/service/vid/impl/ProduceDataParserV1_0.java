@@ -30,14 +30,14 @@ public class ProduceDataParserV1_0 extends BaseParser implements ImportDataParse
 
     @Override
     public void parse(String batchNum, JSONObject dataJson) {
-        JSONObject request = dataJson.getJSONObject("REQUEST");
-        JSONObject data = request.getJSONObject("DATA");
+        JSONObject data = getData(dataJson);
         JSONArray items = data.getJSONArray("ITEMS");
+        int vehicleInvalidCount = 0;
         for (Object item : items) {
             JSONObject itemJson = JSONUtil.parseObj(item);
             String vin = itemJson.getStr("VIN");
             if (StrUtil.isBlank(vin)) {
-                logger.warn("车辆导入数据批次号[{}]车架号为空", batchNum);
+                vehicleInvalidCount++;
                 continue;
             }
             VehBasicInfoPo vehBasicInfoPo = vehicleAppService.getVehicleByVin(vin);
@@ -59,6 +59,9 @@ public class ProduceDataParserV1_0 extends BaseParser implements ImportDataParse
             }
             // 发布事件
             vehiclePublish.produce(vin);
+        }
+        if (vehicleInvalidCount > 0) {
+            logger.warn("车辆生产导入数据批次号[{}]存在无效车辆数据[{}]", batchNum, vehicleInvalidCount);
         }
     }
 }

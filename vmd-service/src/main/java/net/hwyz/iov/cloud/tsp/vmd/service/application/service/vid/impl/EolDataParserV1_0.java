@@ -10,19 +10,23 @@ import lombok.extern.slf4j.Slf4j;
 import net.hwyz.iov.cloud.framework.common.enums.EcuType;
 import net.hwyz.iov.cloud.framework.common.util.DateUtil;
 import net.hwyz.iov.cloud.framework.common.util.StrUtil;
+import net.hwyz.iov.cloud.ota.fota.api.contract.PartExService;
+import net.hwyz.iov.cloud.ota.fota.api.contract.request.SaveVehiclePartsRequest;
+import net.hwyz.iov.cloud.ota.fota.api.feign.service.ExVehiclePartService;
 import net.hwyz.iov.cloud.tsp.mno.api.contract.VehicleNetworkExService;
 import net.hwyz.iov.cloud.tsp.mno.api.feign.service.ExVehicleNetworkService;
 import net.hwyz.iov.cloud.tsp.vmd.service.application.event.publish.VehiclePublish;
 import net.hwyz.iov.cloud.tsp.vmd.service.application.service.VehicleAppService;
 import net.hwyz.iov.cloud.tsp.vmd.service.application.service.VehicleLifecycleAppService;
-import net.hwyz.iov.cloud.tsp.vmd.service.application.service.VehiclePartAppService;
 import net.hwyz.iov.cloud.tsp.vmd.service.application.service.vid.ImportDataParser;
 import net.hwyz.iov.cloud.tsp.vmd.service.domain.contract.enums.VehicleLifecycleNode;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehBasicInfoDao;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehBasicInfoPo;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehDetailInfoPo;
-import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehPartPo;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 车辆生产数据解析器V1.0
@@ -37,20 +41,20 @@ public class EolDataParserV1_0 extends BaseParser implements ImportDataParser {
     private final VehiclePublish vehiclePublish;
     private final VehBasicInfoDao vehBasicInfoDao;
     private final VehicleAppService vehicleAppService;
-    private final VehiclePartAppService vehiclePartAppService;
+    private final ExVehiclePartService exVehiclePartService;
     private final ExVehicleNetworkService exVehicleNetworkService;
     private final VehicleLifecycleAppService vehicleLifecycleAppService;
 
     @Override
     public void parse(String batchNum, JSONObject dataJson) {
-        JSONObject request = dataJson.getJSONObject("REQUEST");
-        JSONObject data = request.getJSONObject("DATA");
+        JSONObject data = getData(dataJson);
         JSONArray items = data.getJSONArray("ITEMS");
+        int vehicleInvalidCount = 0;
         for (Object item : items) {
             JSONObject itemJson = JSONUtil.parseObj(item);
             String vin = itemJson.getStr("VIN");
             if (StrUtil.isBlank(vin)) {
-                logger.warn("车辆导入数据批次号[{}]车架号为空", batchNum);
+                vehicleInvalidCount++;
                 continue;
             }
             VehBasicInfoPo vehBasicInfoPo = vehicleAppService.getVehicleByVin(vin);
@@ -131,6 +135,10 @@ public class EolDataParserV1_0 extends BaseParser implements ImportDataParser {
                 }
             }
             JSONArray parts = itemJson.getJSONArray("PARTS");
+            SaveVehiclePartsRequest request = new SaveVehiclePartsRequest();
+            request.setVin(vin);
+            request.setRemark("车辆下线");
+            List<PartExService> pastList = new ArrayList<>();
             for (Object part : parts) {
                 JSONObject partJson = JSONUtil.parseObj(part);
                 String ecuType = partJson.getStr("ECU_TYPE");
@@ -144,83 +152,38 @@ public class EolDataParserV1_0 extends BaseParser implements ImportDataParser {
                     continue;
                 }
                 String sn = partJson.getStr("PART_NO");
-                VehPartPo partPo;
                 EcuType ecuTypeEnum = EcuType.valOf(ecuType);
                 if (ObjUtil.isNull(ecuTypeEnum)) {
                     logger.warn("车辆导入数据批次号[{}]车架号[{}]零部件类型[{}]异常", batchNum, vin, ecuType);
                 }
-                if (StrUtil.isNotBlank(sn)) {
-                    partPo = vehiclePartAppService.getPartBySn(ecuTypeEnum, sn);
-                } else {
-                    partPo = vehiclePartAppService.getPartByVin(ecuTypeEnum, vin);
-                }
-                if (ObjUtil.isNull(partPo)) {
-                    partPo = new VehPartPo();
-                    partPo.setEcu(ecuType);
-                    partPo.setSn(sn);
-                    partPo.setVin(vin);
-                }
-                handlePartInfo(partJson, partPo, "HARDWARE_VERSION", "hardwareVer", "硬件版本号", batchNum, vin, ecuType);
-                handlePartInfo(partJson, partPo, "SOFTWARE_VERSION", "softwareVer", "软件版本号", batchNum, vin, ecuType);
-                handlePartInfo(partJson, partPo, "HARDWARE_NO", "hardwareNo", "硬件零件号", batchNum, vin, ecuType);
-                handlePartInfo(partJson, partPo, "SOFTWARE_NO", "softwareNo", "软件零件号", batchNum, vin, ecuType);
-                handlePartInfo(partJson, partPo, "SUPPLIER_CODE", "supplierCode", "供应商编码", batchNum, vin, ecuType);
-                handlePartInfoOptional(partJson, partPo, "CONFIG_WORD", "ecuConfigWord", "ECU配置字", batchNum, vin, ecuType);
-                handlePartInfoOptional(partJson, partPo, "PART_SN", "no", "零件号", batchNum, vin, ecuType);
-                handlePartInfoOptional(partJson, partPo, "SECURITY_CHIP_NO", "hsm", "硬件安全模块", batchNum, vin, ecuType);
-                handlePartInfoOptional(partJson, partPo, "MAC_ADDRESS", "mac", "MAC地址", batchNum, vin, ecuType);
+                pastList.add(PartExService.builder()
+                        .sn(sn)
+                        .no(partJson.getStr("PART_SN"))
+                        .ecu(ecuType)
+                        .supplierCode(partJson.getStr("SUPPLIER_CODE"))
+                        .configWord(partJson.getStr("CONFIG_WORD"))
+                        .hardwareVer(partJson.getStr("HARDWARE_VERSION"))
+                        .softwareVer(partJson.getStr("SOFTWARE_VERSION"))
+                        .hardwareNo(partJson.getStr("HARDWARE_NO"))
+                        .softwareNo(partJson.getStr("SOFTWARE_NO"))
+                        .build());
                 if (EcuType.TBOX.name().equalsIgnoreCase(ecuType)) {
-                    String extra = partPo.getExtra();
-                    if (StrUtil.isNotBlank(extra)) {
-                        JSONObject extraJson = JSONUtil.parseObj(extra);
-                        String iccid1 = itemJson.getStr("ICCID1");
-                        if (StrUtil.isNotBlank(iccid1)) {
-                            if (StrUtil.isBlank(extraJson.getStr("iccid1"))) {
-                                extraJson.set("iccid1", iccid1);
-                            } else if (!iccid1.trim().equalsIgnoreCase(extraJson.getStr("iccid1"))) {
-                                logger.warn("车辆导入数据批次号[{}]车辆[{}]零部件[TBOX]ICCID1[{}]与原数据[{}]不一致", batchNum,
-                                        vin, iccid1.trim(), extraJson.getStr("iccid1"));
-                            }
-                        } else {
-                            logger.warn("车辆导入数据批次号[{}]车辆[{}]零部件[TBOX]ICCID1为空", batchNum, vin);
-                        }
-                        String iccid2 = itemJson.getStr("ICCID2");
-                        if (StrUtil.isNotBlank(iccid2)) {
-                            if (StrUtil.isBlank(extraJson.getStr("iccid2"))) {
-                                extraJson.set("iccid2", iccid2);
-                            } else if (!iccid2.trim().equalsIgnoreCase(extraJson.getStr("iccid2"))) {
-                                logger.warn("车辆导入数据批次号[{}]车辆[{}]零部件[TBOX]ICCID2[{}]与原数据[{}]不一致", batchNum,
-                                        vin, iccid2.trim(), extraJson.getStr("iccid2"));
-                            }
-                        } else {
-                            logger.warn("车辆导入数据批次号[{}]车辆[{}]零部件[TBOX]ICCID2为空", batchNum, vin);
-                        }
-                        String imei = itemJson.getStr("IMEI");
-                        if (StrUtil.isNotBlank(imei)) {
-                            if (StrUtil.isBlank(extraJson.getStr("imei"))) {
-                                extraJson.set("imei", imei);
-                            } else if (!imei.trim().equalsIgnoreCase(extraJson.getStr("imei"))) {
-                                logger.warn("车辆导入数据批次号[{}]车辆[{}]零部件[TBOX]ICCID1[{}]与原数据[{}]不一致", batchNum,
-                                        vin, imei.trim(), extraJson.getStr("imei"));
-                            }
-                        } else {
-                            logger.warn("车辆导入数据批次号[{}]车辆[{}]零部件[TBOX]IMEI为空", batchNum, vin);
-                        }
-                        if (StrUtil.isNotBlank(iccid1)) {
-                            exVehicleNetworkService.create(VehicleNetworkExService.builder()
-                                    .vin(vin)
-                                    .iccid1(iccid1)
-                                    .iccid2(iccid2)
-                                    .build());
-                        }
+                    String iccid1 = itemJson.getStr("ICCID1");
+                    String iccid2 = itemJson.getStr("ICCID2");
+                    if (StrUtil.isNotBlank(iccid1)) {
+                        exVehicleNetworkService.create(VehicleNetworkExService.builder()
+                                .vin(vin)
+                                .iccid1(iccid1)
+                                .iccid2(iccid2)
+                                .build());
                     }
                 }
-                if (ObjUtil.isNull(partPo.getId())) {
-                    vehiclePartAppService.createPart(partPo);
-                } else {
-                    vehiclePartAppService.modifyPart(partPo);
-                }
             }
+            request.setPartList(pastList);
+            exVehiclePartService.saveVehicleParts(vin, request);
+        }
+        if (vehicleInvalidCount > 0) {
+            logger.warn("车辆生产导入数据批次号[{}]存在无效车辆数据[{}]", batchNum, vehicleInvalidCount);
         }
     }
 }

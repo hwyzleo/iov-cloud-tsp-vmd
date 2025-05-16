@@ -23,6 +23,7 @@
         <ccp.version>0.0.1-SNAPSHOT</ccp.version>
         <idk.version>0.0.1-SNAPSHOT</idk.version>
         <idcm.version>0.0.1-SNAPSHOT</idcm.version>
+        <fota.version>0.0.1-SNAPSHOT</fota.version>
     </properties>
 
     <dependencies>
@@ -65,6 +66,11 @@
             <groupId>net.hwyz.iov.cloud.tsp</groupId>
             <artifactId>idcm-api</artifactId>
             <version>${idcm.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.hwyz.iov.cloud.ota</groupId>
+            <artifactId>fota-api</artifactId>
+            <version>${fota.version}</version>
         </dependency>
 
         <!-- 框架: 异常 -->
