@@ -171,6 +171,7 @@ public class EolDataParserV1_0 extends BaseParser implements ImportDataParser {
                     String iccid1 = itemJson.getStr("ICCID1");
                     String iccid2 = itemJson.getStr("ICCID2");
                     if (StrUtil.isNotBlank(iccid1)) {
+                        logger.info("创建车辆[{}]网联信息", vin);
                         exVehicleNetworkService.create(VehicleNetworkExService.builder()
                                 .vin(vin)
                                 .iccid1(iccid1)
