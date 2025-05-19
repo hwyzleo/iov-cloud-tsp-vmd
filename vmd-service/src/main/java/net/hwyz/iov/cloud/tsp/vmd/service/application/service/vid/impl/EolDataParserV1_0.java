@@ -134,7 +134,6 @@ public class EolDataParserV1_0 extends BaseParser implements ImportDataParser {
                     vehicleLifecycleAppService.recordCertificateNode(vin, certDate);
                 }
             }
-            logger.info("解析车辆[{}]零部件信息", vin);
             JSONArray parts = itemJson.getJSONArray("PARTS");
             SaveVehiclePartsRequest request = new SaveVehiclePartsRequest();
             request.setVin(vin);
@@ -169,10 +168,9 @@ public class EolDataParserV1_0 extends BaseParser implements ImportDataParser {
                         .softwareNo(partJson.getStr("SOFTWARE_NO"))
                         .build());
                 if (EcuType.TBOX.name().equalsIgnoreCase(ecuType)) {
-                    String iccid1 = itemJson.getStr("ICCID1");
-                    String iccid2 = itemJson.getStr("ICCID2");
+                    String iccid1 = partJson.getStr("ICCID1");
+                    String iccid2 = partJson.getStr("ICCID2");
                     if (StrUtil.isNotBlank(iccid1)) {
-                        logger.info("创建车辆[{}]网联信息", vin);
                         exVehicleNetworkService.create(VehicleNetworkExService.builder()
                                 .vin(vin)
                                 .iccid1(iccid1)
