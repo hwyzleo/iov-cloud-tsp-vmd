@@ -134,6 +134,7 @@ public class EolDataParserV1_0 extends BaseParser implements ImportDataParser {
                     vehicleLifecycleAppService.recordCertificateNode(vin, certDate);
                 }
             }
+            logger.info("解析车辆[{}]零部件信息", vin);
             JSONArray parts = itemJson.getJSONArray("PARTS");
             SaveVehiclePartsRequest request = new SaveVehiclePartsRequest();
             request.setVin(vin);
