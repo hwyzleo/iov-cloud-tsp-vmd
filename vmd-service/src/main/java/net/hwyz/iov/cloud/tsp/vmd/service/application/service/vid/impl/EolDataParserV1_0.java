@@ -15,6 +15,8 @@ import net.hwyz.iov.cloud.ota.fota.api.contract.request.SaveVehiclePartsRequest;
 import net.hwyz.iov.cloud.ota.fota.api.feign.service.ExVehiclePartService;
 import net.hwyz.iov.cloud.tsp.ccp.api.contract.VehicleCcpExService;
 import net.hwyz.iov.cloud.tsp.ccp.api.feign.service.ExVehicleCcpService;
+import net.hwyz.iov.cloud.tsp.idcm.api.contract.VehicleIdcmExService;
+import net.hwyz.iov.cloud.tsp.idcm.api.feign.service.ExVehicleIdcmService;
 import net.hwyz.iov.cloud.tsp.mno.api.contract.VehicleNetworkExService;
 import net.hwyz.iov.cloud.tsp.mno.api.feign.service.ExVehicleNetworkService;
 import net.hwyz.iov.cloud.tsp.tbox.api.contract.VehicleTboxExService;
@@ -48,6 +50,7 @@ public class EolDataParserV1_0 extends BaseParser implements ImportDataParser {
     private final ExVehicleCcpService exVehicleCcpService;
     private final ExVehiclePartService exVehiclePartService;
     private final ExVehicleTboxService exVehicleTboxService;
+    private final ExVehicleIdcmService exVehicleIdcmService;
     private final ExVehicleNetworkService exVehicleNetworkService;
     private final VehicleLifecycleAppService vehicleLifecycleAppService;
 
@@ -187,6 +190,9 @@ public class EolDataParserV1_0 extends BaseParser implements ImportDataParser {
                 }
                 if (EcuType.CCP.name().equalsIgnoreCase(ecuType)) {
                     exVehicleCcpService.bind(VehicleCcpExService.builder().vin(vin).sn(sn).build());
+                }
+                if (EcuType.IDCM.name().equalsIgnoreCase(ecuType)) {
+                    exVehicleIdcmService.bind(VehicleIdcmExService.builder().vin(vin).sn(sn).build());
                 }
             }
             request.setPartList(pastList);
