@@ -15,6 +15,8 @@ import net.hwyz.iov.cloud.ota.fota.api.contract.request.SaveVehiclePartsRequest;
 import net.hwyz.iov.cloud.ota.fota.api.feign.service.ExVehiclePartService;
 import net.hwyz.iov.cloud.tsp.mno.api.contract.VehicleNetworkExService;
 import net.hwyz.iov.cloud.tsp.mno.api.feign.service.ExVehicleNetworkService;
+import net.hwyz.iov.cloud.tsp.tbox.api.contract.VehicleTboxExService;
+import net.hwyz.iov.cloud.tsp.tbox.api.feign.service.ExVehicleTboxService;
 import net.hwyz.iov.cloud.tsp.vmd.service.application.event.publish.VehiclePublish;
 import net.hwyz.iov.cloud.tsp.vmd.service.application.service.VehicleAppService;
 import net.hwyz.iov.cloud.tsp.vmd.service.application.service.VehicleLifecycleAppService;
@@ -42,6 +44,7 @@ public class EolDataParserV1_0 extends BaseParser implements ImportDataParser {
     private final VehBasicInfoDao vehBasicInfoDao;
     private final VehicleAppService vehicleAppService;
     private final ExVehiclePartService exVehiclePartService;
+    private final ExVehicleTboxService exVehicleTboxService;
     private final ExVehicleNetworkService exVehicleNetworkService;
     private final VehicleLifecycleAppService vehicleLifecycleAppService;
 
@@ -177,6 +180,7 @@ public class EolDataParserV1_0 extends BaseParser implements ImportDataParser {
                                 .iccid2(iccid2)
                                 .build());
                     }
+                    exVehicleTboxService.bind(VehicleTboxExService.builder().vin(vin).sn(sn).build());
                 }
             }
             request.setPartList(pastList);
