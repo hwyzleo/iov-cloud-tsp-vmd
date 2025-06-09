@@ -13,6 +13,9 @@ import net.hwyz.iov.cloud.framework.common.util.StrUtil;
 import net.hwyz.iov.cloud.ota.fota.api.contract.PartExService;
 import net.hwyz.iov.cloud.ota.fota.api.contract.request.SaveVehiclePartsRequest;
 import net.hwyz.iov.cloud.ota.fota.api.feign.service.ExVehiclePartService;
+import net.hwyz.iov.cloud.otd.wms.api.contract.PreInboundOrderExService;
+import net.hwyz.iov.cloud.otd.wms.api.contract.enums.WarehouseLevel;
+import net.hwyz.iov.cloud.otd.wms.api.feign.service.ExPreInboundOrderService;
 import net.hwyz.iov.cloud.tsp.ccp.api.contract.VehicleCcpExService;
 import net.hwyz.iov.cloud.tsp.ccp.api.feign.service.ExVehicleCcpService;
 import net.hwyz.iov.cloud.tsp.idcm.api.contract.VehicleIdcmExService;
@@ -32,6 +35,7 @@ import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehDetail
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -52,6 +56,7 @@ public class EolDataParserV1_0 extends BaseParser implements ImportDataParser {
     private final ExVehicleTboxService exVehicleTboxService;
     private final ExVehicleIdcmService exVehicleIdcmService;
     private final ExVehicleNetworkService exVehicleNetworkService;
+    private final ExPreInboundOrderService exPreInboundOrderService;
     private final VehicleLifecycleAppService vehicleLifecycleAppService;
 
     @Override
@@ -197,6 +202,14 @@ public class EolDataParserV1_0 extends BaseParser implements ImportDataParser {
             }
             request.setPartList(pastList);
             exVehiclePartService.saveVehicleParts(vin, request);
+            // 预期下线后1天内到达前置库，2小时内入库
+            exPreInboundOrderService.createOrder(PreInboundOrderExService.builder()
+                    .vin(vin)
+                    .modelConfigCode(itemJson.getStr("MODEL_CONFIG"))
+                    .warehouseLevel(WarehouseLevel.PDC.name())
+                    .estimatedArrivalTime(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000))
+                    .estimatedInboundTime(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000 + 2 * 60 * 60 * 1000))
+                    .build());
         }
         if (vehicleInvalidCount > 0) {
             logger.warn("车辆生产导入数据批次号[{}]存在无效车辆数据[{}]", batchNum, vehicleInvalidCount);
