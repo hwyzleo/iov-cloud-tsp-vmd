@@ -115,12 +115,12 @@ public class BrandAppService {
     }
 
     /**
-     * 批量删除车辆平台
+     * 批量删除车辆品牌
      *
-     * @param ids 车辆平台ID数组
+     * @param ids 车辆品牌ID数组
      * @return 结果
      */
-    public int deletePlatformByIds(Long[] ids) {
+    public int deleteBrandByIds(Long[] ids) {
         return vehBrandDao.batchPhysicalDeletePo(ids);
     }
 

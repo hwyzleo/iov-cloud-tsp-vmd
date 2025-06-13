@@ -14,9 +14,7 @@ import net.hwyz.iov.cloud.tsp.vmd.api.contract.BrandMpt;
 import net.hwyz.iov.cloud.tsp.vmd.api.feign.mpt.BrandMptApi;
 import net.hwyz.iov.cloud.tsp.vmd.service.application.service.BrandAppService;
 import net.hwyz.iov.cloud.tsp.vmd.service.facade.assembler.BrandMptAssembler;
-import net.hwyz.iov.cloud.tsp.vmd.service.facade.assembler.ManufacturerMptAssembler;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehBrandPo;
-import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehManufacturerPo;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -139,7 +137,7 @@ public class BrandMptController extends BaseController implements BrandMptApi {
                 return error("删除车辆品牌'" + brandId + "'失败，该车辆品牌下存在车辆");
             }
         }
-        return toAjax(brandAppService.deletePlatformByIds(brandIds));
+        return toAjax(brandAppService.deleteBrandByIds(brandIds));
     }
 
 }
