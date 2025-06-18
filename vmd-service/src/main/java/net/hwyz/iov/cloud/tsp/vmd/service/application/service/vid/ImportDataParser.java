@@ -9,6 +9,12 @@ import cn.hutool.json.JSONObject;
  */
 public interface ImportDataParser {
 
+    /**
+     * 解析数据
+     *
+     * @param batchNum 批次号
+     * @param dataJson 数据JSON
+     */
     void parse(String batchNum, JSONObject dataJson);
 
 }
