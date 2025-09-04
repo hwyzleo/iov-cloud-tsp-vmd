@@ -23,12 +23,4 @@ public interface VehInteriorDao extends BaseDao<VehInteriorPo, Long> {
      */
     VehInteriorPo selectPoByCode(String code);
 
-    /**
-     * 批量物理删除内饰颜色信息
-     *
-     * @param ids 内饰颜色id数组
-     * @return 影响行数
-     */
-    int batchPhysicalDeletePo(Long[] ids);
-
 }

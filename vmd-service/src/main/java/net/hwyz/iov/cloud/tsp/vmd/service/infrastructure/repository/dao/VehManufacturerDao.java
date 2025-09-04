@@ -2,7 +2,6 @@ package net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao;
 
 import net.hwyz.iov.cloud.framework.mysql.dao.BaseDao;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehManufacturerPo;
-import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehPlatformPo;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -23,13 +22,5 @@ public interface VehManufacturerDao extends BaseDao<VehManufacturerPo, Long> {
      * @return 车辆工厂信息
      */
     VehManufacturerPo selectPoByCode(String code);
-
-    /**
-     * 批量物理删除车辆工厂信息
-     *
-     * @param ids 车辆平台id数组
-     * @return 影响行数
-     */
-    int batchPhysicalDeletePo(Long[] ids);
 
 }

@@ -23,12 +23,4 @@ public interface VehImportDataDao extends BaseDao<VehImportDataPo, Long> {
      */
     VehImportDataPo selectPoByBatchNum(String batchNum);
 
-    /**
-     * 批量物理删除车辆导入数据
-     *
-     * @param ids 车辆导入数据id数组
-     * @return 影响行数
-     */
-    int batchPhysicalDeletePo(Long[] ids);
-
 }

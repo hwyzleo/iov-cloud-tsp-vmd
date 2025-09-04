@@ -24,12 +24,4 @@ public interface VehBasicInfoDao extends BaseDao<VehBasicInfoPo, Long> {
      */
     VehBasicInfoPo selectPoByVin(String vin);
 
-    /**
-     * 批量物理删除车辆信息
-     *
-     * @param ids 车辆id数组
-     * @return 影响行数
-     */
-    int batchPhysicalDeletePo(Long[] ids);
-
 }

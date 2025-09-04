@@ -23,12 +23,4 @@ public interface VehPlatformDao extends BaseDao<VehPlatformPo, Long> {
      */
     VehPlatformPo selectPoByCode(String code);
 
-    /**
-     * 批量物理删除车辆平台信息
-     *
-     * @param ids 车辆平台id数组
-     * @return 影响行数
-     */
-    int batchPhysicalDeletePo(Long[] ids);
-
 }

@@ -23,12 +23,4 @@ public interface VehModelConfigDao extends BaseDao<VehModelConfigPo, Long> {
      */
     VehModelConfigPo selectPoByCode(String code);
 
-    /**
-     * 批量物理删除车型配置信息
-     *
-     * @param ids 车型配置id数组
-     * @return 影响行数
-     */
-    int batchPhysicalDeletePo(Long[] ids);
-
 }
