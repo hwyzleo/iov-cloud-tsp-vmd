@@ -382,3 +382,42 @@ CREATE TABLE `db_vmd`.`tb_veh_import_data`
     UNIQUE KEY (`batch_num`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='车辆导入数据表';
+
+DROP TABLE IF EXISTS `db_vmd`.`tb_supplier`;
+CREATE TABLE `db_vmd`.`tb_supplier`
+(
+    `id`                 BIGINT       NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `code`               VARCHAR(255) NOT NULL COMMENT '供应商代码',
+    `name`               VARCHAR(255) NOT NULL COMMENT '供应商名称',
+    `name_short`         VARCHAR(255)          DEFAULT NULL COMMENT '供应商名称缩写',
+    `name_en`            VARCHAR(255)          DEFAULT NULL COMMENT '供应商英文名称',
+    `type`               SMALLINT              DEFAULT NULL COMMENT '供应商类型',
+    `province`           VARCHAR(255)          DEFAULT NULL COMMENT '省',
+    `city`               VARCHAR(255)          DEFAULT NULL COMMENT '市',
+    `county`             VARCHAR(255)          DEFAULT NULL COMMENT '区',
+    `subdistrict`        VARCHAR(255)          DEFAULT NULL COMMENT '街道',
+    `address`            VARCHAR(255)          DEFAULT NULL COMMENT '地址',
+    `zipcode`            VARCHAR(20)           DEFAULT NULL COMMENT '邮编',
+    `fax`                VARCHAR(50)           DEFAULT NULL COMMENT '供应商传真',
+    `tel`                VARCHAR(50)           DEFAULT NULL COMMENT '供应商电话',
+    `website`            VARCHAR(255)          DEFAULT NULL COMMENT '供应商网站',
+    `email`              VARCHAR(255)          DEFAULT NULL COMMENT '供应商邮箱',
+    `contact_person`     VARCHAR(255)          DEFAULT NULL COMMENT '联系人',
+    `contact_person_tel` VARCHAR(50)           DEFAULT NULL COMMENT '联系人电话',
+    `legal_person`       VARCHAR(255)          DEFAULT NULL COMMENT '法人',
+    `bank_name`          VARCHAR(255)          DEFAULT NULL COMMENT '供应商银行',
+    `account_no`         VARCHAR(255)          DEFAULT NULL COMMENT '供应商账号',
+    `tax_no`             VARCHAR(255)          DEFAULT NULL COMMENT '供应商税号',
+    `enable`             TINYINT      NOT NULL COMMENT '是否启用',
+    `sort`               INT          NOT NULL COMMENT '排序',
+    `description`        VARCHAR(255)          DEFAULT NULL COMMENT '备注',
+    `create_time`        TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `create_by`          VARCHAR(64)           DEFAULT NULL COMMENT '创建者',
+    `modify_time`        TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
+    `modify_by`          VARCHAR(64)           DEFAULT NULL COMMENT '修改者',
+    `row_version`        INT                   DEFAULT 1 COMMENT '记录版本',
+    `row_valid`          TINYINT               DEFAULT 1 COMMENT '记录是否有效',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY (`code`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4 COMMENT ='供应商表';
