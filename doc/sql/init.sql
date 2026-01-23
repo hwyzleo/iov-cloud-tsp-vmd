@@ -421,3 +421,22 @@ CREATE TABLE `db_vmd`.`tb_supplier`
     UNIQUE KEY (`code`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='供应商表';
+
+DROP TABLE IF EXISTS `db_vmd`.`tb_veh_domain`;
+CREATE TABLE `db_vmd`.`tb_veh_domain`
+(
+    `id`          BIGINT       NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `code`        VARCHAR(20)  NOT NULL COMMENT '车载域编码',
+    `name`        VARCHAR(255) NOT NULL COMMENT '车载域名称',
+    `sort`        INT          NOT NULL COMMENT '排序',
+    `description` VARCHAR(255)          DEFAULT NULL COMMENT '备注',
+    `create_time` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `create_by`   VARCHAR(64)           DEFAULT NULL COMMENT '创建者',
+    `modify_time` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
+    `modify_by`   VARCHAR(64)           DEFAULT NULL COMMENT '修改者',
+    `row_version` INT                   DEFAULT 1 COMMENT '记录版本',
+    `row_valid`   TINYINT               DEFAULT 1 COMMENT '记录是否有效',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY (`code`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4 COMMENT ='车载域表';
