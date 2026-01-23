@@ -1,10 +1,12 @@
 package net.hwyz.iov.cloud.tsp.vmd.api.feign.service;
 
 import net.hwyz.iov.cloud.framework.common.constant.ServiceNameConstants;
+import net.hwyz.iov.cloud.tsp.vmd.api.contract.VehicleExService;
 import net.hwyz.iov.cloud.tsp.vmd.api.contract.VehicleOrderExService;
 import net.hwyz.iov.cloud.tsp.vmd.api.feign.service.factory.ExVehicleServiceFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,5 +27,14 @@ public interface ExVehicleService {
      */
     @PostMapping("/{vin}/action/bindOrder")
     void bindOrder(@PathVariable String vin, @RequestBody @Validated VehicleOrderExService vehicleOrder);
+
+    /**
+     * 根据车架号查询车辆信息
+     *
+     * @param vin 车架号
+     * @return 车辆信息
+     */
+    @GetMapping("/{vin}")
+    VehicleExService getByVin(@PathVariable String vin);
 
 }
