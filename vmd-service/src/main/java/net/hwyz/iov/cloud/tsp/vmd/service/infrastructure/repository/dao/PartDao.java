@@ -1,0 +1,26 @@
+package net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao;
+
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.PartPo;
+import net.hwyz.iov.cloud.framework.mysql.dao.BaseDao;
+import org.apache.ibatis.annotations.Mapper;
+
+/**
+ * <p>
+ * 零件信息表 DAO
+ * </p>
+ *
+ * @author hwyz_leo
+ * @since 2026-01-26
+ */
+@Mapper
+public interface PartDao extends BaseDao<PartPo, Long> {
+
+    /**
+     * 根据零件号查询零件信息
+     *
+     * @param pn 零件号
+     * @return 零件信息
+     */
+    PartPo selectPoByPn(String pn);
+
+}
