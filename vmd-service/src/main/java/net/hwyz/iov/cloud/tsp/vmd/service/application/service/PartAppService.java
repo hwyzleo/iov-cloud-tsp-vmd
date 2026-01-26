@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.hwyz.iov.cloud.framework.common.util.ParamHelper;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.PartDao;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.PartPo;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -37,7 +38,7 @@ public class PartAppService {
      */
     public List<PartPo> search(String pn, String name, String type, Date beginTime, Date endTime) {
         Map<String, Object> map = new HashMap<>();
-        map.put("pn", pn);
+        map.put("pn", StringUtils.isBlank(pn) ? null : pn.trim() + "%");
         map.put("name", ParamHelper.fuzzyQueryParam(name));
         map.put("type", type);
         map.put("beginTime", beginTime);
