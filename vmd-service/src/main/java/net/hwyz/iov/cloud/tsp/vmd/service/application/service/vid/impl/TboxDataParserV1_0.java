@@ -10,10 +10,13 @@ import net.hwyz.iov.cloud.tsp.tbox.api.contract.TboxExService;
 import net.hwyz.iov.cloud.tsp.tbox.api.contract.request.BatchImportTboxRequest;
 import net.hwyz.iov.cloud.tsp.tbox.api.feign.service.ExTboxInfoService;
 import net.hwyz.iov.cloud.tsp.vmd.service.application.service.vid.ImportDataParser;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehiclePartPo;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 车联终端数据解析器V1.0
@@ -39,27 +42,45 @@ public class TboxDataParserV1_0 extends BaseParser implements ImportDataParser {
         BatchImportTboxRequest request = new BatchImportTboxRequest();
         request.setBatchNum(batchNum);
         request.setSupplierCode(supplier);
+        List<VehiclePartPo> vehiclePartList = new ArrayList<>();
         List<TboxExService> tboxList = new ArrayList<>();
         for (Object item : items) {
             JSONObject itemJson = JSONUtil.parseObj(item);
+            String pn = itemJson.getStr("NO");
             String sn = itemJson.getStr("SN");
             String iccid1 = itemJson.getStr("ICCID1");
-            if (StrUtil.isBlank(sn) || StrUtil.isBlank(iccid1)) {
+            String iccid2 = itemJson.getStr("ICCID2");
+            String imei = itemJson.getStr("IMEI");
+            String hsm = itemJson.getStr("HSM");
+            if (StrUtil.isBlank(pn) || StrUtil.isBlank(sn) || StrUtil.isBlank(iccid1)) {
                 tboxInvalidCount++;
                 continue;
             }
+            Map<String, Object> extra = new HashMap<>(4);
+            extra.put("IMEI", imei);
+            extra.put("ICCID1", iccid1);
+            extra.put("ICCID2", iccid2);
+            extra.put("HSM", hsm);
+            vehiclePartList.add(VehiclePartPo.builder()
+                    .pn(pn)
+                    .deviceCode("TBOX")
+                    .ecuType("TBOX")
+                    .sn(sn)
+                    .extra(JSONUtil.toJsonStr(extra))
+                    .build());
             tboxList.add(TboxExService.builder()
                     .sn(sn)
-                    .no(itemJson.getStr("NO"))
-                    .hsm(itemJson.getStr("HSM"))
-                    .imei(itemJson.getStr("IMEI"))
+                    .no(pn)
+                    .hsm(hsm)
+                    .imei(imei)
                     .iccid1(iccid1)
-                    .iccid2(itemJson.getStr("ICCID2"))
+                    .iccid2(iccid2)
                     .build());
         }
         if (tboxInvalidCount > 0) {
             logger.warn("车联终端导入数据批次号[{}]存在无效车联终端数据[{}]", batchNum, tboxInvalidCount);
         }
+        createVehiclePart(vehiclePartList);
         request.setTboxList(tboxList);
         exTboxInfoService.batchImport(request);
     }

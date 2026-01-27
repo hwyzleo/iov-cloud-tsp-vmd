@@ -10,11 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class VehiclePresetOwnerNotMatchException extends VmdBaseException {
 
-    private static final int ERROR_CODE = 202007;
-
     public VehiclePresetOwnerNotMatchException(String vin, String countryRegionCode, String accountId,
                                                String presetCountryRegionCode, String presetAccountId) {
-        super(ERROR_CODE);
+        super(ERROR_CODE_VEHICLE_PRESET_OWNER_NOT_MATCH);
         logger.warn("用户[{}:{}]与车辆[{}]预设车主[{}:{}]不匹配", countryRegionCode, accountId, vin, presetCountryRegionCode,
                 presetAccountId);
     }

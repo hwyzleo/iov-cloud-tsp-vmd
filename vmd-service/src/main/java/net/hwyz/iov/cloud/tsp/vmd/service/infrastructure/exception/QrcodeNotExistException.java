@@ -10,10 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class QrcodeNotExistException extends VmdBaseException {
 
-    private static final int ERROR_CODE = 202003;
-
     public QrcodeNotExistException(String qrcode) {
-        super(ERROR_CODE);
+        super(ERROR_CODE_QRCODE_NOT_EXIST);
         logger.warn("车辆二维码[{}]不存在", qrcode);
     }
 

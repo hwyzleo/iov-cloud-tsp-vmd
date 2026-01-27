@@ -11,10 +11,8 @@ import net.hwyz.iov.cloud.tsp.vmd.api.contract.enums.QrcodeType;
 @Slf4j
 public class QrcodeHasUsedException extends VmdBaseException {
 
-    private static final int ERROR_CODE = 202004;
-
     public QrcodeHasUsedException(String vin, QrcodeType type) {
-        super(ERROR_CODE);
+        super(ERROR_CODE_QRCODE_HAS_USED);
         logger.warn("车辆[{}]对应类型[{}]二维码已使用", vin, type);
     }
 

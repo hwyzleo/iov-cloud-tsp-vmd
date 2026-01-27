@@ -10,10 +10,13 @@ import net.hwyz.iov.cloud.tsp.ccp.api.contract.CcpExService;
 import net.hwyz.iov.cloud.tsp.ccp.api.contract.request.BatchImportCcpRequest;
 import net.hwyz.iov.cloud.tsp.ccp.api.feign.service.ExCcpInfoService;
 import net.hwyz.iov.cloud.tsp.vmd.service.application.service.vid.ImportDataParser;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehiclePartPo;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 中央计算平台数据解析器V1.0
@@ -39,23 +42,36 @@ public class CcpDataParserV1_0 extends BaseParser implements ImportDataParser {
         BatchImportCcpRequest request = new BatchImportCcpRequest();
         request.setBatchNum(batchNum);
         request.setSupplierCode(supplier);
+        List<VehiclePartPo> vehiclePartList = new ArrayList<>();
         List<CcpExService> ccpList = new ArrayList<>();
         for (Object item : items) {
             JSONObject itemJson = JSONUtil.parseObj(item);
+            String pn = itemJson.getStr("NO");
             String sn = itemJson.getStr("SN");
-            if (StrUtil.isBlank(sn)) {
+            String hsm = itemJson.getStr("HSM");
+            if (StrUtil.isBlank(pn) || StrUtil.isBlank(sn)) {
                 ccpInvalidCount++;
                 continue;
             }
+            Map<String, Object> extra = new HashMap<>(1);
+            extra.put("HSM", hsm);
+            vehiclePartList.add(VehiclePartPo.builder()
+                    .pn(pn)
+                    .deviceCode("CCP")
+                    .ecuType("CCP")
+                    .sn(sn)
+                    .extra(JSONUtil.toJsonStr(extra))
+                    .build());
             ccpList.add(CcpExService.builder()
                     .sn(sn)
-                    .no(itemJson.getStr("NO"))
-                    .hsm(itemJson.getStr("HSM"))
+                    .no(pn)
+                    .hsm(hsm)
                     .build());
         }
         if (ccpInvalidCount > 0) {
             logger.warn("中央计算平台导入数据批次号[{}]存在无效中央计算平台数据[{}]", batchNum, ccpInvalidCount);
         }
+        createVehiclePart(vehiclePartList);
         request.setCcpList(ccpList);
         exCcpInfoService.batchImport(request);
     }

@@ -11,10 +11,8 @@ import net.hwyz.iov.cloud.tsp.vmd.api.contract.enums.QrcodeType;
 @Slf4j
 public class QrcodeHasExpiredException extends VmdBaseException {
 
-    private static final int ERROR_CODE = 202006;
-
     public QrcodeHasExpiredException(String vin, QrcodeType type) {
-        super(ERROR_CODE);
+        super(ERROR_CODE_QRCODE_HAS_EXPIRED);
         logger.warn("车辆[{}]对应类型[{}]二维码已过期", vin, type);
     }
 

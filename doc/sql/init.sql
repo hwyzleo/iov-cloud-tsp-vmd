@@ -517,3 +517,79 @@ CREATE TABLE `db_vmd`.`tb_part`
     UNIQUE KEY (`pn`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='零件信息表';
+
+DROP TABLE IF EXISTS `db_vmd`.`tb_vehicle_part`;
+CREATE TABLE `db_vmd`.`tb_vehicle_part`
+(
+    `id`            BIGINT      NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `pn`            VARCHAR(20) NOT NULL COMMENT '零件编号',
+    `vin`           VARCHAR(20)          DEFAULT NULL COMMENT '车架号',
+    `device_code`   VARCHAR(20)          DEFAULT NULL COMMENT '设备代码',
+    `ecu_type`      VARCHAR(20)          DEFAULT NULL COMMENT 'ECU类型',
+    `sn`            VARCHAR(255)         DEFAULT NULL COMMENT '零件序列号',
+    `config_word`   VARCHAR(255)         DEFAULT NULL COMMENT '配置字',
+    `supplier_code` VARCHAR(255)         DEFAULT NULL COMMENT '供应商编码',
+    `hardware_ver`  VARCHAR(255)         DEFAULT NULL COMMENT '硬件版本号',
+    `software_ver`  VARCHAR(255)         DEFAULT NULL COMMENT '软件版本号',
+    `hardware_no`   VARCHAR(255)         DEFAULT NULL COMMENT '硬件零件号',
+    `software_no`   VARCHAR(255)         DEFAULT NULL COMMENT '软件零件号',
+    `extra`         TEXT                 DEFAULT NULL COMMENT '附加信息',
+    `bind_time`     TIMESTAMP   NULL     DEFAULT NULL COMMENT '绑定时间',
+    `bind_type`     VARCHAR(20)          DEFAULT NULL COMMENT '绑定类型',
+    `bind_by`       VARCHAR(64)          DEFAULT NULL COMMENT '绑定者',
+    `bind_org`      VARCHAR(64)          DEFAULT NULL COMMENT '绑定机构',
+    `unbind_time`   TIMESTAMP   NULL     DEFAULT NULL COMMENT '解绑时间',
+    `unbind_reason` VARCHAR(50)          DEFAULT NULL COMMENT '解绑理由',
+    `unbind_by`     VARCHAR(64)          DEFAULT NULL COMMENT '解绑者',
+    `unbind_org`    VARCHAR(64)          DEFAULT NULL COMMENT '解绑机构',
+    `part_state`    SMALLINT             DEFAULT NULL COMMENT '零件状态：1-在用，2-待更换，3-已报废',
+    `description`   VARCHAR(255)         DEFAULT NULL COMMENT '备注',
+    `create_time`   TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `create_by`     VARCHAR(64)          DEFAULT NULL COMMENT '创建者',
+    `modify_time`   TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
+    `modify_by`     VARCHAR(64)          DEFAULT NULL COMMENT '修改者',
+    `row_version`   INT                  DEFAULT 1 COMMENT '记录版本',
+    `row_valid`     TINYINT              DEFAULT 1 COMMENT '记录是否有效',
+    PRIMARY KEY (`id`),
+    INDEX `idx_vin` (`vin`),
+    INDEX `idx_pn` (`pn`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4 COMMENT ='车辆零件表';
+
+DROP TABLE IF EXISTS `db_vmd`.`tb_vehicle_part_history`;
+CREATE TABLE `db_vmd`.`tb_vehicle_part_history`
+(
+    `id`            BIGINT      NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `pn`            VARCHAR(20) NOT NULL COMMENT '零件编号',
+    `vin`           VARCHAR(20)          DEFAULT NULL COMMENT '车架号',
+    `device_code`   VARCHAR(20)          DEFAULT NULL COMMENT '设备代码',
+    `ecu_type`      VARCHAR(20)          DEFAULT NULL COMMENT 'ECU类型',
+    `sn`            VARCHAR(255)         DEFAULT NULL COMMENT '零件序列号',
+    `config_word`   VARCHAR(255)         DEFAULT NULL COMMENT '配置字',
+    `supplier_code` VARCHAR(255)         DEFAULT NULL COMMENT '供应商编码',
+    `hardware_ver`  VARCHAR(255)         DEFAULT NULL COMMENT '硬件版本号',
+    `software_ver`  VARCHAR(255)         DEFAULT NULL COMMENT '软件版本号',
+    `hardware_no`   VARCHAR(255)         DEFAULT NULL COMMENT '硬件零件号',
+    `software_no`   VARCHAR(255)         DEFAULT NULL COMMENT '软件零件号',
+    `extra`         TEXT                 DEFAULT NULL COMMENT '附加信息',
+    `bind_time`     TIMESTAMP   NULL     DEFAULT NULL COMMENT '绑定时间',
+    `bind_type`     VARCHAR(20)          DEFAULT NULL COMMENT '绑定类型',
+    `bind_by`       VARCHAR(64)          DEFAULT NULL COMMENT '绑定者',
+    `bind_org`      VARCHAR(64)          DEFAULT NULL COMMENT '绑定机构',
+    `unbind_time`   TIMESTAMP   NULL     DEFAULT NULL COMMENT '解绑时间',
+    `unbind_reason` VARCHAR(50)          DEFAULT NULL COMMENT '解绑理由',
+    `unbind_by`     VARCHAR(64)          DEFAULT NULL COMMENT '解绑者',
+    `unbind_org`    VARCHAR(64)          DEFAULT NULL COMMENT '解绑机构',
+    `part_state`    SMALLINT             DEFAULT NULL COMMENT '零件状态：0-待绑定，1-在用，2-待更换，3-已报废',
+    `description`   VARCHAR(255)         DEFAULT NULL COMMENT '备注',
+    `create_time`   TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `create_by`     VARCHAR(64)          DEFAULT NULL COMMENT '创建者',
+    `modify_time`   TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
+    `modify_by`     VARCHAR(64)          DEFAULT NULL COMMENT '修改者',
+    `row_version`   INT                  DEFAULT 1 COMMENT '记录版本',
+    `row_valid`     TINYINT              DEFAULT 1 COMMENT '记录是否有效',
+    PRIMARY KEY (`id`),
+    INDEX `idx_vin` (`vin`),
+    INDEX `idx_pn` (`pn`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4 COMMENT ='车辆零件变更历史表';

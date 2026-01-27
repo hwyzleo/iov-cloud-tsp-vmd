@@ -10,10 +10,13 @@ import net.hwyz.iov.cloud.tsp.idcm.api.contract.IdcmExService;
 import net.hwyz.iov.cloud.tsp.idcm.api.contract.request.BatchImportIdcmRequest;
 import net.hwyz.iov.cloud.tsp.idcm.api.feign.service.ExIdcmInfoService;
 import net.hwyz.iov.cloud.tsp.vmd.service.application.service.vid.ImportDataParser;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehiclePartPo;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 信息娱乐模块数据解析器V1.0
@@ -39,24 +42,39 @@ public class IdcmDataParserV1_0 extends BaseParser implements ImportDataParser {
         BatchImportIdcmRequest request = new BatchImportIdcmRequest();
         request.setBatchNum(batchNum);
         request.setSupplierCode(supplier);
+        List<VehiclePartPo> vehiclePartList = new ArrayList<>();
         List<IdcmExService> idcmList = new ArrayList<>();
         for (Object item : items) {
             JSONObject itemJson = JSONUtil.parseObj(item);
+            String pn = itemJson.getStr("NO");
             String sn = itemJson.getStr("SN");
+            String hsm = itemJson.getStr("HSM");
+            String mac = itemJson.getStr("MAC");
             if (StrUtil.isBlank(sn)) {
                 idcmInvalidCount++;
                 continue;
             }
+            Map<String, Object> extra = new HashMap<>(2);
+            extra.put("HSM", hsm);
+            extra.put("MAC", mac);
+            vehiclePartList.add(VehiclePartPo.builder()
+                    .pn(pn)
+                    .deviceCode("IDCM")
+                    .ecuType("IDCM")
+                    .sn(sn)
+                    .extra(JSONUtil.toJsonStr(extra))
+                    .build());
             idcmList.add(IdcmExService.builder()
                     .sn(sn)
-                    .no(itemJson.getStr("NO"))
-                    .hsm(itemJson.getStr("HSM"))
-                    .mac(itemJson.getStr("MAC"))
+                    .no(pn)
+                    .hsm(hsm)
+                    .mac(mac)
                     .build());
         }
         if (idcmInvalidCount > 0) {
             logger.warn("信息娱乐模块导入数据批次号[{}]存在无效信息娱乐模块数据[{}]", batchNum, idcmInvalidCount);
         }
+        createVehiclePart(vehiclePartList);
         request.setIdcmList(idcmList);
         exIdcmInfoService.batchImport(request);
     }

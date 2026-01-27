@@ -155,6 +155,7 @@ public class VehicleImportDataAppService {
             vehImportDataPo.setHandle(false);
             vehImportDataPo.setDescription("车辆导入数据批次号[" + batchNum + "]处理失败:" + e.getMessage());
             vehImportDataDao.updatePo(vehImportDataPo);
+            logger.warn("车辆导入数据批次号[" + batchNum + "]处理失败:" + e.getMessage(), e);
             throw new VehicleImportDataException(batchNum, e.getMessage());
         }
         vehImportDataDao.updatePo(vehImportDataPo);

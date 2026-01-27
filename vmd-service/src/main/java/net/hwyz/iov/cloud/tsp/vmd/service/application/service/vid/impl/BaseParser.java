@@ -5,6 +5,11 @@ import cn.hutool.core.util.ObjUtil;
 import cn.hutool.json.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import net.hwyz.iov.cloud.framework.common.util.StrUtil;
+import net.hwyz.iov.cloud.tsp.vmd.service.application.service.VehiclePartAppService;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehiclePartPo;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
  * 解析器基础类
@@ -13,6 +18,9 @@ import net.hwyz.iov.cloud.framework.common.util.StrUtil;
  */
 @Slf4j
 public class BaseParser {
+
+    @Autowired
+    private VehiclePartAppService vehiclePartAppService;
 
     /**
      * 获取头部分
@@ -76,6 +84,16 @@ public class BaseParser {
         } else {
             logger.warn("车辆导入数据批次号[{}]车辆[{}]{}为空", batchNum, vin, keyDesc);
         }
+    }
+
+    /**
+     * 创建车辆零件
+     *
+     * @param vehiclePartList 车辆零件列表
+     * @return 创建结果
+     */
+    protected int createVehiclePart(List<VehiclePartPo> vehiclePartList) {
+        return vehiclePartAppService.createVehiclePart(vehiclePartList);
     }
 
 }
