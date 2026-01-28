@@ -21,6 +21,13 @@ public interface DeviceMptApi {
     TableDataInfo list(DeviceMpt device);
 
     /**
+     * 获取所有设备项
+     *
+     * @return 设备类型列表
+     */
+    AjaxResult listAllDeviceItem();
+
+    /**
      * 导出设备信息
      *
      * @param response 响应

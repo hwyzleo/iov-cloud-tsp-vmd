@@ -59,6 +59,8 @@ public class CcpDataParserV1_0 extends BaseParser implements ImportDataParser {
                     .pn(pn)
                     .deviceCode("CCP")
                     .ecuType("CCP")
+                    .supplierCode(supplier)
+                    .batchNum(batchNum)
                     .sn(sn)
                     .extra(JSONUtil.toJsonStr(extra))
                     .build());

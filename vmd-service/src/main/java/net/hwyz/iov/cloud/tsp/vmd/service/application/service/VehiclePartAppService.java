@@ -162,8 +162,8 @@ public class VehiclePartAppService {
         vehiclePartOrigin.setConfigWord(vehiclePart.getConfigWord());
         vehiclePartOrigin.setHardwareVer(vehiclePart.getHardwareVer());
         vehiclePartOrigin.setSoftwareVer(vehiclePart.getSoftwareVer());
-        vehiclePartOrigin.setHardwareNo(vehiclePart.getHardwareNo());
-        vehiclePartOrigin.setSoftwareNo(vehiclePart.getSoftwareNo());
+        vehiclePartOrigin.setHardwarePn(vehiclePart.getHardwarePn());
+        vehiclePartOrigin.setSoftwarePn(vehiclePart.getSoftwarePn());
         vehiclePartOrigin.setBindTime(new Date());
         vehiclePartOrigin.setBindBy(vehiclePart.getBindBy());
         vehiclePartOrigin.setBindOrg(vehiclePartOrigin.getBindOrg());

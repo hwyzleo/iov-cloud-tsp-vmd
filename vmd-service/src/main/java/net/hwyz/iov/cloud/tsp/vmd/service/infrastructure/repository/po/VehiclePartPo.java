@@ -77,6 +77,12 @@ public class VehiclePartPo extends BasePo {
     private String supplierCode;
 
     /**
+     * 批次号
+     */
+    @TableField("batch_num")
+    private String batchNum;
+
+    /**
      * 硬件版本号
      */
     @TableField("hardware_ver")
@@ -91,14 +97,14 @@ public class VehiclePartPo extends BasePo {
     /**
      * 硬件零件号
      */
-    @TableField("hardware_no")
-    private String hardwareNo;
+    @TableField("hardware_pn")
+    private String hardwarePn;
 
     /**
      * 软件零件号
      */
-    @TableField("software_no")
-    private String softwareNo;
+    @TableField("software_pn")
+    private String softwarePn;
 
     /**
      * 附加信息

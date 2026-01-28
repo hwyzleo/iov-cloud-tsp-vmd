@@ -19,10 +19,11 @@
         <result column="sn" property="sn" />
         <result column="config_word" property="configWord" />
         <result column="supplier_code" property="supplierCode" />
+        <result column="batch_num" property="batchNum" />
         <result column="hardware_ver" property="hardwareVer" />
         <result column="software_ver" property="softwareVer" />
-        <result column="hardware_no" property="hardwareNo" />
-        <result column="software_no" property="softwareNo" />
+        <result column="hardware_pn" property="hardwarePn" />
+        <result column="software_pn" property="softwarePn" />
         <result column="extra" property="extra" />
         <result column="bind_time" property="bindTime" />
         <result column="bind_type" property="bindType" />
@@ -37,18 +38,18 @@
 
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
-        id, pn, vin, device_code, ecu_type, sn, config_word, supplier_code, hardware_ver, software_ver, hardware_no, software_no, extra, bind_time, bind_type, bind_by, bind_org, unbind_time, unbind_reason, unbind_by, unbind_org, part_state, 
+        id, pn, vin, device_code, ecu_type, sn, config_word, supplier_code, batch_num, hardware_ver, software_ver, hardware_pn, software_pn, extra, bind_time, bind_type, bind_by, bind_org, unbind_time, unbind_reason, unbind_by, unbind_org, part_state,
         description, create_time, create_by, modify_time, modify_by, row_version, row_valid
     </sql>
 
     <!-- 插入 -->
     <insert id="insertPo" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_vehicle_part (
-            id, pn, vin, device_code, ecu_type, sn, config_word, supplier_code, hardware_ver, software_ver, hardware_no, software_no, extra, bind_time, bind_type, bind_by, bind_org, unbind_time, unbind_reason, unbind_by, unbind_org, part_state, 
+            id, pn, vin, device_code, ecu_type, sn, config_word, supplier_code, batch_num, hardware_ver, software_ver, hardware_pn, software_pn, extra, bind_time, bind_type, bind_by, bind_org, unbind_time, unbind_reason, unbind_by, unbind_org, part_state,
             description, create_time, create_by, modify_time, modify_by, row_version, row_valid
         )
         VALUES (
-            #{id}, #{pn}, #{vin}, #{deviceCode}, #{ecuType}, #{sn}, #{configWord}, #{supplierCode}, #{hardwareVer}, #{softwareVer}, #{hardwareNo}, #{softwareNo}, #{extra}, #{bindTime}, #{bindType}, #{bindBy}, #{bindOrg}, #{unbindTime}, #{unbindReason}, #{unbindBy}, #{unbindOrg}, #{partState}, 
+            #{id}, #{pn}, #{vin}, #{deviceCode}, #{ecuType}, #{sn}, #{configWord}, #{supplierCode}, #{batchNum}, #{hardwareVer}, #{softwareVer}, #{hardwarePn}, #{softwarePn}, #{extra}, #{bindTime}, #{bindType}, #{bindBy}, #{bindOrg}, #{unbindTime}, #{unbindReason}, #{unbindBy}, #{unbindOrg}, #{partState},
             #{description}, now(), #{createBy}, now(), #{modifyBy}, 1, 1
         )
     </insert>
@@ -56,13 +57,13 @@
     <!-- 批量插入 -->
     <insert id="batchInsertPo" useGeneratedKeys="true" keyProperty="id" parameterType="java.util.List">
         INSERT INTO tb_vehicle_part (
-            id, pn, vin, device_code, ecu_type, sn, config_word, supplier_code, hardware_ver, software_ver, hardware_no, software_no, extra, bind_time, bind_type, bind_by, bind_org, unbind_time, unbind_reason, unbind_by, unbind_org, part_state, 
+            id, pn, vin, device_code, ecu_type, sn, config_word, supplier_code, batch_num, hardware_ver, software_ver, hardware_pn, software_pn, extra, bind_time, bind_type, bind_by, bind_org, unbind_time, unbind_reason, unbind_by, unbind_org, part_state,
             description, create_time, create_by, modify_time, modify_by, row_version, row_valid
         )
         VALUES
         <foreach collection="list" item="item" index="index" separator=",">
         (
-            #{item.id}, #{item.pn}, #{item.vin}, #{item.deviceCode}, #{item.ecuType}, #{item.sn}, #{item.configWord}, #{item.supplierCode}, #{item.hardwareVer}, #{item.softwareVer}, #{item.hardwareNo}, #{item.softwareNo}, #{item.extra}, #{item.bindTime}, #{item.bindType}, #{item.bindBy}, #{item.bindOrg}, #{item.unbindTime}, #{item.unbindReason}, #{item.unbindBy}, #{item.unbindOrg}, #{item.partState}, 
+            #{item.id}, #{item.pn}, #{item.vin}, #{item.deviceCode}, #{item.ecuType}, #{item.sn}, #{item.configWord}, #{item.supplierCode}, #{item.batchNum}, #{item.hardwareVer}, #{item.softwareVer}, #{item.hardwarePn}, #{item.softwarePn}, #{item.extra}, #{item.bindTime}, #{item.bindType}, #{item.bindBy}, #{item.bindOrg}, #{item.unbindTime}, #{item.unbindReason}, #{item.unbindBy}, #{item.unbindOrg}, #{item.partState},
             #{item.description}, now(), #{item.createBy}, now(), #{item.modifyBy}, 1, 1
         )
         </foreach>
@@ -92,17 +93,20 @@
         <if test="supplierCode != null and supplierCode != ''">
             t.supplier_code = #{supplierCode},
         </if>
+        <if test="batchNum != null and batchNum != ''">
+            t.batch_num = #{batchNum},
+        </if>
         <if test="hardwareVer != null and hardwareVer != ''">
             t.hardware_ver = #{hardwareVer},
         </if>
         <if test="softwareVer != null and softwareVer != ''">
             t.software_ver = #{softwareVer},
         </if>
-        <if test="hardwareNo != null and hardwareNo != ''">
-            t.hardware_no = #{hardwareNo},
+        <if test="hardwarePn != null and hardwarePn != ''">
+            t.hardware_pn = #{hardwarePn},
         </if>
-        <if test="softwareNo != null and softwareNo != ''">
-            t.software_no = #{softwareNo},
+        <if test="softwarePn != null and softwarePn != ''">
+            t.software_pn = #{softwarePn},
         </if>
         <if test="extra != null and extra != ''">
             t.extra = #{extra},
@@ -206,17 +210,20 @@
         <if test="supplierCode != null and supplierCode != ''">
             AND t.supplier_code = #{supplierCode}
         </if>
+        <if test="batchNum != null and batchNum != ''">
+            AND t.batch_num = #{batchNum}
+        </if>
         <if test="hardwareVer != null and hardwareVer != ''">
             AND t.hardware_ver = #{hardwareVer}
         </if>
         <if test="softwareVer != null and softwareVer != ''">
             AND t.software_ver = #{softwareVer}
         </if>
-        <if test="hardwareNo != null and hardwareNo != ''">
-            AND t.hardware_no = #{hardwareNo}
+        <if test="hardwarePn != null and hardwarePn != ''">
+            AND t.hardware_pn = #{hardwarePn}
         </if>
-        <if test="softwareNo != null and softwareNo != ''">
-            AND t.software_no = #{softwareNo}
+        <if test="softwarePn != null and softwarePn != ''">
+            AND t.software_pn = #{softwarePn}
         </if>
         <if test="extra != null and extra != ''">
             AND t.extra = #{extra}

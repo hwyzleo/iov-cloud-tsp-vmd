@@ -43,9 +43,9 @@ public class DeviceMpt extends BaseRequest {
     private String type;
 
     /**
-     * ECU类型
+     * 设备项
      */
-    private String ecuType;
+    private String deviceItem;
 
     /**
      * 功能域

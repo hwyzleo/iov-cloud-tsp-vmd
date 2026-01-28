@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.hwyz.iov.cloud.framework.audit.annotation.Log;
 import net.hwyz.iov.cloud.framework.audit.enums.BusinessType;
+import net.hwyz.iov.cloud.framework.common.enums.DeviceItem;
 import net.hwyz.iov.cloud.framework.common.web.controller.BaseController;
 import net.hwyz.iov.cloud.framework.common.web.domain.AjaxResult;
 import net.hwyz.iov.cloud.framework.common.web.page.TableDataInfo;
@@ -18,7 +19,9 @@ import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.DevicePo;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 设备信息相关管理接口实现类
@@ -49,6 +52,23 @@ public class DeviceMptController extends BaseController implements DeviceMptApi 
                 getBeginTime(device), getEndTime(device));
         List<DeviceMpt> deviceMptList = DeviceMptAssembler.INSTANCE.fromPoList(devicePoList);
         return getDataTable(devicePoList, deviceMptList);
+    }
+
+    /**
+     * 获取所有设备项
+     *
+     * @return 设备类型列表
+     */
+    @RequiresPermissions("completeVehicle:vehicle:device:list")
+    @Override
+    @GetMapping(value = "/listAllDeviceItem")
+    public AjaxResult listAllDeviceItem() {
+        logger.info("管理后台用户[{}]获取所有设备项", SecurityUtils.getUsername());
+        List<Map<String, Object>> list = new ArrayList<>();
+        for (DeviceItem deviceItem : DeviceItem.values()) {
+            list.add(Map.of("code", deviceItem.name(), "label", deviceItem.label));
+        }
+        return success(list);
     }
 
     /**

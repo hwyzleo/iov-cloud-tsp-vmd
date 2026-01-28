@@ -58,10 +58,10 @@ public class DevicePo extends BasePo {
     private String type;
 
     /**
-     * ECU类型
+     * 设备项
      */
-    @TableField("ecu_type")
-    private String ecuType;
+    @TableField("device_item")
+    private String deviceItem;
 
     /**
      * 功能域

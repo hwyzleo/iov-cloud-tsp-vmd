@@ -16,7 +16,7 @@
         <result column="name" property="name" />
         <result column="name_en" property="nameEn" />
         <result column="type" property="type" />
-        <result column="ecu_type" property="ecuType" />
+        <result column="device_item" property="deviceItem" />
         <result column="func_domain" property="funcDomain" />
         <result column="node_type" property="nodeType" />
         <result column="ota_support" property="otaSupport" />
@@ -35,14 +35,14 @@
 
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
-        id, code, name, name_en, type, ecu_type, func_domain, node_type, ota_support, link_config_source, link_flash_target, comm_protocol, flash_protocol, can_tx_id, can_rx_id, ethernet_ip, doip_gateway_id, doip_entity_id, core, sort, 
+        id, code, name, name_en, type, device_item, func_domain, node_type, ota_support, link_config_source, link_flash_target, comm_protocol, flash_protocol, can_tx_id, can_rx_id, ethernet_ip, doip_gateway_id, doip_entity_id, core, sort, 
         description, create_time, create_by, modify_time, modify_by, row_version, row_valid
     </sql>
 
     <!-- 插入 -->
     <insert id="insertPo" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_device (
-            id, code, name, name_en, type, ecu_type, func_domain, node_type, ota_support, link_config_source, link_flash_target, comm_protocol, flash_protocol, can_tx_id, can_rx_id, ethernet_ip, doip_gateway_id, doip_entity_id, core, sort, 
+            id, code, name, name_en, type, device_item, func_domain, node_type, ota_support, link_config_source, link_flash_target, comm_protocol, flash_protocol, can_tx_id, can_rx_id, ethernet_ip, doip_gateway_id, doip_entity_id, core, sort, 
             description, create_time, create_by, modify_time, modify_by, row_version, row_valid
         )
         VALUES (
@@ -54,7 +54,7 @@
     <!-- 批量插入 -->
     <insert id="batchInsertPo" useGeneratedKeys="true" keyProperty="id" parameterType="java.util.List">
         INSERT INTO tb_device (
-            id, code, name, name_en, type, ecu_type, func_domain, node_type, ota_support, link_config_source, link_flash_target, comm_protocol, flash_protocol, can_tx_id, can_rx_id, ethernet_ip, doip_gateway_id, doip_entity_id, core, sort, 
+            id, code, name, name_en, type, device_item, func_domain, node_type, ota_support, link_config_source, link_flash_target, comm_protocol, flash_protocol, can_tx_id, can_rx_id, ethernet_ip, doip_gateway_id, doip_entity_id, core, sort, 
             description, create_time, create_by, modify_time, modify_by, row_version, row_valid
         )
         VALUES
@@ -82,7 +82,7 @@
             t.type = #{type},
         </if>
         <if test="ecuType != null and ecuType != ''">
-            t.ecu_type = #{ecuType},
+            t.device_item = #{ecuType},
         </if>
         <if test="funcDomain != null and funcDomain != ''">
             t.func_domain = #{funcDomain},
@@ -190,7 +190,7 @@
             AND t.type = #{type}
         </if>
         <if test="ecuType != null and ecuType != ''">
-            AND t.ecu_type = #{ecuType}
+            AND t.device_item = #{ecuType}
         </if>
         <if test="funcDomain != null and funcDomain != ''">
             AND t.func_domain = #{funcDomain}

@@ -61,6 +61,8 @@ public class BtmDataParserV1_0 extends BaseParser implements ImportDataParser {
                     .pn(pn)
                     .deviceCode("BTM_M")
                     .ecuType("BTM")
+                    .supplierCode(supplier)
+                    .batchNum(batchNum)
                     .sn(sn)
                     .extra(JSONUtil.toJsonStr(extra))
                     .build());

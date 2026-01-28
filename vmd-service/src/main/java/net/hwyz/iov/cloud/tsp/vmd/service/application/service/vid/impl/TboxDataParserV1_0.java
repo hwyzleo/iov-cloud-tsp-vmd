@@ -65,6 +65,8 @@ public class TboxDataParserV1_0 extends BaseParser implements ImportDataParser {
                     .pn(pn)
                     .deviceCode("TBOX")
                     .ecuType("TBOX")
+                    .supplierCode(supplier)
+                    .batchNum(batchNum)
                     .sn(sn)
                     .extra(JSONUtil.toJsonStr(extra))
                     .build());

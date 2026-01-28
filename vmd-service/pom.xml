@@ -23,7 +23,7 @@
         <ccp.version>0.0.1-SNAPSHOT</ccp.version>
         <idk.version>0.0.1-SNAPSHOT</idk.version>
         <idcm.version>0.0.1-SNAPSHOT</idcm.version>
-        <fota.version>0.0.1-SNAPSHOT</fota.version>
+        <pota.version>0.0.1-SNAPSHOT</pota.version>
         <wms.version>0.0.1-SNAPSHOT</wms.version>
     </properties>
 
@@ -70,8 +70,8 @@
         </dependency>
         <dependency>
             <groupId>net.hwyz.iov.cloud.ota</groupId>
-            <artifactId>fota-api</artifactId>
-            <version>${fota.version}</version>
+            <artifactId>pota-api</artifactId>
+            <version>${pota.version}</version>
         </dependency>
         <dependency>
             <groupId>net.hwyz.iov.cloud.otd</groupId>

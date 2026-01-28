@@ -7,12 +7,12 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.hwyz.iov.cloud.framework.common.enums.EcuType;
+import net.hwyz.iov.cloud.framework.common.enums.DeviceItem;
 import net.hwyz.iov.cloud.framework.common.util.DateUtil;
 import net.hwyz.iov.cloud.framework.common.util.StrUtil;
-import net.hwyz.iov.cloud.ota.fota.api.contract.PartExService;
-import net.hwyz.iov.cloud.ota.fota.api.contract.request.SaveVehiclePartsRequest;
-import net.hwyz.iov.cloud.ota.fota.api.feign.service.ExVehiclePartService;
+import net.hwyz.iov.cloud.ota.pota.api.contract.VehiclePartExService;
+import net.hwyz.iov.cloud.ota.pota.api.contract.request.SaveVehiclePartsRequest;
+import net.hwyz.iov.cloud.ota.pota.api.feign.service.ExVehiclePartService;
 import net.hwyz.iov.cloud.otd.wms.api.contract.PreInboundOrderExService;
 import net.hwyz.iov.cloud.otd.wms.api.contract.enums.WarehouseLevel;
 import net.hwyz.iov.cloud.otd.wms.api.feign.service.ExPreInboundOrderService;
@@ -155,7 +155,7 @@ public class EolDataParserV1_0 extends BaseParser implements ImportDataParser {
             SaveVehiclePartsRequest request = new SaveVehiclePartsRequest();
             request.setVin(vin);
             request.setRemark("车辆下线");
-            List<PartExService> partList = new ArrayList<>();
+            List<VehiclePartExService> vehiclePartList = new ArrayList<>();
             for (Object part : parts) {
                 JSONObject partJson = JSONUtil.parseObj(part);
                 String ecuType = partJson.getStr("ECU_TYPE");
@@ -168,28 +168,29 @@ public class EolDataParserV1_0 extends BaseParser implements ImportDataParser {
                     logger.warn("车辆导入数据批次号[{}]车架号[{}]零部件[{}]车架号[{}]不一致", batchNum, vin, ecuType, partVin);
                     continue;
                 }
-                String pn = partJson.getStr("PART_NO");
+                String pn = partJson.getStr("PART_PN");
                 String sn = partJson.getStr("PART_SN");
-                EcuType ecuTypeEnum = EcuType.valOf(ecuType);
+                DeviceItem deviceItemEnum = DeviceItem.valOf(ecuType);
                 String supplierCode = partJson.getStr("SUPPLIER_CODE");
                 String configWord = partJson.getStr("CONFIG_WORD");
                 String hardwareVersion = partJson.getStr("HARDWARE_VERSION");
                 String softwareVersion = partJson.getStr("SOFTWARE_VERSION");
-                String hardwareNo = partJson.getStr("HARDWARE_NO");
-                String softwareNo = partJson.getStr("SOFTWARE_NO");
-                if (ObjUtil.isNull(ecuTypeEnum)) {
+                String hardwarePn = partJson.getStr("HARDWARE_PN");
+                String softwarePn = partJson.getStr("SOFTWARE_PN");
+                if (ObjUtil.isNull(deviceItemEnum)) {
                     logger.warn("车辆导入数据批次号[{}]车架号[{}]零部件类型[{}]异常", batchNum, vin, ecuType);
                 }
-                partList.add(PartExService.builder()
+                vehiclePartList.add(VehiclePartExService.builder()
                         .sn(sn)
-                        .no(pn)
+                        .pn(pn)
                         .ecu(ecuType)
                         .supplierCode(supplierCode)
+                        .batchNum(batchNum)
                         .configWord(configWord)
                         .hardwareVer(hardwareVersion)
                         .softwareVer(softwareVersion)
-                        .hardwareNo(hardwareNo)
-                        .softwareNo(softwareNo)
+                        .hardwarePn(hardwarePn)
+                        .softwarePn(softwarePn)
                         .build());
                 try {
                     vehiclePartAppService.bindVehiclePart(VehiclePartPo.builder()
@@ -198,17 +199,18 @@ public class EolDataParserV1_0 extends BaseParser implements ImportDataParser {
                             .vin(vin)
                             .ecuType(ecuType)
                             .supplierCode(supplierCode)
+                            .batchNum(batchNum)
                             .configWord(configWord)
                             .hardwareVer(hardwareVersion)
                             .softwareVer(softwareVersion)
-                            .hardwareNo(hardwareNo)
-                            .softwareNo(softwareNo)
+                            .hardwarePn(hardwarePn)
+                            .softwarePn(softwarePn)
                             .bindOrg("MES")
                             .build());
                 } catch (Exception e) {
                     logger.warn("车辆导入数据批次号[{}]车架号[{}]零部件[{}]绑定异常", batchNum, vin, ecuType, e);
                 }
-                if (EcuType.TBOX.name().equalsIgnoreCase(ecuType)) {
+                if (DeviceItem.TBOX.name().equalsIgnoreCase(ecuType)) {
                     String iccid1 = partJson.getStr("ICCID1");
                     String iccid2 = partJson.getStr("ICCID2");
                     if (StrUtil.isNotBlank(iccid1)) {
@@ -220,14 +222,14 @@ public class EolDataParserV1_0 extends BaseParser implements ImportDataParser {
                     }
                     exVehicleTboxService.bind(VehicleTboxExService.builder().vin(vin).sn(sn).build());
                 }
-                if (EcuType.CCP.name().equalsIgnoreCase(ecuType)) {
+                if (DeviceItem.CCP.name().equalsIgnoreCase(ecuType)) {
                     exVehicleCcpService.bind(VehicleCcpExService.builder().vin(vin).sn(sn).build());
                 }
-                if (EcuType.IDCM.name().equalsIgnoreCase(ecuType)) {
+                if (DeviceItem.IDCM.name().equalsIgnoreCase(ecuType)) {
                     exVehicleIdcmService.bind(VehicleIdcmExService.builder().vin(vin).sn(sn).build());
                 }
             }
-            request.setPartList(partList);
+            request.setVehiclePartList(vehiclePartList);
             exVehiclePartService.saveVehicleParts(vin, request);
             // 预期下线后1天内到达前置库，2小时内入库
             exPreInboundOrderService.createOrder(PreInboundOrderExService.builder()

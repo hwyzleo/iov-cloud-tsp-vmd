@@ -61,6 +61,8 @@ public class IdcmDataParserV1_0 extends BaseParser implements ImportDataParser {
                     .pn(pn)
                     .deviceCode("IDCM")
                     .ecuType("IDCM")
+                    .supplierCode(supplier)
+                    .batchNum(batchNum)
                     .sn(sn)
                     .extra(JSONUtil.toJsonStr(extra))
                     .build());

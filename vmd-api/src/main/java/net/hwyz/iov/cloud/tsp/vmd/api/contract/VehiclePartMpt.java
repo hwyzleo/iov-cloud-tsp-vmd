@@ -58,6 +58,11 @@ public class VehiclePartMpt extends BaseRequest {
     private String supplierCode;
 
     /**
+     * 批次号
+     */
+    private String batchNum;
+
+    /**
      * 硬件版本号
      */
     private String hardwareVer;
@@ -70,12 +75,12 @@ public class VehiclePartMpt extends BaseRequest {
     /**
      * 硬件零件号
      */
-    private String hardwareNo;
+    private String hardwarePn;
 
     /**
      * 软件零件号
      */
-    private String softwareNo;
+    private String softwarePn;
 
     /**
      * 附加信息
