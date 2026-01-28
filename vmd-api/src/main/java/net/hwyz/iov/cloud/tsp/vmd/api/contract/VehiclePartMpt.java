@@ -38,9 +38,9 @@ public class VehiclePartMpt extends BaseRequest {
     private String deviceCode;
 
     /**
-     * ECU类型
+     * 设备项
      */
-    private String ecuType;
+    private String deviceItem;
 
     /**
      * 零件序列号

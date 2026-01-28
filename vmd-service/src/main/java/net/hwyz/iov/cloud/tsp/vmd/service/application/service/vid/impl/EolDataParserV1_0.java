@@ -25,12 +25,14 @@ import net.hwyz.iov.cloud.tsp.mno.api.feign.service.ExVehicleNetworkService;
 import net.hwyz.iov.cloud.tsp.tbox.api.contract.VehicleTboxExService;
 import net.hwyz.iov.cloud.tsp.tbox.api.feign.service.ExVehicleTboxService;
 import net.hwyz.iov.cloud.tsp.vmd.service.application.event.publish.VehiclePublish;
+import net.hwyz.iov.cloud.tsp.vmd.service.application.service.DeviceAppService;
 import net.hwyz.iov.cloud.tsp.vmd.service.application.service.VehicleAppService;
 import net.hwyz.iov.cloud.tsp.vmd.service.application.service.VehicleLifecycleAppService;
 import net.hwyz.iov.cloud.tsp.vmd.service.application.service.VehiclePartAppService;
 import net.hwyz.iov.cloud.tsp.vmd.service.application.service.vid.ImportDataParser;
 import net.hwyz.iov.cloud.tsp.vmd.service.domain.contract.enums.VehicleLifecycleNode;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehBasicInfoDao;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.DevicePo;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehBasicInfoPo;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehDetailInfoPo;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehiclePartPo;
@@ -52,6 +54,7 @@ public class EolDataParserV1_0 extends BaseParser implements ImportDataParser {
 
     private final VehiclePublish vehiclePublish;
     private final VehBasicInfoDao vehBasicInfoDao;
+    private final DeviceAppService deviceAppService;
     private final VehicleAppService vehicleAppService;
     private final ExVehicleCcpService exVehicleCcpService;
     private final ExVehiclePartService exVehiclePartService;
@@ -158,32 +161,33 @@ public class EolDataParserV1_0 extends BaseParser implements ImportDataParser {
             List<VehiclePartExService> vehiclePartList = new ArrayList<>();
             for (Object part : parts) {
                 JSONObject partJson = JSONUtil.parseObj(part);
-                String ecuType = partJson.getStr("ECU_TYPE");
-                if (StrUtil.isBlank(ecuType)) {
-                    logger.warn("车辆导入数据批次号[{}]车架号[{}]零部件类型为空", batchNum, vin);
+                String deviceCode = partJson.getStr("DEVICE_CODE");
+                if (StrUtil.isBlank(deviceCode)) {
+                    logger.warn("车辆导入数据批次号[{}]车架号[{}]设备[{}]为空", batchNum, vin, deviceCode);
                     continue;
                 }
                 String partVin = partJson.getStr("VIN");
                 if (!vin.equalsIgnoreCase(partVin)) {
-                    logger.warn("车辆导入数据批次号[{}]车架号[{}]零部件[{}]车架号[{}]不一致", batchNum, vin, ecuType, partVin);
+                    logger.warn("车辆导入数据批次号[{}]车架号[{}]设备[{}]车架号[{}]不一致", batchNum, vin, deviceCode, partVin);
                     continue;
                 }
                 String pn = partJson.getStr("PART_PN");
                 String sn = partJson.getStr("PART_SN");
-                DeviceItem deviceItemEnum = DeviceItem.valOf(ecuType);
+                DevicePo device = deviceAppService.getDeviceByCode(deviceCode);
                 String supplierCode = partJson.getStr("SUPPLIER_CODE");
                 String configWord = partJson.getStr("CONFIG_WORD");
                 String hardwareVersion = partJson.getStr("HARDWARE_VERSION");
                 String softwareVersion = partJson.getStr("SOFTWARE_VERSION");
                 String hardwarePn = partJson.getStr("HARDWARE_PN");
                 String softwarePn = partJson.getStr("SOFTWARE_PN");
-                if (ObjUtil.isNull(deviceItemEnum)) {
-                    logger.warn("车辆导入数据批次号[{}]车架号[{}]零部件类型[{}]异常", batchNum, vin, ecuType);
+                if (ObjUtil.isNull(device)) {
+                    logger.warn("车辆导入数据批次号[{}]车架号[{}]设备[{}]异常", batchNum, vin, deviceCode);
                 }
                 vehiclePartList.add(VehiclePartExService.builder()
                         .sn(sn)
                         .pn(pn)
-                        .ecu(ecuType)
+                        .deviceCode(deviceCode)
+                        .deviceItem(device.getDeviceItem())
                         .supplierCode(supplierCode)
                         .batchNum(batchNum)
                         .configWord(configWord)
@@ -197,7 +201,8 @@ public class EolDataParserV1_0 extends BaseParser implements ImportDataParser {
                             .pn(pn)
                             .sn(sn)
                             .vin(vin)
-                            .ecuType(ecuType)
+                            .deviceCode(deviceCode)
+                            .deviceItem(device.getDeviceItem())
                             .supplierCode(supplierCode)
                             .batchNum(batchNum)
                             .configWord(configWord)
@@ -208,9 +213,9 @@ public class EolDataParserV1_0 extends BaseParser implements ImportDataParser {
                             .bindOrg("MES")
                             .build());
                 } catch (Exception e) {
-                    logger.warn("车辆导入数据批次号[{}]车架号[{}]零部件[{}]绑定异常", batchNum, vin, ecuType, e);
+                    logger.warn("车辆导入数据批次号[{}]车架号[{}]零部件[{}]绑定异常", batchNum, vin, deviceCode, e);
                 }
-                if (DeviceItem.TBOX.name().equalsIgnoreCase(ecuType)) {
+                if (DeviceItem.TBOX.name().equalsIgnoreCase(device.getDeviceItem())) {
                     String iccid1 = partJson.getStr("ICCID1");
                     String iccid2 = partJson.getStr("ICCID2");
                     if (StrUtil.isNotBlank(iccid1)) {
@@ -222,10 +227,10 @@ public class EolDataParserV1_0 extends BaseParser implements ImportDataParser {
                     }
                     exVehicleTboxService.bind(VehicleTboxExService.builder().vin(vin).sn(sn).build());
                 }
-                if (DeviceItem.CCP.name().equalsIgnoreCase(ecuType)) {
+                if (DeviceItem.CCP.name().equalsIgnoreCase(device.getDeviceItem())) {
                     exVehicleCcpService.bind(VehicleCcpExService.builder().vin(vin).sn(sn).build());
                 }
-                if (DeviceItem.IDCM.name().equalsIgnoreCase(ecuType)) {
+                if (DeviceItem.IDCM.name().equalsIgnoreCase(device.getDeviceItem())) {
                     exVehicleIdcmService.bind(VehicleIdcmExService.builder().vin(vin).sn(sn).build());
                 }
             }

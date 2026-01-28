@@ -5,6 +5,7 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.hwyz.iov.cloud.framework.common.enums.DeviceItem;
 import net.hwyz.iov.cloud.framework.common.util.StrUtil;
 import net.hwyz.iov.cloud.tsp.ccp.api.contract.CcpExService;
 import net.hwyz.iov.cloud.tsp.ccp.api.contract.request.BatchImportCcpRequest;
@@ -57,8 +58,8 @@ public class CcpDataParserV1_0 extends BaseParser implements ImportDataParser {
             extra.put("HSM", hsm);
             vehiclePartList.add(VehiclePartPo.builder()
                     .pn(pn)
-                    .deviceCode("CCP")
-                    .ecuType("CCP")
+                    .deviceCode(DeviceItem.CCP.name())
+                    .deviceItem(DeviceItem.CCP.name())
                     .supplierCode(supplier)
                     .batchNum(batchNum)
                     .sn(sn)

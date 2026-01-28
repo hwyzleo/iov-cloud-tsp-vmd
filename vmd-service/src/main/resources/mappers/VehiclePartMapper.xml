@@ -15,7 +15,7 @@
         <result column="pn" property="pn" />
         <result column="vin" property="vin" />
         <result column="device_code" property="deviceCode" />
-        <result column="ecu_type" property="ecuType" />
+        <result column="device_item" property="deviceItem" />
         <result column="sn" property="sn" />
         <result column="config_word" property="configWord" />
         <result column="supplier_code" property="supplierCode" />
@@ -38,18 +38,18 @@
 
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
-        id, pn, vin, device_code, ecu_type, sn, config_word, supplier_code, batch_num, hardware_ver, software_ver, hardware_pn, software_pn, extra, bind_time, bind_type, bind_by, bind_org, unbind_time, unbind_reason, unbind_by, unbind_org, part_state,
+        id, pn, vin, device_code, device_item, sn, config_word, supplier_code, batch_num, hardware_ver, software_ver, hardware_pn, software_pn, extra, bind_time, bind_type, bind_by, bind_org, unbind_time, unbind_reason, unbind_by, unbind_org, part_state,
         description, create_time, create_by, modify_time, modify_by, row_version, row_valid
     </sql>
 
     <!-- 插入 -->
     <insert id="insertPo" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_vehicle_part (
-            id, pn, vin, device_code, ecu_type, sn, config_word, supplier_code, batch_num, hardware_ver, software_ver, hardware_pn, software_pn, extra, bind_time, bind_type, bind_by, bind_org, unbind_time, unbind_reason, unbind_by, unbind_org, part_state,
+            id, pn, vin, device_code, device_item, sn, config_word, supplier_code, batch_num, hardware_ver, software_ver, hardware_pn, software_pn, extra, bind_time, bind_type, bind_by, bind_org, unbind_time, unbind_reason, unbind_by, unbind_org, part_state,
             description, create_time, create_by, modify_time, modify_by, row_version, row_valid
         )
         VALUES (
-            #{id}, #{pn}, #{vin}, #{deviceCode}, #{ecuType}, #{sn}, #{configWord}, #{supplierCode}, #{batchNum}, #{hardwareVer}, #{softwareVer}, #{hardwarePn}, #{softwarePn}, #{extra}, #{bindTime}, #{bindType}, #{bindBy}, #{bindOrg}, #{unbindTime}, #{unbindReason}, #{unbindBy}, #{unbindOrg}, #{partState},
+            #{id}, #{pn}, #{vin}, #{deviceCode}, #{deviceItem}, #{sn}, #{configWord}, #{supplierCode}, #{batchNum}, #{hardwareVer}, #{softwareVer}, #{hardwarePn}, #{softwarePn}, #{extra}, #{bindTime}, #{bindType}, #{bindBy}, #{bindOrg}, #{unbindTime}, #{unbindReason}, #{unbindBy}, #{unbindOrg}, #{partState},
             #{description}, now(), #{createBy}, now(), #{modifyBy}, 1, 1
         )
     </insert>
@@ -57,13 +57,13 @@
     <!-- 批量插入 -->
     <insert id="batchInsertPo" useGeneratedKeys="true" keyProperty="id" parameterType="java.util.List">
         INSERT INTO tb_vehicle_part (
-            id, pn, vin, device_code, ecu_type, sn, config_word, supplier_code, batch_num, hardware_ver, software_ver, hardware_pn, software_pn, extra, bind_time, bind_type, bind_by, bind_org, unbind_time, unbind_reason, unbind_by, unbind_org, part_state,
+            id, pn, vin, device_code, device_item, sn, config_word, supplier_code, batch_num, hardware_ver, software_ver, hardware_pn, software_pn, extra, bind_time, bind_type, bind_by, bind_org, unbind_time, unbind_reason, unbind_by, unbind_org, part_state,
             description, create_time, create_by, modify_time, modify_by, row_version, row_valid
         )
         VALUES
         <foreach collection="list" item="item" index="index" separator=",">
         (
-            #{item.id}, #{item.pn}, #{item.vin}, #{item.deviceCode}, #{item.ecuType}, #{item.sn}, #{item.configWord}, #{item.supplierCode}, #{item.batchNum}, #{item.hardwareVer}, #{item.softwareVer}, #{item.hardwarePn}, #{item.softwarePn}, #{item.extra}, #{item.bindTime}, #{item.bindType}, #{item.bindBy}, #{item.bindOrg}, #{item.unbindTime}, #{item.unbindReason}, #{item.unbindBy}, #{item.unbindOrg}, #{item.partState},
+            #{item.id}, #{item.pn}, #{item.vin}, #{item.deviceCode}, #{item.deviceItem}, #{item.sn}, #{item.configWord}, #{item.supplierCode}, #{item.batchNum}, #{item.hardwareVer}, #{item.softwareVer}, #{item.hardwarePn}, #{item.softwarePn}, #{item.extra}, #{item.bindTime}, #{item.bindType}, #{item.bindBy}, #{item.bindOrg}, #{item.unbindTime}, #{item.unbindReason}, #{item.unbindBy}, #{item.unbindOrg}, #{item.partState},
             #{item.description}, now(), #{item.createBy}, now(), #{item.modifyBy}, 1, 1
         )
         </foreach>
@@ -81,8 +81,8 @@
         <if test="deviceCode != null and deviceCode != ''">
             t.device_code = #{deviceCode},
         </if>
-        <if test="ecuType != null and ecuType != ''">
-            t.ecu_type = #{ecuType},
+        <if test="deviceItem != null and deviceItem != ''">
+            t.device_item = #{deviceItem},
         </if>
         <if test="sn != null and sn != ''">
             t.sn = #{sn},
@@ -198,8 +198,8 @@
         <if test="deviceCode != null and deviceCode != ''">
             AND t.device_code = #{deviceCode}
         </if>
-        <if test="ecuType != null and ecuType != ''">
-            AND t.ecu_type = #{ecuType}
+        <if test="deviceItem != null and deviceItem != ''">
+            AND t.device_item = #{deviceItem}
         </if>
         <if test="sn != null and sn != ''">
             AND t.sn = #{sn}

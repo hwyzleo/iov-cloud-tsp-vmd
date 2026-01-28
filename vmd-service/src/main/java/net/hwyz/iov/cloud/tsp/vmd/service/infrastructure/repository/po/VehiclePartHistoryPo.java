@@ -53,10 +53,10 @@ public class VehiclePartHistoryPo extends BasePo {
     private String deviceCode;
 
     /**
-     * ECU类型
+     * 设备项
      */
-    @TableField("ecu_type")
-    private String ecuType;
+    @TableField("device_item")
+    private String deviceItem;
 
     /**
      * 零件序列号

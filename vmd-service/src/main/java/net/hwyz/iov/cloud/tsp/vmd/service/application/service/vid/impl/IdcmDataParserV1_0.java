@@ -5,6 +5,7 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.hwyz.iov.cloud.framework.common.enums.DeviceItem;
 import net.hwyz.iov.cloud.framework.common.util.StrUtil;
 import net.hwyz.iov.cloud.tsp.idcm.api.contract.IdcmExService;
 import net.hwyz.iov.cloud.tsp.idcm.api.contract.request.BatchImportIdcmRequest;
@@ -59,8 +60,8 @@ public class IdcmDataParserV1_0 extends BaseParser implements ImportDataParser {
             extra.put("MAC", mac);
             vehiclePartList.add(VehiclePartPo.builder()
                     .pn(pn)
-                    .deviceCode("IDCM")
-                    .ecuType("IDCM")
+                    .deviceCode(DeviceItem.IDCM.name())
+                    .deviceItem(DeviceItem.IDCM.name())
                     .supplierCode(supplier)
                     .batchNum(batchNum)
                     .sn(sn)

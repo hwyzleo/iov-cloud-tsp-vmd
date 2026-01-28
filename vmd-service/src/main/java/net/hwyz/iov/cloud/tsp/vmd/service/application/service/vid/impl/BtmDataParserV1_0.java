@@ -5,6 +5,7 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.hwyz.iov.cloud.framework.common.enums.DeviceItem;
 import net.hwyz.iov.cloud.framework.common.util.StrUtil;
 import net.hwyz.iov.cloud.tsp.idk.api.contract.BtmExService;
 import net.hwyz.iov.cloud.tsp.idk.api.contract.request.BatchImportBtmRequest;
@@ -60,7 +61,7 @@ public class BtmDataParserV1_0 extends BaseParser implements ImportDataParser {
             vehiclePartList.add(VehiclePartPo.builder()
                     .pn(pn)
                     .deviceCode("BTM_M")
-                    .ecuType("BTM")
+                    .deviceItem(DeviceItem.BTM.name())
                     .supplierCode(supplier)
                     .batchNum(batchNum)
                     .sn(sn)

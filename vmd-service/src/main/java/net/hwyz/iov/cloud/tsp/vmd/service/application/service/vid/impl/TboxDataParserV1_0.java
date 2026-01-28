@@ -5,6 +5,7 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.hwyz.iov.cloud.framework.common.enums.DeviceItem;
 import net.hwyz.iov.cloud.framework.common.util.StrUtil;
 import net.hwyz.iov.cloud.tsp.tbox.api.contract.TboxExService;
 import net.hwyz.iov.cloud.tsp.tbox.api.contract.request.BatchImportTboxRequest;
@@ -63,8 +64,8 @@ public class TboxDataParserV1_0 extends BaseParser implements ImportDataParser {
             extra.put("HSM", hsm);
             vehiclePartList.add(VehiclePartPo.builder()
                     .pn(pn)
-                    .deviceCode("TBOX")
-                    .ecuType("TBOX")
+                    .deviceCode(DeviceItem.TBOX.name())
+                    .deviceItem(DeviceItem.TBOX.name())
                     .supplierCode(supplier)
                     .batchNum(batchNum)
                     .sn(sn)
