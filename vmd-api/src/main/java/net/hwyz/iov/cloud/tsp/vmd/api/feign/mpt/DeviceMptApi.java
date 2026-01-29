@@ -23,9 +23,16 @@ public interface DeviceMptApi {
     /**
      * 获取所有设备项
      *
-     * @return 设备类型列表
+     * @return 设备项列表
      */
     AjaxResult listAllDeviceItem();
+
+    /**
+     * 获取所有设备
+     *
+     * @return 设备列表
+     */
+    AjaxResult listAllDevice();
 
     /**
      * 导出设备信息

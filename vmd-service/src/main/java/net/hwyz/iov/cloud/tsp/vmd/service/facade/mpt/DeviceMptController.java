@@ -72,6 +72,23 @@ public class DeviceMptController extends BaseController implements DeviceMptApi 
     }
 
     /**
+     * 获取所有设备
+     *
+     * @return 设备列表
+     */
+    @RequiresPermissions("completeVehicle:vehicle:device:list")
+    @Override
+    @GetMapping(value = "/listAllDevice")
+    public AjaxResult listAllDevice() {
+        logger.info("管理后台用户[{}]获取所有设备", SecurityUtils.getUsername());
+        List<Map<String, Object>> list = new ArrayList<>();
+        for (DevicePo device : deviceAppService.search(null, null, null, null, null)) {
+            list.add(Map.of("code", device.getCode(), "label", device.getName()));
+        }
+        return success(list);
+    }
+
+    /**
      * 导出设备信息
      *
      * @param response 响应
