@@ -436,6 +436,9 @@
         FROM tb_part t
         WHERE t.row_valid = 1
         <!-- 添加自定义条件 -->
+        <if test="key != null and key != ''">
+            AND (t.pn LIKE #{key} OR t.name LIKE #{key})
+        </if>
         <if test="pn != null and pn != ''">
             AND t.pn LIKE #{pn}
         </if>

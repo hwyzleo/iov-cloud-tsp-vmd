@@ -29,6 +29,7 @@ public class PartAppService {
     /**
      * 查询零件信息
      *
+     * @param key        关键字
      * @param pn         零件号
      * @param name       零件名称
      * @param type       零件类型
@@ -37,8 +38,9 @@ public class PartAppService {
      * @param endTime    结束时间
      * @return 查询车载列表
      */
-    public List<PartPo> search(String pn, String name, String type, String deviceCode, Date beginTime, Date endTime) {
+    public List<PartPo> search(String key, String pn, String name, String type, String deviceCode, Date beginTime, Date endTime) {
         Map<String, Object> map = new HashMap<>();
+        map.put("key", ParamHelper.fuzzyQueryParam(key));
         map.put("pn", StringUtils.isBlank(pn) ? null : pn.trim() + "%");
         map.put("name", ParamHelper.fuzzyQueryParam(name));
         map.put("type", type);

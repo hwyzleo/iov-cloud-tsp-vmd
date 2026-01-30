@@ -247,4 +247,9 @@ public class PartMpt extends BaseRequest {
      */
     private Date createTime;
 
+    /**
+     * 关键词
+     */
+    private String key;
+
 }

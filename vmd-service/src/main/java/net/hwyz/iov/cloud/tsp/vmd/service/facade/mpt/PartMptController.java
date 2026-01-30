@@ -45,8 +45,8 @@ public class PartMptController extends BaseController implements PartMptApi {
     public TableDataInfo list(PartMpt part) {
         logger.info("管理后台用户[{}]分页查询零件信息", SecurityUtils.getUsername());
         startPage();
-        List<PartPo> partPoList = partAppService.search(part.getPn(), part.getName(), part.getType(), part.getDeviceCode(),
-                getBeginTime(part), getEndTime(part));
+        List<PartPo> partPoList = partAppService.search(part.getKey(), part.getPn(), part.getName(), part.getType(),
+                part.getDeviceCode(), getBeginTime(part), getEndTime(part));
         List<PartMpt> partMptList = PartMptAssembler.INSTANCE.fromPoList(partPoList);
         return getDataTable(partPoList, partMptList);
     }

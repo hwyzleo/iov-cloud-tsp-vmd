@@ -46,6 +46,15 @@ public class DeviceAppService {
     }
 
     /**
+     * 获取所有设备信息
+     *
+     * @return 设备信息
+     */
+    public List<DevicePo> listAll() {
+        return deviceDao.selectAllPo();
+    }
+
+    /**
      * 检查设备信息代码是否唯一
      *
      * @param deviceId 设备信息ID
