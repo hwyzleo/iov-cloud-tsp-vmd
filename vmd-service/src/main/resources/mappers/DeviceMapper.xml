@@ -46,7 +46,7 @@
             description, create_time, create_by, modify_time, modify_by, row_version, row_valid
         )
         VALUES (
-            #{id}, #{code}, #{name}, #{nameEn}, #{type}, #{ecuType}, #{funcDomain}, #{nodeType}, #{otaSupport}, #{linkConfigSource}, #{linkFlashTarget}, #{commProtocol}, #{flashProtocol}, #{canTxId}, #{canRxId}, #{ethernetIp}, #{doipGatewayId}, #{doipEntityId}, #{core}, #{sort}, 
+            #{id}, #{code}, #{name}, #{nameEn}, #{type}, #{deviceItem}, #{funcDomain}, #{nodeType}, #{otaSupport}, #{linkConfigSource}, #{linkFlashTarget}, #{commProtocol}, #{flashProtocol}, #{canTxId}, #{canRxId}, #{ethernetIp}, #{doipGatewayId}, #{doipEntityId}, #{core}, #{sort}, 
             #{description}, now(), #{createBy}, now(), #{modifyBy}, 1, 1
         )
     </insert>
@@ -60,7 +60,7 @@
         VALUES
         <foreach collection="list" item="item" index="index" separator=",">
         (
-            #{item.id}, #{item.code}, #{item.name}, #{item.nameEn}, #{item.type}, #{item.ecuType}, #{item.funcDomain}, #{item.nodeType}, #{item.otaSupport}, #{item.linkConfigSource}, #{item.linkFlashTarget}, #{item.commProtocol}, #{item.flashProtocol}, #{item.canTxId}, #{item.canRxId}, #{item.ethernetIp}, #{item.doipGatewayId}, #{item.doipEntityId}, #{item.core}, #{item.sort}, 
+            #{item.id}, #{item.code}, #{item.name}, #{item.nameEn}, #{item.type}, #{item.deviceItem}, #{item.funcDomain}, #{item.nodeType}, #{item.otaSupport}, #{item.linkConfigSource}, #{item.linkFlashTarget}, #{item.commProtocol}, #{item.flashProtocol}, #{item.canTxId}, #{item.canRxId}, #{item.ethernetIp}, #{item.doipGatewayId}, #{item.doipEntityId}, #{item.core}, #{item.sort}, 
             #{item.description}, now(), #{item.createBy}, now(), #{item.modifyBy}, 1, 1
         )
         </foreach>
@@ -81,8 +81,8 @@
         <if test="type != null and type != ''">
             t.type = #{type},
         </if>
-        <if test="ecuType != null and ecuType != ''">
-            t.device_item = #{ecuType},
+        <if test="deviceItem != null and deviceItem != ''">
+            t.device_item = #{deviceItem},
         </if>
         <if test="funcDomain != null and funcDomain != ''">
             t.func_domain = #{funcDomain},
@@ -189,8 +189,8 @@
         <if test="type != null and type != ''">
             AND t.type = #{type}
         </if>
-        <if test="ecuType != null and ecuType != ''">
-            AND t.device_item = #{ecuType}
+        <if test="deviceItem != null and deviceItem != ''">
+            AND t.device_item = #{deviceItem}
         </if>
         <if test="funcDomain != null and funcDomain != ''">
             AND t.func_domain = #{funcDomain}
