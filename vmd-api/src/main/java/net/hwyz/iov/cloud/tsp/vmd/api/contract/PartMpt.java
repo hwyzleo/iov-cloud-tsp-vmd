@@ -178,14 +178,14 @@ public class PartMpt extends BaseRequest {
     private String structureCharacter;
 
     /**
-     * ECU形态
+     * 设备形态
      */
-    private String ecuForm;
+    private String deviceForm;
 
     /**
-     * ECU类型
+     * 设备代码
      */
-    private String ecuType;
+    private String deviceCode;
 
     /**
      * 设计工程师

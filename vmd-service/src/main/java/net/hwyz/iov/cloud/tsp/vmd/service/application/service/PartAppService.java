@@ -29,18 +29,20 @@ public class PartAppService {
     /**
      * 查询零件信息
      *
-     * @param pn        零件号
-     * @param name      零件名称
-     * @param type      零件类型
-     * @param beginTime 开始时间
-     * @param endTime   结束时间
+     * @param pn         零件号
+     * @param name       零件名称
+     * @param type       零件类型
+     * @param deviceCode 设备代码
+     * @param beginTime  开始时间
+     * @param endTime    结束时间
      * @return 查询车载列表
      */
-    public List<PartPo> search(String pn, String name, String type, Date beginTime, Date endTime) {
+    public List<PartPo> search(String pn, String name, String type, String deviceCode, Date beginTime, Date endTime) {
         Map<String, Object> map = new HashMap<>();
         map.put("pn", StringUtils.isBlank(pn) ? null : pn.trim() + "%");
         map.put("name", ParamHelper.fuzzyQueryParam(name));
         map.put("type", type);
+        map.put("deviceCode", deviceCode);
         map.put("beginTime", beginTime);
         map.put("endTime", endTime);
         return partDao.selectPoByMap(map);

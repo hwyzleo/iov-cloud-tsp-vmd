@@ -220,16 +220,16 @@ public class PartPo extends BasePo {
     private String structureCharacter;
 
     /**
-     * ECU形态
+     * 设备形态
      */
-    @TableField("ecu_form")
-    private String ecuForm;
+    @TableField("device_form")
+    private String deviceForm;
 
     /**
-     * ECU类型
+     * 设备代码
      */
-    @TableField("ecu_type")
-    private String ecuType;
+    @TableField("device_code")
+    private String deviceCode;
 
     /**
      * 设计工程师
