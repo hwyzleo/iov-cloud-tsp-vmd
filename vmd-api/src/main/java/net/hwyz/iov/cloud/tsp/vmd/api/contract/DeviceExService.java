@@ -57,6 +57,16 @@ public class DeviceExService {
     private String otaSupport;
 
     /**
+     * 分区类型
+     */
+    private String partitionType;
+
+    /**
+     * 解闭锁安全件
+     */
+    private Integer lockUnlockSecurityComponent;
+
+    /**
      * 链路配置源
      */
     private String linkConfigSource;

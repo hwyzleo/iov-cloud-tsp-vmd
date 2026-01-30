@@ -20,6 +20,8 @@
         <result column="func_domain" property="funcDomain" />
         <result column="node_type" property="nodeType" />
         <result column="ota_support" property="otaSupport" />
+        <result column="partition_type" property="partitionType" />
+        <result column="lock_unlock_security_component" property="lockUnlockSecurityComponent" />
         <result column="link_config_source" property="linkConfigSource" />
         <result column="link_flash_target" property="linkFlashTarget" />
         <result column="comm_protocol" property="commProtocol" />
@@ -35,18 +37,18 @@
 
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
-        id, code, name, name_en, type, device_item, func_domain, node_type, ota_support, link_config_source, link_flash_target, comm_protocol, flash_protocol, can_tx_id, can_rx_id, ethernet_ip, doip_gateway_id, doip_entity_id, core, sort, 
+        id, code, name, name_en, type, device_item, func_domain, node_type, ota_support, partition_type, lock_unlock_security_component, link_config_source, link_flash_target, comm_protocol, flash_protocol, can_tx_id, can_rx_id, ethernet_ip, doip_gateway_id, doip_entity_id, core, sort,
         description, create_time, create_by, modify_time, modify_by, row_version, row_valid
     </sql>
 
     <!-- 插入 -->
     <insert id="insertPo" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_device (
-            id, code, name, name_en, type, device_item, func_domain, node_type, ota_support, link_config_source, link_flash_target, comm_protocol, flash_protocol, can_tx_id, can_rx_id, ethernet_ip, doip_gateway_id, doip_entity_id, core, sort, 
+            id, code, name, name_en, type, device_item, func_domain, node_type, ota_support, partition_type, lock_unlock_security_component, link_config_source, link_flash_target, comm_protocol, flash_protocol, can_tx_id, can_rx_id, ethernet_ip, doip_gateway_id, doip_entity_id, core, sort,
             description, create_time, create_by, modify_time, modify_by, row_version, row_valid
         )
         VALUES (
-            #{id}, #{code}, #{name}, #{nameEn}, #{type}, #{deviceItem}, #{funcDomain}, #{nodeType}, #{otaSupport}, #{linkConfigSource}, #{linkFlashTarget}, #{commProtocol}, #{flashProtocol}, #{canTxId}, #{canRxId}, #{ethernetIp}, #{doipGatewayId}, #{doipEntityId}, #{core}, #{sort}, 
+            #{id}, #{code}, #{name}, #{nameEn}, #{type}, #{deviceItem}, #{funcDomain}, #{nodeType}, #{otaSupport}, #{partitionType}, #{lockUnlockSecurityComponent}, #{linkConfigSource}, #{linkFlashTarget}, #{commProtocol}, #{flashProtocol}, #{canTxId}, #{canRxId}, #{ethernetIp}, #{doipGatewayId}, #{doipEntityId}, #{core}, #{sort},
             #{description}, now(), #{createBy}, now(), #{modifyBy}, 1, 1
         )
     </insert>
@@ -54,13 +56,13 @@
     <!-- 批量插入 -->
     <insert id="batchInsertPo" useGeneratedKeys="true" keyProperty="id" parameterType="java.util.List">
         INSERT INTO tb_device (
-            id, code, name, name_en, type, device_item, func_domain, node_type, ota_support, link_config_source, link_flash_target, comm_protocol, flash_protocol, can_tx_id, can_rx_id, ethernet_ip, doip_gateway_id, doip_entity_id, core, sort, 
+            id, code, name, name_en, type, device_item, func_domain, node_type, ota_support, partition_type, lock_unlock_security_component, link_config_source, link_flash_target, comm_protocol, flash_protocol, can_tx_id, can_rx_id, ethernet_ip, doip_gateway_id, doip_entity_id, core, sort,
             description, create_time, create_by, modify_time, modify_by, row_version, row_valid
         )
         VALUES
         <foreach collection="list" item="item" index="index" separator=",">
         (
-            #{item.id}, #{item.code}, #{item.name}, #{item.nameEn}, #{item.type}, #{item.deviceItem}, #{item.funcDomain}, #{item.nodeType}, #{item.otaSupport}, #{item.linkConfigSource}, #{item.linkFlashTarget}, #{item.commProtocol}, #{item.flashProtocol}, #{item.canTxId}, #{item.canRxId}, #{item.ethernetIp}, #{item.doipGatewayId}, #{item.doipEntityId}, #{item.core}, #{item.sort}, 
+            #{item.id}, #{item.code}, #{item.name}, #{item.nameEn}, #{item.type}, #{item.deviceItem}, #{item.funcDomain}, #{item.nodeType}, #{item.otaSupport}, #{item.partitionType}, #{item.lockUnlockSecurityComponent}, #{item.linkConfigSource}, #{item.linkFlashTarget}, #{item.commProtocol}, #{item.flashProtocol}, #{item.canTxId}, #{item.canRxId}, #{item.ethernetIp}, #{item.doipGatewayId}, #{item.doipEntityId}, #{item.core}, #{item.sort},
             #{item.description}, now(), #{item.createBy}, now(), #{item.modifyBy}, 1, 1
         )
         </foreach>
@@ -92,6 +94,12 @@
         </if>
         <if test="otaSupport != null and otaSupport != ''">
             t.ota_support = #{otaSupport},
+        </if>
+        <if test="partitionType != null and partitionType != ''">
+            t.partition_type = #{partitionType},
+        </if>
+        <if test="lockUnlockSecurityComponent != null">
+            t.lock_unlock_security_component = #{lockUnlockSecurityComponent},
         </if>
         <if test="linkConfigSource != null and linkConfigSource != ''">
             t.link_config_source = #{linkConfigSource},
@@ -200,6 +208,12 @@
         </if>
         <if test="otaSupport != null and otaSupport != ''">
             AND t.ota_support = #{otaSupport}
+        </if>
+        <if test="partitionType != null and partitionType != ''">
+            AND t.partition_type = #{partitionType}
+        </if>
+        <if test="lockUnlockSecurityComponent != null">
+            AND t.lock_unlock_security_component = #{lockUnlockSecurityComponent}
         </if>
         <if test="linkConfigSource != null and linkConfigSource != ''">
             AND t.link_config_source = #{linkConfigSource}
