@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * 零件相关服务接口实现类
  *
@@ -33,6 +35,17 @@ public class PartServiceController {
     public PartExService getByPn(@PathVariable String pn) {
         logger.info("根据零件号[{}]查询零件信息", pn);
         return PartExServiceAssembler.INSTANCE.fromPo(partAppService.getPartByPn(pn));
+    }
+
+    /**
+     * 获取所有FOTA升级零件信息
+     *
+     * @return 零件信息
+     */
+    @GetMapping("/listAllFota")
+    public List<PartExService> listAllFota() {
+        logger.info("获取所有FOTA升级零件信息");
+        return PartExServiceAssembler.INSTANCE.fromPoList(partAppService.listAllFota());
     }
 
 }

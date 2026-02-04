@@ -51,6 +51,15 @@ public class PartAppService {
     }
 
     /**
+     * 获取所有FOTA升级零件
+     *
+     * @return 零件信息列表
+     */
+    public List<PartPo> listAllFota() {
+        return partDao.selectAllFotaPo();
+    }
+
+    /**
      * 检查零件号是否唯一
      *
      * @param partId 零件信息ID

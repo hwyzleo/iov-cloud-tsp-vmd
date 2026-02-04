@@ -2,17 +2,19 @@ package net.hwyz.iov.cloud.tsp.vmd.api.feign.service;
 
 import net.hwyz.iov.cloud.framework.common.constant.ServiceNameConstants;
 import net.hwyz.iov.cloud.tsp.vmd.api.contract.PartExService;
-import net.hwyz.iov.cloud.tsp.vmd.api.feign.service.factory.ExDeviceServiceFallbackFactory;
+import net.hwyz.iov.cloud.tsp.vmd.api.feign.service.factory.ExPartServiceFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.List;
 
 /**
  * 零件相关服务接口
  *
  * @author hwyz_leo
  */
-@FeignClient(contextId = "exPartService", value = ServiceNameConstants.TSP_VMD, path = "/service/part", fallbackFactory = ExDeviceServiceFallbackFactory.class)
+@FeignClient(contextId = "exPartService", value = ServiceNameConstants.TSP_VMD, path = "/service/part", fallbackFactory = ExPartServiceFallbackFactory.class)
 public interface ExPartService {
 
     /**
@@ -23,5 +25,13 @@ public interface ExPartService {
      */
     @GetMapping("/{pn}")
     PartExService getByPn(@PathVariable String pn);
+
+    /**
+     * 获取所有FOTA升级零件信息
+     *
+     * @return 零件信息
+     */
+    @GetMapping("/listAllFota")
+    List<PartExService> listAllFota();
 
 }

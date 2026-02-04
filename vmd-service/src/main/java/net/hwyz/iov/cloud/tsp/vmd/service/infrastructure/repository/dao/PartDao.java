@@ -4,6 +4,8 @@ import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.PartPo;
 import net.hwyz.iov.cloud.framework.mysql.dao.BaseDao;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * <p>
  * 零件信息表 DAO
@@ -22,5 +24,12 @@ public interface PartDao extends BaseDao<PartPo, Long> {
      * @return 零件信息
      */
     PartPo selectPoByPn(String pn);
+
+    /**
+     * 获取所有FOTA升级零件
+     *
+     * @return 零件信息列表
+     */
+    List<PartPo> selectAllFotaPo();
 
 }

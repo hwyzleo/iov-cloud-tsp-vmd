@@ -463,6 +463,15 @@
         LIMIT 1
     </select>
 
+    <!-- 获取所有FOTA升级零件 -->
+    <select id="selectAllFotaPo" parameterType="java.util.Map" resultMap="baseResultMap">
+        SELECT <include refid="baseColumnList"/>
+        FROM tb_part t
+        WHERE t.row_valid = 1
+        AND t.device_code IN (SELECT code FROM tb_device WHERE ota_support = 'FOTA' OR ota_support = 'FOTA_SOTA')
+        ORDER BY t.pn ASC
+    </select>
+
     <!-- 根据Map对象统计记录数 -->
     <select id="countPoByMap" parameterType="java.util.Map" resultType="int">
         SELECT COUNT(*)
