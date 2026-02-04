@@ -468,7 +468,18 @@
         SELECT <include refid="baseColumnList"/>
         FROM tb_part t
         WHERE t.row_valid = 1
-        AND t.device_code IN (SELECT code FROM tb_device WHERE ota_support = 'FOTA' OR ota_support = 'FOTA_SOTA')
+        AND t.device_code IN (
+            SELECT code FROM tb_device
+            WHERE ota_support = 'FOTA' OR ota_support = 'FOTA_SOTA'
+        )
+        <if test="software != null">
+            <if test="software == true">
+                AND type = 'P04'
+            </if>
+            <if test="software == false">
+                AND type != 'P04'
+            </if>
+        </if>
         ORDER BY t.pn ASC
     </select>
 

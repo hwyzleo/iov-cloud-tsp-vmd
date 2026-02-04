@@ -5,10 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.hwyz.iov.cloud.tsp.vmd.api.contract.PartExService;
 import net.hwyz.iov.cloud.tsp.vmd.service.application.service.PartAppService;
 import net.hwyz.iov.cloud.tsp.vmd.service.facade.assembler.PartExServiceAssembler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -43,9 +40,9 @@ public class PartServiceController {
      * @return 零件信息
      */
     @GetMapping("/listAllFota")
-    public List<PartExService> listAllFota() {
+    public List<PartExService> listAllFota(@RequestParam(required = false) Boolean software) {
         logger.info("获取所有FOTA升级零件信息");
-        return PartExServiceAssembler.INSTANCE.fromPoList(partAppService.listAllFota());
+        return PartExServiceAssembler.INSTANCE.fromPoList(partAppService.listAllFota(software));
     }
 
 }

@@ -53,10 +53,11 @@ public class PartAppService {
     /**
      * 获取所有FOTA升级零件
      *
+     * @param software 是否是软件零件
      * @return 零件信息列表
      */
-    public List<PartPo> listAllFota() {
-        return partDao.selectAllFotaPo();
+    public List<PartPo> listAllFota(Boolean software) {
+        return partDao.selectAllFotaPo(software);
     }
 
     /**

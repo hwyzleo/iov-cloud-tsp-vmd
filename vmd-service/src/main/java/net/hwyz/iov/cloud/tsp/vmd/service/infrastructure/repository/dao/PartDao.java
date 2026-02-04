@@ -28,8 +28,9 @@ public interface PartDao extends BaseDao<PartPo, Long> {
     /**
      * 获取所有FOTA升级零件
      *
+     * @param software 是否为软件零件
      * @return 零件信息列表
      */
-    List<PartPo> selectAllFotaPo();
+    List<PartPo> selectAllFotaPo(Boolean software);
 
 }

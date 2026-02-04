@@ -29,8 +29,8 @@ public class ExPartServiceFallbackFactory implements FallbackFactory<ExPartServi
             }
 
             @Override
-            public List<PartExService> listAllFota() {
-                logger.error("零件服务获取所有FOTA升级零件信息调用失败", throwable);
+            public List<PartExService> listAllFota(Boolean software) {
+                logger.error("零件服务获取所有FOTA升级零件（是否软件[{}]）信息调用失败", software, throwable);
                 return null;
             }
         };

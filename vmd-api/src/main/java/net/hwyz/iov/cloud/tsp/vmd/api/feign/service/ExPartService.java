@@ -6,6 +6,7 @@ import net.hwyz.iov.cloud.tsp.vmd.api.feign.service.factory.ExPartServiceFallbac
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -29,9 +30,10 @@ public interface ExPartService {
     /**
      * 获取所有FOTA升级零件信息
      *
+     * @param software 是否是软件零件
      * @return 零件信息
      */
     @GetMapping("/listAllFota")
-    List<PartExService> listAllFota();
+    List<PartExService> listAllFota(@RequestParam(required = false) Boolean software);
 
 }
