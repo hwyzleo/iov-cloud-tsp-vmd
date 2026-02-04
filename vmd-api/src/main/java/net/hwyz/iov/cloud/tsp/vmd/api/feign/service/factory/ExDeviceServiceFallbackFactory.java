@@ -6,6 +6,8 @@ import net.hwyz.iov.cloud.tsp.vmd.api.feign.service.ExDeviceService;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * 设备相关服务降级处理
  *
@@ -21,6 +23,12 @@ public class ExDeviceServiceFallbackFactory implements FallbackFactory<ExDeviceS
             @Override
             public DeviceExService getByCode(String code) {
                 logger.error("设备服务根据设备代码[{}]查询设备信息调用失败", code, throwable);
+                return null;
+            }
+
+            @Override
+            public List<DeviceExService> listAllFota() {
+                logger.error("设备服务获取所有升级设备信息调用失败", throwable);
                 return null;
             }
         };

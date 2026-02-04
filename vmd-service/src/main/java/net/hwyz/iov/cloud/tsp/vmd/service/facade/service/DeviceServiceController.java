@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * 设备相关服务接口实现类
  *
@@ -33,6 +35,17 @@ public class DeviceServiceController {
     public DeviceExService getByCode(@PathVariable String code) {
         logger.info("根据设备代码[{}]查询设备信息", code);
         return DeviceExServiceAssembler.INSTANCE.fromPo(deviceAppService.getDeviceByCode(code));
+    }
+
+    /**
+     * 获取所有升级设备信息
+     *
+     * @return 设备信息列表
+     */
+    @GetMapping("/listAllFota")
+    public List<DeviceExService> listAllFota() {
+        logger.info("获取所有升级设备信息");
+        return DeviceExServiceAssembler.INSTANCE.fromPoList(deviceAppService.listAllFota());
     }
 
 }

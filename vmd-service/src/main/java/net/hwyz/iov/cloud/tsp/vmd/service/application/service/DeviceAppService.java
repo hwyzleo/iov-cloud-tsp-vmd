@@ -55,6 +55,15 @@ public class DeviceAppService {
     }
 
     /**
+     * 获取所有FOTA升级设备
+     *
+     * @return 设备信息
+     */
+    public List<DevicePo> listAllFota() {
+        return deviceDao.selectAllFotaPo();
+    }
+
+    /**
      * 检查设备信息代码是否唯一
      *
      * @param deviceId 设备信息ID

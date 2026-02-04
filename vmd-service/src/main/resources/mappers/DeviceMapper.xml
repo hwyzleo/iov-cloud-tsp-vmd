@@ -304,6 +304,15 @@
         ORDER BY t.code ASC
     </select>
 
+    <!-- 查询所有FOTA升级设备 -->
+    <select id="selectAllFotaPo" parameterType="java.util.Map" resultMap="baseResultMap">
+        SELECT <include refid="baseColumnList"/>
+        FROM tb_device t
+        WHERE t.row_valid = 1
+        AND (t.ota_support = 'FOTA' OR t.ota_support = 'FOTA_SOTA')
+        ORDER BY t.code ASC
+    </select>
+
     <!-- 根据Map对象统计记录数 -->
     <select id="countPoByMap" parameterType="java.util.Map" resultType="int">
         SELECT COUNT(*)

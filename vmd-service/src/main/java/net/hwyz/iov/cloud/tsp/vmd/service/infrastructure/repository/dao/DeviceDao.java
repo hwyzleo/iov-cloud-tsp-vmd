@@ -32,4 +32,11 @@ public interface DeviceDao extends BaseDao<DevicePo, Long> {
      */
     List<DevicePo> selectAllPo();
 
+    /**
+     * 查询所有FOTA升级设备
+     *
+     * @return 数据对象列表
+     */
+    List<DevicePo> selectAllFotaPo();
+
 }

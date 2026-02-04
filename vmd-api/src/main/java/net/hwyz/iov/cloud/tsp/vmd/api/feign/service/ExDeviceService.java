@@ -7,6 +7,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.List;
+
 /**
  * 设备相关服务接口
  *
@@ -23,5 +25,13 @@ public interface ExDeviceService {
      */
     @GetMapping("/{code}")
     DeviceExService getByCode(@PathVariable String code);
+
+    /**
+     * 获取所有升级设备信息
+     *
+     * @return 设备信息列表
+     */
+    @GetMapping("/listAllFota")
+    List<DeviceExService> listAllFota();
 
 }
