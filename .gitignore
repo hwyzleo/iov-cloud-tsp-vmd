@@ -62,3 +62,6 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+
+doc/sql/init_**.sql
+doc/material_code_rule.xlsx
