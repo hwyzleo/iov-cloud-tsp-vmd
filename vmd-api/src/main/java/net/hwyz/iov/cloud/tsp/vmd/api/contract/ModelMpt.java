@@ -58,6 +58,11 @@ public class ModelMpt extends BaseRequest {
     private Integer sort;
 
     /**
+     * 描述
+     */
+    private String description;
+
+    /**
      * 创建时间
      */
     private Date createTime;

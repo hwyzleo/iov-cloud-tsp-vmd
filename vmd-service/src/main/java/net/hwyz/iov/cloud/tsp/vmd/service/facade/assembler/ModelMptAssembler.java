@@ -3,6 +3,7 @@ package net.hwyz.iov.cloud.tsp.vmd.service.facade.assembler;
 import net.hwyz.iov.cloud.tsp.vmd.api.contract.ModelMpt;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehModelPo;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
@@ -24,7 +25,9 @@ public interface ModelMptAssembler {
      * @param vehModelPo 数据对象
      * @return 数据传输对象
      */
-    @Mappings({})
+    @Mappings({
+            @Mapping(source = "description", target = "description")
+    })
     ModelMpt fromPo(VehModelPo vehModelPo);
 
     /**
@@ -33,7 +36,9 @@ public interface ModelMptAssembler {
      * @param modelMpt 数据传输对象
      * @return 数据对象
      */
-    @Mappings({})
+    @Mappings({
+            @Mapping(source = "description", target = "description")
+    })
     VehModelPo toPo(ModelMpt modelMpt);
 
     /**
