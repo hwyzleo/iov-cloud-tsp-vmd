@@ -33,14 +33,16 @@ public class FeatureFamilyAppService {
      *
      * @param code      车辆特征族代码
      * @param name      车辆特征族名称
+     * @param type      车辆特征族类型
      * @param beginTime 开始时间
      * @param endTime   结束时间
      * @return 车辆特征族列表
      */
-    public List<VehFeatureFamilyPo> search(String code, String name, Date beginTime, Date endTime) {
+    public List<VehFeatureFamilyPo> search(String code, String name, String type, Date beginTime, Date endTime) {
         Map<String, Object> map = new HashMap<>();
         map.put("code", code);
         map.put("name", ParamHelper.fuzzyQueryParam(name));
+        map.put("type", type);
         map.put("beginTime", beginTime);
         map.put("endTime", endTime);
         return vehFeatureFamilyDao.selectPoByMap(map);
@@ -56,10 +58,13 @@ public class FeatureFamilyAppService {
      * @param endTime   结束时间
      * @return 车辆特征值列表
      */
-    public List<VehFeatureCodePo> searchFeatureCode(Long familyId, String code, String name, Date beginTime, Date endTime) {
-        VehFeatureFamilyPo featureFamily = getFeatureFamilyById(familyId);
+    public List<VehFeatureCodePo> searchFeatureCode(Long familyId, String familyCode, String code, String name, Date beginTime, Date endTime) {
+        if (familyId != null && familyCode == null) {
+            VehFeatureFamilyPo featureFamily = getFeatureFamilyById(familyId);
+            familyCode = featureFamily.getCode();
+        }
         Map<String, Object> map = new HashMap<>();
-        map.put("familyCode", featureFamily.getCode());
+        map.put("familyCode", familyCode);
         map.put("code", code);
         map.put("name", ParamHelper.fuzzyQueryParam(name));
         map.put("beginTime", beginTime);

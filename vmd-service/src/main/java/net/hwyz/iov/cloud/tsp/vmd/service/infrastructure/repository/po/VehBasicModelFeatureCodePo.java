@@ -11,19 +11,19 @@ import lombok.experimental.SuperBuilder;
 
 /**
  * <p>
- * 车辆特征族表 数据对象
+ * 车辆基础车型特征值关系表 数据对象
  * </p>
  *
  * @author hwyz_leo
- * @since 2026-02-06
+ * @since 2026-02-08
  */
 @Getter
 @Setter
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("tb_veh_feature_family")
-public class VehFeatureFamilyPo extends BasePo {
+@TableName("tb_veh_basic_model_feature_code")
+public class VehBasicModelFeatureCodePo extends BasePo {
 
     private static final long serialVersionUID = 1L;
 
@@ -34,38 +34,20 @@ public class VehFeatureFamilyPo extends BasePo {
     private Long id;
 
     /**
+     * 基础车型代码
+     */
+    @TableField("basic_model_code")
+    private String basicModelCode;
+
+    /**
      * 特征族代码
      */
-    @TableField("code")
-    private String code;
+    @TableField("family_code")
+    private String familyCode;
 
     /**
-     * 特征族名称
+     * 特征值代码
      */
-    @TableField("name")
-    private String name;
-
-    /**
-     * 特征族英文名称
-     */
-    @TableField("name_en")
-    private String nameEn;
-
-    /**
-     * 特征族分类
-     */
-    @TableField("type")
-    private String type;
-
-    /**
-     * 是否启用
-     */
-    @TableField("enable")
-    private Boolean enable;
-
-    /**
-     * 排序
-     */
-    @TableField("sort")
-    private Integer sort;
+    @TableField("feature_code")
+    private String featureCode;
 }

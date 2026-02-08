@@ -6,7 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import net.hwyz.iov.cloud.framework.common.util.ParamHelper;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehBasicInfoDao;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehBasicModelDao;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehBasicModelFeatureCodeDao;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehModelConfigDao;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehBasicModelFeatureCodePo;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehBasicModelPo;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +30,7 @@ public class BasicModelAppService {
     private final VehBasicInfoDao vehBasicInfoDao;
     private final VehBasicModelDao vehBasicModelDao;
     private final VehModelConfigDao vehModelConfigDao;
+    private final VehBasicModelFeatureCodeDao vehBasicModelFeatureCodeDao;
 
     /**
      * 查询基础车型信息
@@ -55,6 +58,25 @@ public class BasicModelAppService {
     }
 
     /**
+     * 查询基础车型信息
+     *
+     * @param basicModelCode 基础车型代码
+     * @param familyCode     特征族代码
+     * @param beginTime      开始时间
+     * @param endTime        结束时间
+     * @return 基础车型列表
+     */
+    public List<VehBasicModelFeatureCodePo> searchFeatureCode(String basicModelCode, String familyCode, Date beginTime,
+                                                              Date endTime) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("basicModelCode", basicModelCode);
+        map.put("familyCode", familyCode);
+        map.put("beginTime", beginTime);
+        map.put("endTime", endTime);
+        return vehBasicModelFeatureCodeDao.selectPoByMap(map);
+    }
+
+    /**
      * 检查基础车型代码是否唯一
      *
      * @param basicModelId 基础车型ID
@@ -67,6 +89,22 @@ public class BasicModelAppService {
         }
         VehBasicModelPo basicModelPo = getBasicModelByCode(code);
         return !ObjUtil.isNotNull(basicModelPo) || basicModelPo.getId().longValue() == basicModelId.longValue();
+    }
+
+    /**
+     * 检查基础车型特征值代码是否唯一
+     *
+     * @param basicModelFeatureCodeId 基础车型特征值ID
+     * @param basicModelCode          基础车型代码
+     * @param familyCode              特征族代码
+     * @return 结果
+     */
+    public Boolean checkFeatureCodeUnique(Long basicModelFeatureCodeId, String basicModelCode, String familyCode) {
+        if (ObjUtil.isNull(basicModelFeatureCodeId)) {
+            basicModelFeatureCodeId = -1L;
+        }
+        VehBasicModelFeatureCodePo basicModelFeatureCodePo = getBasicModelFeatureCodeByCode(basicModelCode, familyCode);
+        return !ObjUtil.isNotNull(basicModelFeatureCodePo) || basicModelFeatureCodePo.getId().longValue() == basicModelFeatureCodeId.longValue();
     }
 
     /**
@@ -106,6 +144,16 @@ public class BasicModelAppService {
     }
 
     /**
+     * 根据主键ID获取基础车型信息
+     *
+     * @param id 主键ID
+     * @return 基础车型信息
+     */
+    public VehBasicModelFeatureCodePo getBasicModelFeatureCodeById(Long id) {
+        return vehBasicModelFeatureCodeDao.selectPoById(id);
+    }
+
+    /**
      * 根据基础车型代码获取基础车型信息
      *
      * @param code 基础车型代码
@@ -113,6 +161,17 @@ public class BasicModelAppService {
      */
     public VehBasicModelPo getBasicModelByCode(String code) {
         return vehBasicModelDao.selectPoByCode(code);
+    }
+
+    /**
+     * 根据基础车型代码获取基础车型信息
+     *
+     * @param basicModelCode 基础车型代码
+     * @param familyCode     特征族代码
+     * @return 基础车型特征值信息
+     */
+    public VehBasicModelFeatureCodePo getBasicModelFeatureCodeByCode(String basicModelCode, String familyCode) {
+        return vehBasicModelFeatureCodeDao.selectPoByBasicModelCodeAndFamilyCode(basicModelCode, familyCode);
     }
 
     /**
@@ -126,6 +185,16 @@ public class BasicModelAppService {
     }
 
     /**
+     * 新增基础车型
+     *
+     * @param basicModelFeatureCode 基础车型特征值
+     * @return 结果
+     */
+    public int createBasicModelFeatureCode(VehBasicModelFeatureCodePo basicModelFeatureCode) {
+        return vehBasicModelFeatureCodeDao.insertPo(basicModelFeatureCode);
+    }
+
+    /**
      * 修改基础车型
      *
      * @param basicModel 基础车型信息
@@ -136,6 +205,16 @@ public class BasicModelAppService {
     }
 
     /**
+     * 修改基础车型特征值
+     *
+     * @param basicModelFeatureCode 基础车型特征值
+     * @return 结果
+     */
+    public int modifyBasicModelFeatureCode(VehBasicModelFeatureCodePo basicModelFeatureCode) {
+        return vehBasicModelFeatureCodeDao.updatePo(basicModelFeatureCode);
+    }
+
+    /**
      * 批量删除基础车型
      *
      * @param ids 基础车型ID数组
@@ -143,6 +222,16 @@ public class BasicModelAppService {
      */
     public int deleteBasicModelByIds(Long[] ids) {
         return vehBasicModelDao.batchPhysicalDeletePo(ids);
+    }
+
+    /**
+     * 批量删除基础车型
+     *
+     * @param ids 基础车型ID数组
+     * @return 结果
+     */
+    public int deleteBasicModelFeatureCodeByIds(Long[] ids) {
+        return vehBasicModelFeatureCodeDao.batchPhysicalDeletePo(ids);
     }
 
 }

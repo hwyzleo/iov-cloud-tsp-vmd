@@ -49,7 +49,7 @@ public class FeatureFamilyMptController extends BaseController implements Featur
         logger.info("管理后台用户[{}]分页查询车辆特征族信息", SecurityUtils.getUsername());
         startPage();
         List<VehFeatureFamilyPo> featureFamilyPoList = featureFamilyAppService.search(featureFamily.getCode(), featureFamily.getName(),
-                getBeginTime(featureFamily), getEndTime(featureFamily));
+                featureFamily.getType(), getBeginTime(featureFamily), getEndTime(featureFamily));
         List<FeatureFamilyMpt> featureFamilyMptList = FeatureFamilyMptAssembler.INSTANCE.fromPoList(featureFamilyPoList);
         return getDataTable(featureFamilyPoList, featureFamilyMptList);
     }
@@ -67,10 +67,39 @@ public class FeatureFamilyMptController extends BaseController implements Featur
     public TableDataInfo listFeatureCode(@PathVariable Long featureFamilyId, FeatureCodeMpt featureCode) {
         logger.info("管理后台用户[{}]分页查询车辆特征族[{}]下特征值信息", SecurityUtils.getUsername(), featureFamilyId);
         startPage();
-        List<VehFeatureCodePo> featureCodePoList = featureFamilyAppService.searchFeatureCode(featureFamilyId,
+        List<VehFeatureCodePo> featureCodePoList = featureFamilyAppService.searchFeatureCode(featureFamilyId, null,
                 featureCode.getName(), featureCode.getName(), getBeginTime(featureCode), getEndTime(featureCode));
         List<FeatureCodeMpt> featureCodeMptList = FeatureCodeMptAssembler.INSTANCE.fromPoList(featureCodePoList);
         return getDataTable(featureCodePoList, featureCodeMptList);
+    }
+
+    /**
+     * 获取车辆特征族列表
+     *
+     * @return 车辆特征族列表
+     */
+    @RequiresPermissions("completeVehicle:product:featureFamily:list")
+    @Override
+    @GetMapping(value = "/listAllFeatureFamily")
+    public AjaxResult listAllFeatureFamily() {
+        logger.info("管理后台用户[{}]获取车辆特征族列表", SecurityUtils.getUsername());
+        List<VehFeatureFamilyPo> featureFamilyPoList = featureFamilyAppService.search(null, null, null, null, null);
+        return success(FeatureFamilyMptAssembler.INSTANCE.fromPoList(featureFamilyPoList));
+    }
+
+    /**
+     * 获取车辆特征值列表
+     *
+     * @param familyCode 车辆特征族代码
+     * @return 车辆特征值列表
+     */
+    @RequiresPermissions("completeVehicle:product:featureFamily:list")
+    @Override
+    @GetMapping(value = "/listAllFeatureCode")
+    public AjaxResult listAllFeatureCode(@RequestParam String familyCode) {
+        logger.info("管理后台用户[{}]获取车辆特征族[{}]下特征值列表", SecurityUtils.getUsername(), familyCode);
+        List<VehFeatureCodePo> featureCodePoList = featureFamilyAppService.searchFeatureCode(null, familyCode, null, null, null, null);
+        return success(FeatureCodeMptAssembler.INSTANCE.fromPoList(featureCodePoList));
     }
 
     /**

@@ -31,6 +31,21 @@ public interface FeatureFamilyMptApi {
     TableDataInfo listFeatureCode(Long featureFamilyId, FeatureCodeMpt featureCode);
 
     /**
+     * 获取车辆特征族列表
+     *
+     * @return 车辆特征族列表
+     */
+    AjaxResult listAllFeatureFamily();
+
+    /**
+     * 获取车辆特征值列表
+     *
+     * @param familyCode 车辆特征族代码
+     * @return 车辆特征值列表
+     */
+    AjaxResult listAllFeatureCode(String familyCode);
+
+    /**
      * 导出车辆特征族信息
      *
      * @param response      响应

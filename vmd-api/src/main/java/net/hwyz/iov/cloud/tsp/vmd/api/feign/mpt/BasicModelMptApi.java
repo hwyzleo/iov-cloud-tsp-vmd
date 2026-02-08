@@ -3,8 +3,8 @@ package net.hwyz.iov.cloud.tsp.vmd.api.feign.mpt;
 import jakarta.servlet.http.HttpServletResponse;
 import net.hwyz.iov.cloud.framework.common.web.domain.AjaxResult;
 import net.hwyz.iov.cloud.framework.common.web.page.TableDataInfo;
+import net.hwyz.iov.cloud.tsp.vmd.api.contract.BasicModelFeatureCodeMpt;
 import net.hwyz.iov.cloud.tsp.vmd.api.contract.BasicModelMpt;
-import net.hwyz.iov.cloud.tsp.vmd.api.contract.ModelMpt;
 
 import java.util.List;
 
@@ -22,6 +22,15 @@ public interface BasicModelMptApi {
      * @return 基础车型信息列表
      */
     TableDataInfo list(BasicModelMpt basicModel);
+
+    /**
+     * 分页查询基础车型下特征值
+     *
+     * @param basicModelCode        基础车型编码
+     * @param basicModelFeatureCode 基础车型特征值
+     * @return 基础车型下特征值列表
+     */
+    TableDataInfo listFeatureCode(String basicModelCode, BasicModelFeatureCodeMpt basicModelFeatureCode);
 
     /**
      * 获取指定车辆平台及车系及车型下的所有基础车型
@@ -50,12 +59,30 @@ public interface BasicModelMptApi {
     AjaxResult getInfo(Long basicModelId);
 
     /**
+     * 根据基础车型特征值ID获取基础车型特征值信息
+     *
+     * @param basicModelCode          基础车型编码
+     * @param basicModelFeatureCodeId 基础车型特征值ID
+     * @return 基础车型特征值信息
+     */
+    AjaxResult getFeatureCodeInfo(String basicModelCode, Long basicModelFeatureCodeId);
+
+    /**
      * 新增基础车型信息
      *
      * @param basicModel 基础车型信息
      * @return 结果
      */
     AjaxResult add(BasicModelMpt basicModel);
+
+    /**
+     * 新增基础车型特征值
+     *
+     * @param basicModelCode        基础车型编码
+     * @param basicModelFeatureCode 基础车型特征值
+     * @return 结果
+     */
+    AjaxResult addFeatureCode(String basicModelCode, BasicModelFeatureCodeMpt basicModelFeatureCode);
 
     /**
      * 修改保存基础车型信息
@@ -66,11 +93,29 @@ public interface BasicModelMptApi {
     AjaxResult edit(BasicModelMpt basicModel);
 
     /**
+     * 修改保存基础车型特征值
+     *
+     * @param basicModelCode        基础车型编码
+     * @param basicModelFeatureCode 基础车型特征值
+     * @return 结果
+     */
+    AjaxResult editFeatureCode(String basicModelCode, BasicModelFeatureCodeMpt basicModelFeatureCode);
+
+    /**
      * 删除基础车型信息
      *
      * @param basicModelIds 基础车型ID数组
      * @return 结果
      */
     AjaxResult remove(Long[] basicModelIds);
+
+    /**
+     * 删除基础车型特征值
+     *
+     * @param basicModelCode           基础车型编码
+     * @param basicModelFeatureCodeIds 基础车型特征值ID数组
+     * @return 结果
+     */
+    AjaxResult removeFeatureCode(String basicModelCode, Long[] basicModelFeatureCodeIds);
 
 }

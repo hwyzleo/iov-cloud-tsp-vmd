@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehFeatureFamilyDao">
+<mapper namespace="net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehBasicModelFeatureCodeDao">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="baseResultMap" type="net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehFeatureFamilyPo">
+    <resultMap id="baseResultMap" type="net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehBasicModelFeatureCodePo">
         <id column="id" property="id" />
         <result column="description" property="description" />
         <result column="create_time" property="createTime" />
@@ -12,67 +12,55 @@
         <result column="modify_by" property="modifyBy" />
         <result column="row_version" property="rowVersion" />
         <result column="row_valid" property="rowValid" />
-        <result column="code" property="code" />
-        <result column="name" property="name" />
-        <result column="name_en" property="nameEn" />
-        <result column="type" property="type" />
-        <result column="enable" property="enable" />
-        <result column="sort" property="sort" />
+        <result column="basic_model_code" property="basicModelCode" />
+        <result column="family_code" property="familyCode" />
+        <result column="feature_code" property="featureCode" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
-        id, code, name, name_en, type, enable, sort,
+        id, basic_model_code, family_code, feature_code, 
         description, create_time, create_by, modify_time, modify_by, row_version, row_valid
     </sql>
 
     <!-- 插入 -->
     <insert id="insertPo" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO tb_veh_feature_family (
-            id, code, name, name_en, type, enable, sort,
+        INSERT INTO tb_veh_basic_model_feature_code (
+            id, basic_model_code, family_code, feature_code, 
             description, create_time, create_by, modify_time, modify_by, row_version, row_valid
         )
         VALUES (
-            #{id}, #{code}, #{name}, #{nameEn}, #{type}, #{enable}, #{sort},
+            #{id}, #{basicModelCode}, #{familyCode}, #{featureCode}, 
             #{description}, now(), #{createBy}, now(), #{modifyBy}, 1, 1
         )
     </insert>
 
     <!-- 批量插入 -->
     <insert id="batchInsertPo" useGeneratedKeys="true" keyProperty="id" parameterType="java.util.List">
-        INSERT INTO tb_veh_feature_family (
-            id, code, name, name_en, type, enable, sort,
+        INSERT INTO tb_veh_basic_model_feature_code (
+            id, basic_model_code, family_code, feature_code, 
             description, create_time, create_by, modify_time, modify_by, row_version, row_valid
         )
         VALUES
         <foreach collection="list" item="item" index="index" separator=",">
         (
-            #{item.id}, #{item.code}, #{item.name}, #{item.nameEn}, #{item.type}, #{item.enable}, #{item.sort},
+            #{item.id}, #{item.basicModelCode}, #{item.familyCode}, #{item.featureCode}, 
             #{item.description}, now(), #{item.createBy}, now(), #{item.modifyBy}, 1, 1
         )
         </foreach>
     </insert>
 
     <!-- 更新 -->
-    <update id="updatePo" parameterType="net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehFeatureFamilyPo">
-        UPDATE tb_veh_feature_family t SET
-        <if test="code != null and code != ''">
-            t.code = #{code},
+    <update id="updatePo" parameterType="net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehBasicModelFeatureCodePo">
+        UPDATE tb_veh_basic_model_feature_code t SET
+        <if test="basicModelCode != null and basicModelCode != ''">
+            t.basic_model_code = #{basicModelCode},
         </if>
-        <if test="name != null and name != ''">
-            t.name = #{name},
+        <if test="familyCode != null and familyCode != ''">
+            t.family_code = #{familyCode},
         </if>
-        <if test="nameEn != null and nameEn != ''">
-            t.name_en = #{nameEn},
-        </if>
-        <if test="type != null and type != ''">
-            t.type = #{type},
-        </if>
-        <if test="enable != null">
-            t.enable = #{enable},
-        </if>
-        <if test="sort != null">
-            t.sort = #{sort},
+        <if test="featureCode != null and featureCode != ''">
+            t.feature_code = #{featureCode},
         </if>
         <if test="description != null and description != ''">
             t.description = #{description},
@@ -87,7 +75,7 @@
 
     <!-- 逻辑删除 -->
     <update id="logicalDeletePo" parameterType="Long">
-        UPDATE tb_veh_feature_family t SET
+        UPDATE tb_veh_basic_model_feature_code t SET
         t.row_version = t.row_version + 1,
         t.modify_time = now(),
         t.row_valid = 0
@@ -96,13 +84,13 @@
 
     <!-- 物理删除 -->
     <delete id="physicalDeletePo" parameterType="Long">
-        DELETE FROM tb_veh_feature_family t
+        DELETE FROM tb_veh_basic_model_feature_code t
         WHERE t.id = #{value}
     </delete>
 
     <!-- 批量物理删除 -->
     <delete id="batchPhysicalDeletePo" parameterType="Long">
-        DELETE FROM tb_veh_feature_family t
+        DELETE FROM tb_veh_basic_model_feature_code t
         WHERE t.id IN
         <foreach collection="array" item="id" open="(" separator="," close=")">
             #{id}
@@ -112,36 +100,27 @@
     <!-- 根据主键获取对应数据 -->
     <select id="selectPoById" parameterType="Long" resultMap="baseResultMap">
         SELECT <include refid="baseColumnList"/>
-        FROM tb_veh_feature_family t
+        FROM tb_veh_basic_model_feature_code t
         WHERE t.id = #{value}
         AND t.row_valid = 1
     </select>
 
     <!-- 根据数据对象获取对应数据列表 -->
-    <select id="selectPoByExample" parameterType="net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehFeatureFamilyPo" resultMap="baseResultMap">
+    <select id="selectPoByExample" parameterType="net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehBasicModelFeatureCodePo" resultMap="baseResultMap">
         SELECT <include refid="baseColumnList"/>
-        FROM tb_veh_feature_family t
+        FROM tb_veh_basic_model_feature_code t
         WHERE t.row_valid = 1
         <if test="id != null">
             AND t.id = #{id}
         </if>
-        <if test="code != null and code != ''">
-            AND t.code = #{code}
+        <if test="basicModelCode != null and basicModelCode != ''">
+            AND t.basic_model_code = #{basicModelCode}
         </if>
-        <if test="name != null and name != ''">
-            AND t.name = #{name}
+        <if test="familyCode != null and familyCode != ''">
+            AND t.family_code = #{familyCode}
         </if>
-        <if test="nameEn != null and nameEn != ''">
-            AND t.name_en = #{nameEn}
-        </if>
-        <if test="type != null and type != ''">
-            AND t.type = #{type}
-        </if>
-        <if test="enable != null">
-            AND t.enable = #{enable}
-        </if>
-        <if test="sort != null">
-            AND t.sort = #{sort}
+        <if test="featureCode != null and featureCode != ''">
+            AND t.feature_code = #{featureCode}
         </if>
         <if test="description != null and description != ''">
             AND t.description = #{description}
@@ -161,40 +140,32 @@
         <if test="rowVersion != null">
             AND t.row_version = #{rowVersion}
         </if>
-        ORDER BY t.code ASC
+        ORDER BY t.id DESC
     </select>
 
     <!-- 根据Map对象获取对应数据列表 -->
     <select id="selectPoByMap" parameterType="java.util.Map" resultMap="baseResultMap">
         SELECT <include refid="baseColumnList"/>
-        FROM tb_veh_feature_family t
+        FROM tb_veh_basic_model_feature_code t
         WHERE t.row_valid = 1
         <!-- 添加自定义条件 -->
-        <if test="code != null and code != ''">
-            AND t.code = #{code}
-        </if>
-        <if test="name != null and name != ''">
-            AND t.name LIKE #{name}
-        </if>
-        <if test="type != null and type != ''">
-            AND t.type = #{type}
-        </if>
-        ORDER BY t.code ASC
+        ORDER BY t.id DESC
     </select>
 
-    <!-- 根据车辆特征族代码获取车辆特征族信息 -->
-    <select id="selectPoByCode" parameterType="java.util.Map" resultMap="baseResultMap">
+    <!-- 根据基础车型代码和特征族代码查询 -->
+    <select id="selectPoByBasicModelCodeAndFamilyCode" parameterType="java.util.Map" resultMap="baseResultMap">
         SELECT <include refid="baseColumnList"/>
-        FROM tb_veh_feature_family t
+        FROM tb_veh_basic_model_feature_code t
         WHERE t.row_valid = 1
-        AND t.code = #{code}
+        AND t.basic_model_code = #{basicModelCode}
+        AND t.family_code = #{familyCode}
         LIMIT 1
     </select>
 
     <!-- 根据Map对象统计记录数 -->
     <select id="countPoByMap" parameterType="java.util.Map" resultType="int">
         SELECT COUNT(*)
-        FROM tb_veh_feature_family t
+        FROM tb_veh_basic_model_feature_code t
         WHERE t.row_valid = 1
         <!-- 添加自定义条件 -->
     </select>

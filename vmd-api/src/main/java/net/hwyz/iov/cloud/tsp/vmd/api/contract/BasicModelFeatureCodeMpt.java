@@ -6,7 +6,7 @@ import net.hwyz.iov.cloud.framework.common.web.domain.BaseRequest;
 import java.util.Date;
 
 /**
- * 管理后台车辆特征族
+ * 管理后台基础车型特征值
  *
  * @author hwyz_leo
  */
@@ -15,7 +15,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class FeatureFamilyMpt extends BaseRequest {
+public class BasicModelFeatureCodeMpt extends BaseRequest {
 
     /**
      * 主键
@@ -23,34 +23,34 @@ public class FeatureFamilyMpt extends BaseRequest {
     private Long id;
 
     /**
+     * 基础车型代码
+     */
+    private String basicModelCode;
+
+    /**
      * 特征族代码
      */
-    private String code;
+    private String familyCode;
 
     /**
      * 特征族名称
      */
-    private String name;
+    private String familyName;
 
     /**
-     * 特征族英文名称
+     * 特征值代码
      */
-    private String nameEn;
+    private String featureCode;
 
     /**
-     * 特征族分类
+     * 特征值名称
      */
-    private String type;
+    private String featureName;
 
     /**
-     * 是否启用
+     * 特征值值
      */
-    private Boolean enable;
-
-    /**
-     * 排序
-     */
-    private Integer sort;
+    private String featureValue;
 
     /**
      * 创建时间

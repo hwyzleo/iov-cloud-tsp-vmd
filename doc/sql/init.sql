@@ -211,6 +211,7 @@ CREATE TABLE `db_vmd`.`tb_veh_feature_family`
     `code`        VARCHAR(10)  NOT NULL COMMENT '特征族代码',
     `name`        VARCHAR(255) NOT NULL COMMENT '特征族名称',
     `name_en`     VARCHAR(255)          DEFAULT NULL COMMENT '特征族英文名称',
+    `type`        VARCHAR(50)           DEFAULT NULL COMMENT '特征族分类',
     `enable`      TINYINT      NOT NULL COMMENT '是否启用',
     `sort`        INT          NOT NULL COMMENT '排序',
     `description` VARCHAR(255)          DEFAULT NULL COMMENT '备注',
@@ -248,6 +249,25 @@ CREATE TABLE `db_vmd`.`tb_veh_feature_code`
     INDEX `idx_family` (`family_code`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='车辆特征值表';
+
+DROP TABLE IF EXISTS `db_vmd`.`tb_veh_basic_model_feature_code`;
+CREATE TABLE `db_vmd`.`tb_veh_basic_model_feature_code`
+(
+    `id`               BIGINT       NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `basic_model_code` VARCHAR(255) NOT NULL COMMENT '基础车型代码',
+    `family_code`      VARCHAR(255) NOT NULL COMMENT '特征族代码',
+    `feature_code`     VARCHAR(255) NOT NULL COMMENT '特征值代码',
+    `description`      VARCHAR(255)          DEFAULT NULL COMMENT '备注',
+    `create_time`      TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `create_by`        VARCHAR(64)           DEFAULT NULL COMMENT '创建者',
+    `modify_time`      TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
+    `modify_by`        VARCHAR(64)           DEFAULT NULL COMMENT '修改者',
+    `row_version`      INT                   DEFAULT 1 COMMENT '记录版本',
+    `row_valid`        TINYINT               DEFAULT 1 COMMENT '记录是否有效',
+    PRIMARY KEY (`id`),
+    INDEX `idx_basic_model` (`basic_model_code`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4 COMMENT ='车辆基础车型特征值关系表';
 
 DROP TABLE IF EXISTS `db_vmd`.`tb_veh_model_config`;
 CREATE TABLE `db_vmd`.`tb_veh_model_config`
