@@ -24,13 +24,13 @@ public interface BasicModelMptApi {
     TableDataInfo list(BasicModelMpt basicModel);
 
     /**
-     * 分页查询基础车型下特征值
+     * 查询基础车型下特征值
      *
      * @param basicModelCode        基础车型编码
      * @param basicModelFeatureCode 基础车型特征值
      * @return 基础车型下特征值列表
      */
-    TableDataInfo listFeatureCode(String basicModelCode, BasicModelFeatureCodeMpt basicModelFeatureCode);
+    AjaxResult listFeatureCode(String basicModelCode, BasicModelFeatureCodeMpt basicModelFeatureCode);
 
     /**
      * 获取指定车辆平台及车系及车型下的所有基础车型

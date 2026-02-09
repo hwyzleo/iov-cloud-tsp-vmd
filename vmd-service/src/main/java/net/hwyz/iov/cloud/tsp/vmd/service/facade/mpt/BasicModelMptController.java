@@ -59,7 +59,7 @@ public class BasicModelMptController extends BaseController implements BasicMode
     }
 
     /**
-     * 分页查询基础车型下特征值
+     * 查询基础车型下特征值
      *
      * @param basicModelCode        基础车型编码
      * @param basicModelFeatureCode 基础车型特征值
@@ -68,9 +68,8 @@ public class BasicModelMptController extends BaseController implements BasicMode
     @RequiresPermissions("completeVehicle:product:basicModel:list")
     @Override
     @GetMapping(value = "/{basicModelCode}/featureCode/list")
-    public TableDataInfo listFeatureCode(@PathVariable String basicModelCode, BasicModelFeatureCodeMpt basicModelFeatureCode) {
+    public AjaxResult listFeatureCode(@PathVariable String basicModelCode, BasicModelFeatureCodeMpt basicModelFeatureCode) {
         logger.info("管理后台用户[{}]分页查询基础车型下特征值", SecurityUtils.getUsername());
-        startPage();
         List<VehBasicModelFeatureCodePo> basicModelFeatureCodePoList = basicModelAppService.searchFeatureCode(basicModelCode,
                 basicModelFeatureCode.getFamilyCode(), getBeginTime(basicModelFeatureCode), getEndTime(basicModelFeatureCode));
         List<BasicModelFeatureCodeMpt> basicModelFeatureCodeMptList = BasicModelFeatureCodeMptAssembler.INSTANCE.fromPoList(basicModelFeatureCodePoList);
@@ -85,7 +84,7 @@ public class BasicModelMptController extends BaseController implements BasicMode
                 mpt.setFeatureValue(featureCode.getVal());
             }
         });
-        return getDataTable(basicModelFeatureCodePoList, basicModelFeatureCodeMptList);
+        return success(basicModelFeatureCodeMptList);
     }
 
     /**

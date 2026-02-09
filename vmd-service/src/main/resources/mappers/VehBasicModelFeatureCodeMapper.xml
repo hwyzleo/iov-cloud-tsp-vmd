@@ -149,7 +149,10 @@
         FROM tb_veh_basic_model_feature_code t
         WHERE t.row_valid = 1
         <!-- 添加自定义条件 -->
-        ORDER BY t.id DESC
+        <if test="basicModelCode != null and basicModelCode != ''">
+            AND t.basic_model_code = #{basicModelCode}
+        </if>
+        ORDER BY t.family_code ASC
     </select>
 
     <!-- 根据基础车型代码和特征族代码查询 -->
