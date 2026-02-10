@@ -50,4 +50,10 @@ public class VehBasicModelFeatureCodePo extends BasePo {
      */
     @TableField("feature_code")
     private String featureCode;
+
+    /**
+     * 特征值类型
+     */
+    @TableField("feature_type")
+    private String featureType;
 }

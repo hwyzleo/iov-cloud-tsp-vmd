@@ -16,24 +16,25 @@
         <result column="name" property="name" />
         <result column="name_en" property="nameEn" />
         <result column="type" property="type" />
+        <result column="mandatory" property="mandatory" />
         <result column="enable" property="enable" />
         <result column="sort" property="sort" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
-        id, code, name, name_en, type, enable, sort,
+        id, code, name, name_en, type, mandatory, enable, sort,
         description, create_time, create_by, modify_time, modify_by, row_version, row_valid
     </sql>
 
     <!-- 插入 -->
     <insert id="insertPo" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_veh_feature_family (
-            id, code, name, name_en, type, enable, sort,
+            id, code, name, name_en, type, mandatory, enable, sort,
             description, create_time, create_by, modify_time, modify_by, row_version, row_valid
         )
         VALUES (
-            #{id}, #{code}, #{name}, #{nameEn}, #{type}, #{enable}, #{sort},
+            #{id}, #{code}, #{name}, #{nameEn}, #{type}, #{mandatory}, #{enable}, #{sort},
             #{description}, now(), #{createBy}, now(), #{modifyBy}, 1, 1
         )
     </insert>
@@ -41,13 +42,13 @@
     <!-- 批量插入 -->
     <insert id="batchInsertPo" useGeneratedKeys="true" keyProperty="id" parameterType="java.util.List">
         INSERT INTO tb_veh_feature_family (
-            id, code, name, name_en, type, enable, sort,
+            id, code, name, name_en, type, mandatory, enable, sort,
             description, create_time, create_by, modify_time, modify_by, row_version, row_valid
         )
         VALUES
         <foreach collection="list" item="item" index="index" separator=",">
         (
-            #{item.id}, #{item.code}, #{item.name}, #{item.nameEn}, #{item.type}, #{item.enable}, #{item.sort},
+            #{item.id}, #{item.code}, #{item.name}, #{item.nameEn}, #{item.type}, #{item.mandatory}, #{item.enable}, #{item.sort},
             #{item.description}, now(), #{item.createBy}, now(), #{item.modifyBy}, 1, 1
         )
         </foreach>
@@ -67,6 +68,9 @@
         </if>
         <if test="type != null and type != ''">
             t.type = #{type},
+        </if>
+        <if test="mandatory != null">
+            t.mandatory = #{mandatory},
         </if>
         <if test="enable != null">
             t.enable = #{enable},
@@ -136,6 +140,9 @@
         </if>
         <if test="type != null and type != ''">
             AND t.type = #{type}
+        </if>
+        <if test="mandatory != null">
+            AND t.mandatory = #{mandatory}
         </if>
         <if test="enable != null">
             AND t.enable = #{enable}

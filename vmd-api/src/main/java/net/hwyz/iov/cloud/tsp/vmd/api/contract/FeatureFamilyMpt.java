@@ -43,6 +43,11 @@ public class FeatureFamilyMpt extends BaseRequest {
     private String type;
 
     /**
+     * 是否强制
+     */
+    private Boolean mandatory;
+
+    /**
      * 是否启用
      */
     private Boolean enable;

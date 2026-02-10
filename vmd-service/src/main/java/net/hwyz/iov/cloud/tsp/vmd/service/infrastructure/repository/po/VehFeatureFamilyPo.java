@@ -58,6 +58,12 @@ public class VehFeatureFamilyPo extends BasePo {
     private String type;
 
     /**
+     * 是否强制
+     */
+    @TableField("mandatory")
+    private Boolean mandatory;
+
+    /**
      * 是否启用
      */
     @TableField("enable")

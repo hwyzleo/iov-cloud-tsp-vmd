@@ -40,17 +40,17 @@ public class BasicModelFeatureCodeMpt extends BaseRequest {
     /**
      * 特征值代码
      */
-    private String featureCode;
+    private String[] featureCode;
 
     /**
      * 特征值名称
      */
-    private String featureName;
+    private String[] featureName;
 
     /**
-     * 特征值值
+     * 特征值类型
      */
-    private String featureValue;
+    private String featureType;
 
     /**
      * 创建时间

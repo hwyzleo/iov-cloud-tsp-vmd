@@ -3,6 +3,7 @@ package net.hwyz.iov.cloud.tsp.vmd.service.facade.assembler;
 import net.hwyz.iov.cloud.tsp.vmd.api.contract.BasicModelFeatureCodeMpt;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehBasicModelFeatureCodePo;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
@@ -24,7 +25,9 @@ public interface BasicModelFeatureCodeMptAssembler {
      * @param vehBasicModelFeatureCodePo 数据对象
      * @return 数据传输对象
      */
-    @Mappings({})
+    @Mappings({
+            @Mapping(target = "featureCode", expression = "java(net.hwyz.iov.cloud.framework.common.util.StrUtil.isBlank(vehBasicModelFeatureCodePo.getFeatureCode()) ? null : vehBasicModelFeatureCodePo.getFeatureCode().split(\",\"))")
+    })
     BasicModelFeatureCodeMpt fromPo(VehBasicModelFeatureCodePo vehBasicModelFeatureCodePo);
 
     /**
@@ -33,7 +36,9 @@ public interface BasicModelFeatureCodeMptAssembler {
      * @param basicModelFeatureCodeMpt 数据传输对象
      * @return 数据对象
      */
-    @Mappings({})
+    @Mappings({
+            @Mapping(target = "featureCode", expression = "java(basicModelFeatureCodeMpt.getFeatureCode() == null ? null : java.lang.String.join(\",\", basicModelFeatureCodeMpt.getFeatureCode()))")
+    })
     VehBasicModelFeatureCodePo toPo(BasicModelFeatureCodeMpt basicModelFeatureCodeMpt);
 
     /**

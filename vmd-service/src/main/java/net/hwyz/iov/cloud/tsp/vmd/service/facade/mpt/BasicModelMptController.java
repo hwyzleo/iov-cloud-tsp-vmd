@@ -78,11 +78,16 @@ public class BasicModelMptController extends BaseController implements BasicMode
             if (featureFamily != null) {
                 mpt.setFamilyName(featureFamily.getName());
             }
-            VehFeatureCodePo featureCode = featureFamilyAppService.getFeatureCodeByCode(mpt.getFeatureCode());
-            if (featureCode != null) {
-                mpt.setFeatureName(featureCode.getName());
-                mpt.setFeatureValue(featureCode.getVal());
+            mpt.setFeatureName(new String[mpt.getFeatureCode().length]);
+            int i = 0;
+            for (String code : mpt.getFeatureCode()) {
+                VehFeatureCodePo featureCode = featureFamilyAppService.getFeatureCodeByCode(code);
+                if (featureCode != null) {
+                    mpt.getFeatureName()[i] = featureCode.getName();
+                }
+                i++;
             }
+
         });
         return success(basicModelFeatureCodeMptList);
     }

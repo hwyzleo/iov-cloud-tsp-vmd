@@ -15,22 +15,23 @@
         <result column="basic_model_code" property="basicModelCode" />
         <result column="family_code" property="familyCode" />
         <result column="feature_code" property="featureCode" />
+        <result column="feature_type" property="featureType" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
-        id, basic_model_code, family_code, feature_code, 
+        id, basic_model_code, family_code, feature_code, feature_type,
         description, create_time, create_by, modify_time, modify_by, row_version, row_valid
     </sql>
 
     <!-- 插入 -->
     <insert id="insertPo" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_veh_basic_model_feature_code (
-            id, basic_model_code, family_code, feature_code, 
+            id, basic_model_code, family_code, feature_code, feature_type,
             description, create_time, create_by, modify_time, modify_by, row_version, row_valid
         )
         VALUES (
-            #{id}, #{basicModelCode}, #{familyCode}, #{featureCode}, 
+            #{id}, #{basicModelCode}, #{familyCode}, #{featureCode}, #{featureType},
             #{description}, now(), #{createBy}, now(), #{modifyBy}, 1, 1
         )
     </insert>
@@ -38,13 +39,13 @@
     <!-- 批量插入 -->
     <insert id="batchInsertPo" useGeneratedKeys="true" keyProperty="id" parameterType="java.util.List">
         INSERT INTO tb_veh_basic_model_feature_code (
-            id, basic_model_code, family_code, feature_code, 
+            id, basic_model_code, family_code, feature_code, feature_type,
             description, create_time, create_by, modify_time, modify_by, row_version, row_valid
         )
         VALUES
         <foreach collection="list" item="item" index="index" separator=",">
         (
-            #{item.id}, #{item.basicModelCode}, #{item.familyCode}, #{item.featureCode}, 
+            #{item.id}, #{item.basicModelCode}, #{item.familyCode}, #{item.featureCode}, #{item.featureType},
             #{item.description}, now(), #{item.createBy}, now(), #{item.modifyBy}, 1, 1
         )
         </foreach>
@@ -61,6 +62,9 @@
         </if>
         <if test="featureCode != null and featureCode != ''">
             t.feature_code = #{featureCode},
+        </if>
+        <if test="featureType != null and featureType != ''">
+            t.feature_type = #{featureType},
         </if>
         <if test="description != null and description != ''">
             t.description = #{description},
@@ -121,6 +125,9 @@
         </if>
         <if test="featureCode != null and featureCode != ''">
             AND t.feature_code = #{featureCode}
+        </if>
+        <if test="featureType != null and featureType != ''">
+            AND t.feature_type = #{featureType}
         </if>
         <if test="description != null and description != ''">
             AND t.description = #{description}
