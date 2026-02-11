@@ -664,3 +664,25 @@ CREATE TABLE `db_vmd`.`tb_vehicle_part_history`
     INDEX `idx_pn` (`pn`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='车辆零件变更历史表';
+
+DROP TABLE IF EXISTS `db_vmd`.`tb_config_item`;
+CREATE TABLE `db_vmd`.`tb_config_item`
+(
+    `id`          BIGINT       NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `code`        VARCHAR(255) NOT NULL COMMENT '配置项编码',
+    `name`        VARCHAR(255) NOT NULL COMMENT '配置项名称',
+    `type`        VARCHAR(32)  NOT NULL COMMENT '配置项类型',
+    `unit`        VARCHAR(16)           DEFAULT NULL COMMENT '配置项单位',
+    `enum_value`  VARCHAR(255)          DEFAULT NULL COMMENT '配置项枚举值',
+    `vehicle`     TINYINT               DEFAULT 0 COMMENT '是否车辆级配置',
+    `description` VARCHAR(255)          DEFAULT NULL COMMENT '备注',
+    `create_time` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `create_by`   VARCHAR(64)           DEFAULT NULL COMMENT '创建者',
+    `modify_time` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
+    `modify_by`   VARCHAR(64)           DEFAULT NULL COMMENT '修改者',
+    `row_version` INT                   DEFAULT 1 COMMENT '记录版本',
+    `row_valid`   TINYINT               DEFAULT 1 COMMENT '记录是否有效',
+    PRIMARY KEY (`id`) USING BTREE,
+    UNIQUE KEY (`code`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4 COMMENT '配置项表';
