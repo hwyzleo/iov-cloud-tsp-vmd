@@ -729,3 +729,44 @@ CREATE TABLE `db_vmd`.`tb_config_item_mapping`
     INDEX `idx_config_item` (`config_item_code`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT '配置项映射表';
+
+DROP TABLE IF EXISTS `db_vmd`.`tb_vehicle_config`;
+CREATE TABLE `db_vmd`.`tb_vehicle_config`
+(
+    `id`          BIGINT      NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `vin`         VARCHAR(20) NOT NULL COMMENT '车架号',
+    `version`     VARCHAR(64) NOT NULL COMMENT '配置版本',
+    `state`       VARCHAR(20) NOT NULL COMMENT '配置状态',
+    `description` VARCHAR(255)         DEFAULT NULL COMMENT '备注',
+    `create_time` TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `create_by`   VARCHAR(64)          DEFAULT NULL COMMENT '创建者',
+    `modify_time` TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
+    `modify_by`   VARCHAR(64)          DEFAULT NULL COMMENT '修改者',
+    `row_version` INT                  DEFAULT 1 COMMENT '记录版本',
+    `row_valid`   TINYINT              DEFAULT 1 COMMENT '记录是否有效',
+    PRIMARY KEY (`id`) USING BTREE,
+    UNIQUE KEY (`vin`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4 COMMENT '车辆配置表';
+
+DROP TABLE IF EXISTS `db_vmd`.`tb_vehicle_config_item`;
+CREATE TABLE `db_vmd`.`tb_vehicle_config_item`
+(
+    `id`                BIGINT       NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `vin`               VARCHAR(20)  NOT NULL COMMENT '车架号',
+    `version`           VARCHAR(64)  NOT NULL COMMENT '配置版本',
+    `config_item_code`  VARCHAR(50)  NOT NULL COMMENT '配置项代码',
+    `config_item_value` VARCHAR(255) NOT NULL COMMENT '配置项值',
+    `source_value`      VARCHAR(255) NOT NULL COMMENT '源系统值',
+    `source_system`     VARCHAR(50)  NOT NULL COMMENT '源系统',
+    `description`       VARCHAR(255)          DEFAULT NULL COMMENT '备注',
+    `create_time`       TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `create_by`         VARCHAR(64)           DEFAULT NULL COMMENT '创建者',
+    `modify_time`       TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
+    `modify_by`         VARCHAR(64)           DEFAULT NULL COMMENT '修改者',
+    `row_version`       INT                   DEFAULT 1 COMMENT '记录版本',
+    `row_valid`         TINYINT               DEFAULT 1 COMMENT '记录是否有效',
+    PRIMARY KEY (`id`) USING BTREE,
+    UNIQUE KEY (`vin`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4 COMMENT '车辆配置项表';
