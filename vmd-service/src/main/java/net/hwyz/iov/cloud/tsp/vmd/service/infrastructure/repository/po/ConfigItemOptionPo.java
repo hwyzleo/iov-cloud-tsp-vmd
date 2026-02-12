@@ -11,19 +11,19 @@ import lombok.experimental.SuperBuilder;
 
 /**
  * <p>
- * 配置项表 数据对象
+ * 配置项枚举值表 数据对象
  * </p>
  *
  * @author hwyz_leo
- * @since 2026-02-11
+ * @since 2026-02-12
  */
 @Getter
 @Setter
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("tb_config_item")
-public class ConfigItemPo extends BasePo {
+@TableName("tb_config_item_option")
+public class ConfigItemOptionPo extends BasePo {
 
     private static final long serialVersionUID = 1L;
 
@@ -34,50 +34,20 @@ public class ConfigItemPo extends BasePo {
     private Long id;
 
     /**
-     * 配置项大类
+     * 配置项编码
      */
-    @TableField("family")
-    private String family;
+    @TableField("config_item_code")
+    private String configItemCode;
 
     /**
-     * 配置项编码
+     * 枚举值编码
      */
     @TableField("code")
     private String code;
 
     /**
-     * 配置项名称
+     * 枚举值名称
      */
     @TableField("name")
     private String name;
-
-    /**
-     * 配置项类型
-     */
-    @TableField("type")
-    private String type;
-
-    /**
-     * 配置项单位
-     */
-    @TableField("unit")
-    private String unit;
-
-    /**
-     * 是否车辆能力
-     */
-    @TableField("capability")
-    private Boolean capability;
-
-    /**
-     * 端上是否展示
-     */
-    @TableField("display")
-    private Boolean display;
-
-    /**
-     * 端上是否缓存
-     */
-    @TableField("cache")
-    private Boolean cache;
 }

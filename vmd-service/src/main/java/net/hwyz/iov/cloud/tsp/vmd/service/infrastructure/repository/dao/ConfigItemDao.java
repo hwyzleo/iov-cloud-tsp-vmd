@@ -16,9 +16,9 @@ import org.apache.ibatis.annotations.Mapper;
 public interface ConfigItemDao extends BaseDao<ConfigItemPo, Long> {
 
     /**
-     * 根据编码查询配置项信息
+     * 根据配置项代码获取配置项信息
      *
-     * @param code 编码
+     * @param code 配置项代码
      * @return 配置项信息
      */
     ConfigItemPo selectPoByCode(String code);

@@ -23,6 +23,11 @@ public class ConfigItemMpt extends BaseRequest {
     private Long id;
 
     /**
+     * 配置项大类
+     */
+    private String family;
+
+    /**
      * 配置项编码
      */
     private String code;
@@ -43,14 +48,19 @@ public class ConfigItemMpt extends BaseRequest {
     private String unit;
 
     /**
-     * 配置项枚举值
+     * 是否车辆能力
      */
-    private String enumValue;
+    private Boolean capability;
 
     /**
-     * 是否车辆级配置
+     * 端上是否展示
      */
-    private Boolean vehicle;
+    private Boolean display;
+
+    /**
+     * 端上是否缓存
+     */
+    private Boolean cache;
 
     /**
      * 创建时间
