@@ -707,3 +707,25 @@ CREATE TABLE `db_vmd`.`tb_config_item_option`
     INDEX `idx_config_item` (`config_item_code`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT '配置项枚举值表';
+
+DROP TABLE IF EXISTS `db_vmd`.`tb_config_item_mapping`;
+CREATE TABLE `db_vmd`.`tb_config_item_mapping`
+(
+    `id`                 BIGINT      NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `config_item_code`   VARCHAR(50) NOT NULL COMMENT '配置项代码',
+    `source_system`      VARCHAR(50) NOT NULL COMMENT '源系统',
+    `source_code`        VARCHAR(50) NOT NULL COMMENT '源系统代码',
+    `source_value`       VARCHAR(255)         DEFAULT NULL COMMENT '源系统值',
+    `target_option_code` VARCHAR(50)          DEFAULT NULL COMMENT '映射的枚举值编码',
+    `target_value`       VARCHAR(255)         DEFAULT NULL COMMENT '映射值',
+    `description`        VARCHAR(255)         DEFAULT NULL COMMENT '备注',
+    `create_time`        TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `create_by`          VARCHAR(64)          DEFAULT NULL COMMENT '创建者',
+    `modify_time`        TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
+    `modify_by`          VARCHAR(64)          DEFAULT NULL COMMENT '修改者',
+    `row_version`        INT                  DEFAULT 1 COMMENT '记录版本',
+    `row_valid`          TINYINT              DEFAULT 1 COMMENT '记录是否有效',
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `idx_config_item` (`config_item_code`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4 COMMENT '配置项映射表';

@@ -3,6 +3,7 @@ package net.hwyz.iov.cloud.tsp.vmd.api.feign.mpt;
 import jakarta.servlet.http.HttpServletResponse;
 import net.hwyz.iov.cloud.framework.common.web.domain.AjaxResult;
 import net.hwyz.iov.cloud.framework.common.web.page.TableDataInfo;
+import net.hwyz.iov.cloud.tsp.vmd.api.contract.ConfigItemMappingMpt;
 import net.hwyz.iov.cloud.tsp.vmd.api.contract.ConfigItemMpt;
 import net.hwyz.iov.cloud.tsp.vmd.api.contract.ConfigItemOptionMpt;
 
@@ -31,6 +32,15 @@ public interface ConfigItemMptApi {
     AjaxResult listOption(String configItemCode, ConfigItemOptionMpt configItemOption);
 
     /**
+     * 查询配置项映射信息
+     *
+     * @param configItemCode    配置项代码
+     * @param configItemMapping 配置项映射信息
+     * @return 配置项映射信息列表
+     */
+    AjaxResult listMapping(String configItemCode, ConfigItemMappingMpt configItemMapping);
+
+    /**
      * 导出配置项信息
      *
      * @param response   响应
@@ -56,6 +66,15 @@ public interface ConfigItemMptApi {
     AjaxResult getOptionInfo(String configItemCode, Long configItemOptionId);
 
     /**
+     * 根据配置项映射ID获取配置项映射信息
+     *
+     * @param configItemCode      配置项代码
+     * @param configItemMappingId 配置项映射ID
+     * @return 配置项映射信息
+     */
+    AjaxResult getMappingInfo(String configItemCode, Long configItemMappingId);
+
+    /**
      * 新增配置项信息
      *
      * @param configItem 配置项信息
@@ -71,6 +90,15 @@ public interface ConfigItemMptApi {
      * @return 结果
      */
     AjaxResult addOption(String configItemCode, ConfigItemOptionMpt configItemOption);
+
+    /**
+     * 新增配置项映射信息
+     *
+     * @param configItemCode    配置项代码
+     * @param configItemMapping 配置项映射信息
+     * @return 结果
+     */
+    AjaxResult addMapping(String configItemCode, ConfigItemMappingMpt configItemMapping);
 
     /**
      * 修改保存配置项信息
@@ -90,6 +118,15 @@ public interface ConfigItemMptApi {
     AjaxResult editOption(String configItemCode, ConfigItemOptionMpt configItemOption);
 
     /**
+     * 修改保存配置项映射信息
+     *
+     * @param configItemCode    配置项代码
+     * @param configItemMapping 配置项映射信息
+     * @return 结果
+     */
+    AjaxResult editMapping(String configItemCode, ConfigItemMappingMpt configItemMapping);
+
+    /**
      * 删除配置项信息
      *
      * @param configItemIds 配置项ID数组
@@ -105,5 +142,14 @@ public interface ConfigItemMptApi {
      * @return 结果
      */
     AjaxResult removeOption(String configItemCode, Long[] configItemOptionIds);
+
+    /**
+     * 删除配置项映射信息
+     *
+     * @param configItemCode       配置项代码
+     * @param configItemMappingIds 配置项映射ID数组
+     * @return 结果
+     */
+    AjaxResult removeMapping(String configItemCode, Long[] configItemMappingIds);
 
 }

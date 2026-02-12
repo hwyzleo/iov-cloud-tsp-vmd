@@ -4,8 +4,11 @@ import cn.hutool.core.util.ObjUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.hwyz.iov.cloud.framework.common.util.ParamHelper;
+import net.hwyz.iov.cloud.framework.common.util.StrUtil;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.ConfigItemDao;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.ConfigItemMappingDao;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.ConfigItemOptionDao;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.ConfigItemMappingPo;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.ConfigItemOptionPo;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.ConfigItemPo;
 import org.springframework.stereotype.Service;
@@ -27,6 +30,7 @@ public class ConfigItemAppService {
 
     private final ConfigItemDao configItemDao;
     private final ConfigItemOptionDao configItemOptionDao;
+    private final ConfigItemMappingDao configItemMappingDao;
 
     /**
      * 查询配置项信息
@@ -67,6 +71,24 @@ public class ConfigItemAppService {
     }
 
     /**
+     * 查询配置项映射信息
+     *
+     * @param configItemCode 配置项代码
+     * @param sourceSystem   源系统
+     * @param beginTime      开始时间
+     * @param endTime        结束时间
+     * @return 配置项列表
+     */
+    public List<ConfigItemMappingPo> searchMapping(String configItemCode, String sourceSystem, Date beginTime, Date endTime) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("configItemCode", configItemCode);
+        map.put("sourceSystem", sourceSystem);
+        map.put("beginTime", beginTime);
+        map.put("endTime", endTime);
+        return configItemMappingDao.selectPoByMap(map);
+    }
+
+    /**
      * 检查配置项代码是否唯一
      *
      * @param configItemId 配置项ID
@@ -84,7 +106,7 @@ public class ConfigItemAppService {
     /**
      * 检查配置项枚举值代码是否唯一
      *
-     * @param configItemOptionId 配置项ID
+     * @param configItemOptionId 配置项枚举值ID
      * @param configItemCode     配置项代码
      * @param code               配置项代码
      * @return 结果
@@ -95,6 +117,24 @@ public class ConfigItemAppService {
         }
         ConfigItemOptionPo configItemOptionPo = getConfigItemOptionByCode(configItemCode, code);
         return !ObjUtil.isNotNull(configItemOptionPo) || configItemOptionPo.getId().longValue() == configItemOptionId.longValue();
+    }
+
+    /**
+     * 检查配置项映射代码是否唯一
+     *
+     * @param configItemMappingId 配置项映射ID
+     * @param configItemCode      配置项代码
+     * @param sourceSystem        源系统
+     * @param sourceCode          源系统代码
+     * @param sourceValue         源系统值
+     * @return 结果
+     */
+    public Boolean checkMappingCodeUnique(Long configItemMappingId, String configItemCode, String sourceSystem, String sourceCode, String sourceValue) {
+        if (ObjUtil.isNull(configItemMappingId)) {
+            configItemMappingId = -1L;
+        }
+        ConfigItemMappingPo configItemMappingPo = getConfigItemMappingByCode(configItemCode, sourceSystem, sourceCode, sourceValue);
+        return !ObjUtil.isNotNull(configItemMappingPo) || configItemMappingPo.getId().longValue() == configItemMappingId.longValue();
     }
 
     /**
@@ -119,6 +159,17 @@ public class ConfigItemAppService {
     }
 
     /**
+     * 根据主键ID获取配置项映射信息
+     *
+     * @param configItemCode 配置项代码
+     * @param id             主键ID
+     * @return 配置项映射信息
+     */
+    public ConfigItemMappingPo getConfigItemMappingById(String configItemCode, Long id) {
+        return configItemMappingDao.selectPoById(id);
+    }
+
+    /**
      * 根据配置项代码获取配置项信息
      *
      * @param code 配置项代码
@@ -137,6 +188,23 @@ public class ConfigItemAppService {
      */
     public ConfigItemOptionPo getConfigItemOptionByCode(String configItemCode, String code) {
         return configItemOptionDao.selectPoByCode(configItemCode, code);
+    }
+
+    /**
+     * 根据配置项映射代码获取配置项映射信息
+     *
+     * @param configItemCode 配置项代码
+     * @param sourceSystem   源系统
+     * @param sourceCode     源系统代码
+     * @param sourceValue    源系统值
+     * @return 配置项映射信息
+     */
+    public ConfigItemMappingPo getConfigItemMappingByCode(String configItemCode, String sourceSystem, String sourceCode, String sourceValue) {
+        if (StrUtil.isNotBlank(sourceValue)) {
+            return configItemMappingDao.selectPoBySourceValue(configItemCode, sourceSystem, sourceCode, sourceValue);
+        } else {
+            return configItemMappingDao.selectPoBySourceCode(configItemCode, sourceSystem, sourceCode);
+        }
     }
 
     /**
@@ -161,6 +229,17 @@ public class ConfigItemAppService {
     }
 
     /**
+     * 新增配置项映射
+     *
+     * @param configItemCode    配置项代码
+     * @param configItemMapping 配置项映射信息
+     * @return 结果
+     */
+    public int createConfigItemMapping(String configItemCode, ConfigItemMappingPo configItemMapping) {
+        return configItemMappingDao.insertPo(configItemMapping);
+    }
+
+    /**
      * 修改配置项
      *
      * @param configItem 配置项信息
@@ -182,6 +261,17 @@ public class ConfigItemAppService {
     }
 
     /**
+     * 修改配置项映射
+     *
+     * @param configItemCode    配置项代码
+     * @param configItemMapping 配置项映射信息
+     * @return 结果
+     */
+    public int modifyConfigItemMapping(String configItemCode, ConfigItemMappingPo configItemMapping) {
+        return configItemMappingDao.updatePo(configItemMapping);
+    }
+
+    /**
      * 批量删除配置项
      *
      * @param ids 配置项ID数组
@@ -192,14 +282,25 @@ public class ConfigItemAppService {
     }
 
     /**
-     * 批量删除配置项
+     * 批量删除配置项枚举值
      *
      * @param configItemCode 配置项代码
-     * @param ids            配置项ID数组
+     * @param ids            配置项枚举值ID数组
      * @return 结果
      */
     public int deleteConfigItemOptionByIds(String configItemCode, Long[] ids) {
         return configItemOptionDao.batchPhysicalDeletePo(ids);
+    }
+
+    /**
+     * 批量删除配置项映射
+     *
+     * @param configItemCode 配置项代码
+     * @param ids            配置项映射ID数组
+     * @return 结果
+     */
+    public int deleteConfigItemMappingByIds(String configItemCode, Long[] ids) {
+        return configItemMappingDao.batchPhysicalDeletePo(ids);
     }
 
 }

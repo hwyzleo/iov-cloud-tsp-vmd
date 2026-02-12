@@ -10,12 +10,15 @@ import net.hwyz.iov.cloud.framework.common.web.domain.AjaxResult;
 import net.hwyz.iov.cloud.framework.common.web.page.TableDataInfo;
 import net.hwyz.iov.cloud.framework.security.annotation.RequiresPermissions;
 import net.hwyz.iov.cloud.framework.security.util.SecurityUtils;
+import net.hwyz.iov.cloud.tsp.vmd.api.contract.ConfigItemMappingMpt;
 import net.hwyz.iov.cloud.tsp.vmd.api.contract.ConfigItemMpt;
 import net.hwyz.iov.cloud.tsp.vmd.api.contract.ConfigItemOptionMpt;
 import net.hwyz.iov.cloud.tsp.vmd.api.feign.mpt.ConfigItemMptApi;
 import net.hwyz.iov.cloud.tsp.vmd.service.application.service.ConfigItemAppService;
+import net.hwyz.iov.cloud.tsp.vmd.service.facade.assembler.ConfigItemMappingMptAssembler;
 import net.hwyz.iov.cloud.tsp.vmd.service.facade.assembler.ConfigItemMptAssembler;
 import net.hwyz.iov.cloud.tsp.vmd.service.facade.assembler.ConfigItemOptionMptAssembler;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.ConfigItemMappingPo;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.ConfigItemOptionPo;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.ConfigItemPo;
 import org.springframework.validation.annotation.Validated;
@@ -72,6 +75,23 @@ public class ConfigItemMptController extends BaseController implements ConfigIte
     }
 
     /**
+     * 查询配置项映射信息
+     *
+     * @param configItemCode    配置项代码
+     * @param configItemMapping 配置项映射信息
+     * @return 配置项映射信息列表
+     */
+    @RequiresPermissions("iov:configCenter:configItem:list")
+    @Override
+    @GetMapping(value = "/{configItemCode}/mapping/list")
+    public AjaxResult listMapping(@PathVariable String configItemCode, ConfigItemMappingMpt configItemMapping) {
+        logger.info("管理后台用户[{}]查询配置项[{}]映射信息", SecurityUtils.getUsername(), configItemCode);
+        List<ConfigItemMappingPo> configItemMappingPoList = configItemAppService.searchMapping(configItemCode,
+                configItemMapping.getSourceSystem(), getBeginTime(configItemMapping), getEndTime(configItemMapping));
+        return success(ConfigItemMappingMptAssembler.INSTANCE.fromPoList(configItemMappingPoList));
+    }
+
+    /**
      * 导出配置项信息
      *
      * @param response   响应
@@ -117,6 +137,22 @@ public class ConfigItemMptController extends BaseController implements ConfigIte
     }
 
     /**
+     * 根据配置项映射ID获取配置项映射信息
+     *
+     * @param configItemCode      配置项代码
+     * @param configItemMappingId 配置项映射ID
+     * @return 配置项映射信息
+     */
+    @RequiresPermissions("iov:configCenter:configItem:query")
+    @Override
+    @GetMapping(value = "/{configItemCode}/mapping/{configItemMappingId}")
+    public AjaxResult getMappingInfo(@PathVariable String configItemCode, @PathVariable Long configItemMappingId) {
+        logger.info("管理后台用户[{}]根据配置项[{}]映射ID[{}]获取配置项映射信息", SecurityUtils.getUsername(), configItemCode, configItemMappingId);
+        ConfigItemMappingPo configItemMappingPo = configItemAppService.getConfigItemMappingById(configItemCode, configItemMappingId);
+        return success(ConfigItemMappingMptAssembler.INSTANCE.fromPo(configItemMappingPo));
+    }
+
+    /**
      * 新增配置项信息
      *
      * @param configItem 配置项信息
@@ -155,6 +191,29 @@ public class ConfigItemMptController extends BaseController implements ConfigIte
         ConfigItemOptionPo configItemOptionPo = ConfigItemOptionMptAssembler.INSTANCE.toPo(configItemOption);
         configItemOptionPo.setCreateBy(SecurityUtils.getUserId().toString());
         return toAjax(configItemAppService.createConfigItemOption(configItemCode, configItemOptionPo));
+    }
+
+    /**
+     * 新增配置项映射信息
+     *
+     * @param configItemCode    配置项代码
+     * @param configItemMapping 配置项映射信息
+     * @return 结果
+     */
+    @Log(title = "配置项管理", businessType = BusinessType.UPDATE)
+    @RequiresPermissions("iov:configCenter:configItem:edit")
+    @Override
+    @PostMapping("/{configItemCode}/mapping")
+    public AjaxResult addMapping(@PathVariable String configItemCode, @Validated @RequestBody ConfigItemMappingMpt configItemMapping) {
+        logger.info("管理后台用户[{}]新增配置项[{}]映射信息[{}:{}]", SecurityUtils.getUsername(), configItemCode,
+                configItemMapping.getSourceSystem(), configItemMapping.getSourceCode());
+        if (!configItemAppService.checkMappingCodeUnique(configItemMapping.getId(), configItemCode, configItemMapping.getSourceSystem(),
+                configItemMapping.getSourceCode(), configItemMapping.getSourceValue())) {
+            return error("新增配置项映射'" + configItemMapping.getSourceSystem() + "'失败，配置项映射已存在");
+        }
+        ConfigItemMappingPo configItemMappingPo = ConfigItemMappingMptAssembler.INSTANCE.toPo(configItemMapping);
+        configItemMappingPo.setCreateBy(SecurityUtils.getUserId().toString());
+        return toAjax(configItemAppService.createConfigItemMapping(configItemCode, configItemMappingPo));
     }
 
     /**
@@ -199,6 +258,29 @@ public class ConfigItemMptController extends BaseController implements ConfigIte
     }
 
     /**
+     * 修改保存配置项映射信息
+     *
+     * @param configItemCode    配置项代码
+     * @param configItemMapping 配置项映射信息
+     * @return 结果
+     */
+    @Log(title = "配置项管理", businessType = BusinessType.UPDATE)
+    @RequiresPermissions("iov:configCenter:configItem:edit")
+    @Override
+    @PutMapping("/{configItemCode}/mapping")
+    public AjaxResult editMapping(@PathVariable String configItemCode, @Validated @RequestBody ConfigItemMappingMpt configItemMapping) {
+        logger.info("管理后台用户[{}]修改保存配置项[{}]映射信息[{}:{}]", SecurityUtils.getUsername(), configItemCode,
+                configItemMapping.getSourceSystem(), configItemMapping.getSourceCode());
+        if (!configItemAppService.checkMappingCodeUnique(configItemMapping.getId(), configItemCode, configItemMapping.getSourceSystem(),
+                configItemMapping.getSourceCode(), configItemMapping.getSourceValue())) {
+            return error("修改保存配置项映射'" + configItemMapping.getSourceSystem() + "'失败，配置项映射代码已存在");
+        }
+        ConfigItemMappingPo configItemMappingPo = ConfigItemMappingMptAssembler.INSTANCE.toPo(configItemMapping);
+        configItemMappingPo.setModifyBy(SecurityUtils.getUserId().toString());
+        return toAjax(configItemAppService.modifyConfigItemMapping(configItemCode, configItemMappingPo));
+    }
+
+    /**
      * 删除配置项信息
      *
      * @param configItemIds 配置项ID数组
@@ -227,5 +309,21 @@ public class ConfigItemMptController extends BaseController implements ConfigIte
     public AjaxResult removeOption(@PathVariable String configItemCode, @PathVariable Long[] configItemOptionIds) {
         logger.info("管理后台用户[{}]删除配置项[{}]枚举值信息[{}]", SecurityUtils.getUsername(), configItemCode, configItemOptionIds);
         return toAjax(configItemAppService.deleteConfigItemOptionByIds(configItemCode, configItemOptionIds));
+    }
+
+    /**
+     * 删除配置项映射信息
+     *
+     * @param configItemCode       配置项代码
+     * @param configItemMappingIds 配置项映射ID数组
+     * @return 结果
+     */
+    @Log(title = "配置项管理", businessType = BusinessType.UPDATE)
+    @RequiresPermissions("iov:configCenter:configItem:edit")
+    @Override
+    @DeleteMapping("/{configItemCode}/option/{configItemMappingIds}")
+    public AjaxResult removeMapping(@PathVariable String configItemCode, @PathVariable Long[] configItemMappingIds) {
+        logger.info("管理后台用户[{}]删除配置项[{}]映射信息[{}]", SecurityUtils.getUsername(), configItemCode, configItemMappingIds);
+        return toAjax(configItemAppService.deleteConfigItemMappingByIds(configItemCode, configItemMappingIds));
     }
 }
