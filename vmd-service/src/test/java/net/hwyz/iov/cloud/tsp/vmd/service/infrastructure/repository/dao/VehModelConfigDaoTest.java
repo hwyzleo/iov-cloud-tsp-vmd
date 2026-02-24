@@ -1,7 +1,7 @@
 package net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao;
 
 import net.hwyz.iov.cloud.tsp.vmd.service.BaseTest;
-import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehModelConfigPo;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehBuildConfigPo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -15,13 +15,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class VehModelConfigDaoTest extends BaseTest {
 
     @Autowired
-    private VehModelConfigDao vehModelConfigDao;
+    private VehBuildConfigDao vehBuildConfigDao;
 
     @Test
     @Order(1)
     @DisplayName("新增一条记录")
     public void testInsertPo() throws Exception {
-        VehModelConfigPo vehModelConfigPo = VehModelConfigPo.builder()
+        VehBuildConfigPo vehBuildConfigPo = VehBuildConfigPo.builder()
                 .platformCode("H")
                 .seriesCode("H01")
                 .modelCode("H0107")
@@ -35,7 +35,7 @@ public class VehModelConfigDaoTest extends BaseTest {
                 .enable(true)
                 .sort(99)
                 .build();
-        vehModelConfigDao.insertPo(vehModelConfigPo);
+        vehBuildConfigDao.insertPo(vehBuildConfigPo);
     }
 
 }

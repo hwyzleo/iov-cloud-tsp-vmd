@@ -1,7 +1,7 @@
 package net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao;
 
 import net.hwyz.iov.cloud.framework.mysql.dao.BaseDao;
-import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehModelConfigPo;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehBuildConfigPo;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -13,7 +13,7 @@ import org.apache.ibatis.annotations.Mapper;
  * @since 2024-10-11
  */
 @Mapper
-public interface VehModelConfigDao extends BaseDao<VehModelConfigPo, Long> {
+public interface VehBuildConfigDao extends BaseDao<VehBuildConfigPo, Long> {
 
     /**
      * 通过code查询车型配置信息
@@ -21,6 +21,6 @@ public interface VehModelConfigDao extends BaseDao<VehModelConfigPo, Long> {
      * @param code 车型配置编码
      * @return 车型配置信息
      */
-    VehModelConfigPo selectPoByCode(String code);
+    VehBuildConfigPo selectPoByCode(String code);
 
 }

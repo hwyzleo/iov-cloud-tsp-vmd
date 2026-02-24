@@ -74,14 +74,14 @@ public class VehBasicInfoPo extends BasePo {
     /**
      * 基础车型代码
      */
-    @TableField("basic_model_code")
-    private String basicModelCode;
+    @TableField("base_model_code")
+    private String baseModelCode;
 
     /**
-     * 车型配置代码
+     * 生产配置代码
      */
-    @TableField("model_config_code")
-    private String modelConfigCode;
+    @TableField("build_config_code")
+    private String buildConfigCode;
 
     /**
      * 车辆下线时间

@@ -15,7 +15,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class BasicModelFeatureCodeMpt extends BaseRequest {
+public class BaseModelFeatureCodeMpt extends BaseRequest {
 
     /**
      * 主键
@@ -25,7 +25,7 @@ public class BasicModelFeatureCodeMpt extends BaseRequest {
     /**
      * 基础车型代码
      */
-    private String basicModelCode;
+    private String baseModelCode;
 
     /**
      * 特征族代码

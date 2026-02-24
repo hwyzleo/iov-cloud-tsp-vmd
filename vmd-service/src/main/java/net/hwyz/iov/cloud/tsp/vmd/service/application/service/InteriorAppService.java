@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.hwyz.iov.cloud.framework.common.util.ParamHelper;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehInteriorDao;
-import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehModelConfigDao;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehBuildConfigDao;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehInteriorPo;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +25,7 @@ import java.util.Map;
 public class InteriorAppService {
 
     private final VehInteriorDao vehInteriorDao;
-    private final VehModelConfigDao vehModelConfigDao;
+    private final VehBuildConfigDao vehBuildConfigDao;
 
     /**
      * 查询内饰颜色信息
@@ -74,7 +74,7 @@ public class InteriorAppService {
         VehInteriorPo interiorPo = getInteriorById(interiorId);
         Map<String, Object> map = new HashMap<>();
         map.put("interiorCode", interiorPo.getCode());
-        return vehModelConfigDao.countPoByMap(map) > 0;
+        return vehBuildConfigDao.countPoByMap(map) > 0;
     }
 
     /**

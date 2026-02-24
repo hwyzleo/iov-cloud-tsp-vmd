@@ -2,8 +2,8 @@ package net.hwyz.iov.cloud.tsp.vmd.service.application.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehModelConfigDao;
-import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehModelConfigPo;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehBuildConfigDao;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehBuildConfigPo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,10 +18,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class VehicleModelConfigAppService {
 
-    private final VehModelConfigDao vehModelConfigDao;
+    private final VehBuildConfigDao vehBuildConfigDao;
 
     /**
-     * 根据车型配置类型获取车型配置编码
+     * 根据车型配置类型获取生产配置编码
      *
      * @param modelCode     车型编码
      * @param exteriorCode  外饰编码
@@ -30,11 +30,11 @@ public class VehicleModelConfigAppService {
      * @param spareTireCode 备胎编码
      * @param adasCode      智驾编码
      * @param seatCode      座椅编码
-     * @return 车型配置编码
+     * @return 生产配置编码
      */
-    public String getModelConfigCodeByType(String modelCode, String exteriorCode, String interiorCode, String wheelCode,
+    public String getBuildConfigCodeByType(String modelCode, String exteriorCode, String interiorCode, String wheelCode,
                                            String spareTireCode, String adasCode, String seatCode) {
-        List<VehModelConfigPo> vehModelConfigPoList = vehModelConfigDao.selectPoByExample(VehModelConfigPo.builder()
+        List<VehBuildConfigPo> vehBuildConfigPoList = vehBuildConfigDao.selectPoByExample(VehBuildConfigPo.builder()
                 .modelCode(modelCode)
                 .exteriorCode(exteriorCode)
                 .interiorCode(interiorCode)
@@ -43,14 +43,14 @@ public class VehicleModelConfigAppService {
                 .adasCode(adasCode)
                 .seatCode(seatCode)
                 .build());
-        if (vehModelConfigPoList.isEmpty()) {
+        if (vehBuildConfigPoList.isEmpty()) {
             return null;
         }
-        if (vehModelConfigPoList.size() > 1) {
+        if (vehBuildConfigPoList.size() > 1) {
             logger.warn("车型[{}]外饰[{}]内饰[{}]车轮[{}]备胎[{}]智驾[{}]查询车型配置编码结果数量大于1", modelCode, exteriorCode,
                     interiorCode, wheelCode, spareTireCode, adasCode);
         }
-        return vehModelConfigPoList.get(0).getCode();
+        return vehBuildConfigPoList.get(0).getCode();
     }
 
 }

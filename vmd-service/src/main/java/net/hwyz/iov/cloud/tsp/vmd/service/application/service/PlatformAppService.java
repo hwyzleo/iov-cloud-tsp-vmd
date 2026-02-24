@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.hwyz.iov.cloud.framework.common.util.ParamHelper;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.*;
-import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehBrandPo;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehPlatformPo;
 import org.springframework.stereotype.Service;
 
@@ -28,8 +27,8 @@ public class PlatformAppService {
     private final VehSeriesDao vehSeriesDao;
     private final VehPlatformDao vehPlatformDao;
     private final VehBasicInfoDao vehBasicInfoDao;
-    private final VehBasicModelDao vehBasicModelDao;
-    private final VehModelConfigDao vehModelConfigDao;
+    private final VehBaseModelDao vehBasicModelDao;
+    private final VehBuildConfigDao vehBuildConfigDao;
 
     /**
      * 查询车辆平台信息
@@ -113,7 +112,7 @@ public class PlatformAppService {
         VehPlatformPo platformPo = getPlatformById(platformId);
         Map<String, Object> map = new HashMap<>();
         map.put("platformCode", platformPo.getCode());
-        return vehModelConfigDao.countPoByMap(map) > 0;
+        return vehBuildConfigDao.countPoByMap(map) > 0;
     }
 
     /**

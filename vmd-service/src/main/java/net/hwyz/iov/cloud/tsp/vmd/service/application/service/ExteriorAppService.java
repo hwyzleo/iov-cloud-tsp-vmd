@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.hwyz.iov.cloud.framework.common.util.ParamHelper;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehExteriorDao;
-import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehModelConfigDao;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehBuildConfigDao;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehExteriorPo;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +25,7 @@ import java.util.Map;
 public class ExteriorAppService {
 
     private final VehExteriorDao vehExteriorDao;
-    private final VehModelConfigDao vehModelConfigDao;
+    private final VehBuildConfigDao vehBuildConfigDao;
 
     /**
      * 查询车身颜色信息
@@ -74,7 +74,7 @@ public class ExteriorAppService {
         VehExteriorPo exteriorPo = getExteriorById(exteriorId);
         Map<String, Object> map = new HashMap<>();
         map.put("exteriorCode", exteriorPo.getCode());
-        return vehModelConfigDao.countPoByMap(map) > 0;
+        return vehBuildConfigDao.countPoByMap(map) > 0;
     }
 
     /**

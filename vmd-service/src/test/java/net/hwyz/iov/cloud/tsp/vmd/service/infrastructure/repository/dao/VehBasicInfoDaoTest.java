@@ -28,7 +28,7 @@ public class VehBasicInfoDaoTest extends BaseTest {
                 .platformCode("H")
                 .seriesCode("H01")
                 .modelCode("H0106")
-                .modelConfigCode("H0106000111")
+                .buildConfigCode("H0106000111")
                 .build();
         vehBasicInfoDao.insertPo(vehBasicInfoPo);
     }

@@ -6,8 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.hwyz.iov.cloud.framework.common.util.ParamHelper;
 import net.hwyz.iov.cloud.tsp.account.api.contract.Account;
 import net.hwyz.iov.cloud.tsp.account.api.feign.service.ExAccountService;
-import net.hwyz.iov.cloud.tsp.mno.api.feign.service.ExVehicleNetworkService;
-import net.hwyz.iov.cloud.tsp.vmd.service.application.event.publish.VehiclePublish;
 import net.hwyz.iov.cloud.tsp.vmd.service.domain.vehicle.model.VehicleDo;
 import net.hwyz.iov.cloud.tsp.vmd.service.domain.vehicle.repository.VehicleRepository;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.exception.VehicleHasBindOrderException;
@@ -47,17 +45,17 @@ public class VehicleAppService {
      * 查询车辆信息
      *
      * @param vin             车架号
-     * @param modelConfigCode 车型配置代码
+     * @param buildConfigCode 生产配置代码
      * @param beginTime       开始时间
      * @param endTime         结束时间
      * @param isEol           是否下线
      * @param isOrder         是否有订单
      * @return 车辆平台列表
      */
-    public List<VehBasicInfoPo> search(String vin, String modelConfigCode, Date beginTime, Date endTime, Boolean isEol, Boolean isOrder) {
+    public List<VehBasicInfoPo> search(String vin, String buildConfigCode, Date beginTime, Date endTime, Boolean isEol, Boolean isOrder) {
         Map<String, Object> map = new HashMap<>();
         map.put("vin", ParamHelper.fuzzyQueryParam(vin));
-        map.put("modelConfigCode", modelConfigCode);
+        map.put("buildConfigCode", buildConfigCode);
         map.put("beginTime", beginTime);
         map.put("endTime", endTime);
         map.put("isEol", isEol);

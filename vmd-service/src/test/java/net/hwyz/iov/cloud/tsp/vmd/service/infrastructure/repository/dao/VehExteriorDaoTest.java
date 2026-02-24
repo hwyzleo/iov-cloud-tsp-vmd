@@ -2,7 +2,6 @@ package net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao;
 
 import net.hwyz.iov.cloud.tsp.vmd.service.BaseTest;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehExteriorPo;
-import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehModelConfigPo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;

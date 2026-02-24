@@ -18,8 +18,8 @@
         <result column="platform_code" property="platformCode" />
         <result column="series_code" property="seriesCode" />
         <result column="model_code" property="modelCode" />
-        <result column="basic_model_code" property="basicModelCode" />
-        <result column="model_config_code" property="modelConfigCode" />
+        <result column="base_model_code" property="baseModelCode" />
+        <result column="build_config_code" property="buildConfigCode" />
         <result column="eol_time" property="eolTime" />
         <result column="pdi_time" property="pdiTime" />
         <result column="order_num" property="orderNum" />
@@ -28,18 +28,18 @@
 
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
-        id, vin, manufacturer_code, brand_code, platform_code, series_code, model_code, basic_model_code, model_config_code, eol_time, pdi_time, order_num, vehicle_base_version,
+        id, vin, manufacturer_code, brand_code, platform_code, series_code, model_code, base_model_code, build_config_code, eol_time, pdi_time, order_num, vehicle_base_version,
         description, create_time, create_by, modify_time, modify_by, row_version, row_valid
     </sql>
 
     <!-- 插入 -->
     <insert id="insertPo" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_veh_basic_info (
-            id, vin, manufacturer_code, brand_code, platform_code, series_code, model_code, basic_model_code, model_config_code, eol_time, pdi_time, order_num, vehicle_base_version,
+            id, vin, manufacturer_code, brand_code, platform_code, series_code, model_code, base_model_code, build_config_code, eol_time, pdi_time, order_num, vehicle_base_version,
             description, create_time, create_by, modify_time, modify_by, row_version, row_valid
         )
         VALUES (
-            #{id}, #{vin}, #{manufacturerCode}, #{brandCode}, #{platformCode}, #{seriesCode}, #{modelCode}, #{basicModelCode}, #{modelConfigCode}, #{eolTime}, #{pdiTime}, #{orderNum}, #{vehicleBaseVersion},
+            #{id}, #{vin}, #{manufacturerCode}, #{brandCode}, #{platformCode}, #{seriesCode}, #{modelCode}, #{baseModelCode}, #{buildConfigCode}, #{eolTime}, #{pdiTime}, #{orderNum}, #{vehicleBaseVersion},
             #{description}, now(), #{createBy}, now(), #{modifyBy}, 1, 1
         )
     </insert>
@@ -47,13 +47,13 @@
     <!-- 批量插入 -->
     <insert id="batchInsertPo" useGeneratedKeys="true" keyProperty="id" parameterType="java.util.List">
         INSERT INTO tb_veh_basic_info (
-            id, vin, manufacturer_code, brand_code, platform_code, series_code, model_code, basic_model_code, model_config_code, eol_time, pdi_time, order_num, vehicle_base_version,
+            id, vin, manufacturer_code, brand_code, platform_code, series_code, model_code, base_model_code, build_config_code, eol_time, pdi_time, order_num, vehicle_base_version,
             description, create_time, create_by, modify_time, modify_by, row_version, row_valid
         )
         VALUES
         <foreach collection="list" item="item" index="index" separator=",">
         (
-            #{item.id}, #{item.vin}, #{item.manufacturerCode}, #{item.brandCode}, #{item.platformCode}, #{item.seriesCode}, #{item.modelCode}, #{item.basicModelCode}, #{item.modelConfigCode}, #{item.eolTime}, #{item.pdiTime}, #{item.orderNum}, #{item.vehicleBaseVersion},
+            #{item.id}, #{item.vin}, #{item.manufacturerCode}, #{item.brandCode}, #{item.platformCode}, #{item.seriesCode}, #{item.modelCode}, #{item.baseModelCode}, #{item.buildConfigCode}, #{item.eolTime}, #{item.pdiTime}, #{item.orderNum}, #{item.vehicleBaseVersion},
             #{item.description}, now(), #{item.createBy}, now(), #{item.modifyBy}, 1, 1
         )
         </foreach>
@@ -77,11 +77,11 @@
         <if test="modelCode != null and modelCode != ''">
             t.model_code = #{modelCode},
         </if>
-        <if test="basicModelCode != null and basicModelCode != ''">
-            t.basic_model_code = #{basicModelCode},
+        <if test="baseModelCode != null and baseModelCode != ''">
+            t.base_model_code = #{baseModelCode},
         </if>
-        <if test="modelConfigCode != null and modelConfigCode != ''">
-            t.model_config_code = #{modelConfigCode},
+        <if test="buildConfigCode != null and buildConfigCode != ''">
+            t.build_config_code = #{buildConfigCode},
         </if>
         <if test="eolTime != null">
             t.eol_time = #{eolTime},
@@ -164,11 +164,11 @@
         <if test="modelCode != null and modelCode != ''">
             AND t.model_code = #{modelCode}
         </if>
-        <if test="basicModelCode != null and basicModelCode != ''">
-            AND t.basic_model_code = #{basicModelCode}
+        <if test="baseModelCode != null and baseModelCode != ''">
+            AND t.base_model_code = #{baseModelCode}
         </if>
-        <if test="modelConfigCode != null and modelConfigCode != ''">
-            AND t.model_config_code = #{modelConfigCode}
+        <if test="buildConfigCode != null and buildConfigCode != ''">
+            AND t.build_config_code = #{buildConfigCode}
         </if>
         <if test="eolTime != null">
             AND t.eol_time = #{eolTime}
@@ -212,8 +212,8 @@
         <if test="vin != null and vin != ''">
             AND t.vin LIKE #{vin}
         </if>
-        <if test="modelConfigCode != null and modelConfigCode != ''">
-            AND t.model_config_code = #{modelConfigCode}
+        <if test="buildConfigCode != null and buildConfigCode != ''">
+            AND t.build_config_code = #{buildConfigCode}
         </if>
         <if test="beginTime != null">
             and date_format(t.create_time,'%Y%m%d') &gt;= date_format(#{beginTime},'%Y%m%d')
@@ -270,11 +270,11 @@
         <if test="modelCode != null and modelCode != ''">
             AND t.model_code = #{modelCode}
         </if>
-        <if test="basicModelCode != null and basicModelCode != ''">
-            AND t.basic_model_code = #{basicModelCode}
+        <if test="baseModelCode != null and baseModelCode != ''">
+            AND t.base_model_code = #{baseModelCode}
         </if>
-        <if test="modelConfigCode != null and modelConfigCode != ''">
-            AND t.model_config_code = #{modelConfigCode}
+        <if test="buildConfigCode != null and buildConfigCode != ''">
+            AND t.build_config_code = #{buildConfigCode}
         </if>
     </select>
 </mapper>

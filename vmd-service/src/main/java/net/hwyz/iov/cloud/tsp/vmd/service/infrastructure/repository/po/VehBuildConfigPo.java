@@ -13,7 +13,7 @@ import net.hwyz.iov.cloud.framework.mysql.po.BasePo;
 
 /**
  * <p>
- * 车辆车型配置表 数据对象
+ * 车辆生产配置表 数据对象
  * </p>
  *
  * @author hwyz_leo
@@ -24,8 +24,8 @@ import net.hwyz.iov.cloud.framework.mysql.po.BasePo;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("tb_veh_model_config")
-public class VehModelConfigPo extends BasePo {
+@TableName("tb_veh_build_config")
+public class VehBuildConfigPo extends BasePo {
 
     private static final long serialVersionUID = 1L;
 
@@ -56,17 +56,17 @@ public class VehModelConfigPo extends BasePo {
     /**
      * 基础车型代码
      */
-    @TableField("basic_model_code")
-    private String basicModelCode;
+    @TableField("base_model_code")
+    private String baseModelCode;
 
     /**
-     * 车型配置代码：车型代码+外饰代码(2)+内饰代码(2)+车轮代码(2)+备胎代码(2)+智驾代码(2)
+     * 生产配置代码
      */
     @TableField("code")
     private String code;
 
     /**
-     * 车型配置名称
+     * 生产配置名称
      */
     @TableField("name")
     private String name;

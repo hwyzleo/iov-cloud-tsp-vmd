@@ -53,9 +53,9 @@ public class VehicleMpt extends BaseRequest {
     private String modelCode;
 
     /**
-     * 车型配置代码
+     * 生产配置代码
      */
-    private String modelConfigCode;
+    private String buildConfigCode;
 
     /**
      * 车辆下线时间

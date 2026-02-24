@@ -92,8 +92,8 @@ public class EolDataParserV1_0 extends BaseParser implements ImportDataParser {
             handleVehicleInfo(itemJson, vehBasicInfoPo, "PLATFORM", "platformCode", "平台数据", batchNum, vin);
             handleVehicleInfo(itemJson, vehBasicInfoPo, "SERIES", "seriesCode", "车系数据", batchNum, vin);
             handleVehicleInfo(itemJson, vehBasicInfoPo, "MODEL", "modelCode", "车型数据", batchNum, vin);
-            handleVehicleInfo(itemJson, vehBasicInfoPo, "BASIC_MODEL", "basicModelCode", "基础车型数据", batchNum, vin);
-            handleVehicleInfo(itemJson, vehBasicInfoPo, "MODEL_CONFIG", "modelConfigCode", "车型配置数据", batchNum, vin);
+            handleVehicleInfo(itemJson, vehBasicInfoPo, "BASE_MODEL", "baseModelCode", "基础车型数据", batchNum, vin);
+            handleVehicleInfo(itemJson, vehBasicInfoPo, "BUILD_CONFIG", "buildConfigCode", "生产配置数据", batchNum, vin);
             handleVehicleInfo(itemJson, vehBasicInfoPo, "VEHICLE_BASE_VERSION", "vehicleBaseVersion", "车辆基线版本", batchNum, vin);
             String eolDateStr = itemJson.getStr("EOL_DATE");
             DateTime eolDate;
@@ -239,7 +239,7 @@ public class EolDataParserV1_0 extends BaseParser implements ImportDataParser {
             // 预期下线后1天内到达前置库，2小时内入库
             exPreInboundOrderService.createOrder(PreInboundOrderExService.builder()
                     .vin(vin)
-                    .modelConfigCode(itemJson.getStr("MODEL_CONFIG"))
+                    .modelConfigCode(itemJson.getStr("BUILD_CONFIG"))
                     .warehouseLevel(WarehouseLevel.PDC.name())
                     .estimatedArrivalTime(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000))
                     .estimatedInboundTime(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000 + 2 * 60 * 60 * 1000))

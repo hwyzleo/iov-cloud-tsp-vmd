@@ -5,11 +5,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.hwyz.iov.cloud.framework.common.util.ParamHelper;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehBasicInfoDao;
-import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehBasicModelDao;
-import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehModelConfigDao;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehBaseModelDao;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehBuildConfigDao;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehModelDao;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehModelPo;
-import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehSeriesPo;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -29,8 +28,8 @@ public class ModelAppService {
 
     private final VehModelDao vehModelDao;
     private final VehBasicInfoDao vehBasicInfoDao;
-    private final VehBasicModelDao vehBasicModelDao;
-    private final VehModelConfigDao vehModelConfigDao;
+    private final VehBaseModelDao vehBasicModelDao;
+    private final VehBuildConfigDao vehBuildConfigDao;
 
     /**
      * 查询车型信息
@@ -92,7 +91,7 @@ public class ModelAppService {
         VehModelPo modelPo = getModelById(modelId);
         Map<String, Object> map = new HashMap<>();
         map.put("modelCode", modelPo.getCode());
-        return vehModelConfigDao.countPoByMap(map) > 0;
+        return vehBuildConfigDao.countPoByMap(map) > 0;
     }
 
     /**

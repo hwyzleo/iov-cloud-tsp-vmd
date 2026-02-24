@@ -4,7 +4,7 @@ import cn.hutool.core.util.ObjUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.hwyz.iov.cloud.framework.common.util.ParamHelper;
-import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehModelConfigDao;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehBuildConfigDao;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehWheelDao;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehWheelPo;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,7 @@ import java.util.Map;
 public class WheelAppService {
 
     private final VehWheelDao vehWheelDao;
-    private final VehModelConfigDao vehModelConfigDao;
+    private final VehBuildConfigDao vehBuildConfigDao;
 
     /**
      * 查询轮胎轮毂信息
@@ -74,7 +74,7 @@ public class WheelAppService {
         VehWheelPo wheelPo = getWheelById(wheelId);
         Map<String, Object> map = new HashMap<>();
         map.put("wheelCode", wheelPo.getCode());
-        return vehModelConfigDao.countPoByMap(map) > 0;
+        return vehBuildConfigDao.countPoByMap(map) > 0;
     }
 
     /**

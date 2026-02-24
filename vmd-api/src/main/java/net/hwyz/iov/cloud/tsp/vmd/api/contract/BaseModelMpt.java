@@ -6,7 +6,7 @@ import net.hwyz.iov.cloud.framework.common.web.domain.BaseRequest;
 import java.util.Date;
 
 /**
- * 管理后台车型配置
+ * 管理后台基础车型
  *
  * @author hwyz_leo
  */
@@ -15,7 +15,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class ModelConfigMpt extends BaseRequest {
+public class BaseModelMpt extends BaseRequest {
 
     /**
      * 主键
@@ -40,52 +40,17 @@ public class ModelConfigMpt extends BaseRequest {
     /**
      * 基础车型代码
      */
-    private String basicModelCode;
-
-    /**
-     * 车型配置代码
-     */
     private String code;
 
     /**
-     * 车型配置名称
+     * 基础车型名称
      */
     private String name;
 
     /**
-     * 车系英文名称
+     * 基础车型英文名称
      */
     private String nameEn;
-
-    /**
-     * 外饰代码
-     */
-    private String exteriorCode;
-
-    /**
-     * 内饰代码
-     */
-    private String interiorCode;
-
-    /**
-     * 车轮代码
-     */
-    private String wheelCode;
-
-    /**
-     * 备胎代码
-     */
-    private String spareTireCode;
-
-    /**
-     * 智驾代码
-     */
-    private String adasCode;
-
-    /**
-     * 座椅代码
-     */
-    private String seatCode;
 
     /**
      * 是否启用
@@ -96,6 +61,11 @@ public class ModelConfigMpt extends BaseRequest {
      * 排序
      */
     private Integer sort;
+
+    /**
+     * 备注
+     */
+    private String description;
 
     /**
      * 创建时间

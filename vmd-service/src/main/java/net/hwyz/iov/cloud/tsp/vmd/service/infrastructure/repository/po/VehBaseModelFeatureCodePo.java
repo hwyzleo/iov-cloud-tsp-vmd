@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
 import net.hwyz.iov.cloud.framework.mysql.po.BasePo;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -22,8 +21,8 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("tb_veh_basic_model_feature_code")
-public class VehBasicModelFeatureCodePo extends BasePo {
+@TableName("tb_veh_base_model_feature_code")
+public class VehBaseModelFeatureCodePo extends BasePo {
 
     private static final long serialVersionUID = 1L;
 
@@ -36,8 +35,8 @@ public class VehBasicModelFeatureCodePo extends BasePo {
     /**
      * 基础车型代码
      */
-    @TableField("basic_model_code")
-    private String basicModelCode;
+    @TableField("base_model_code")
+    private String baseModelCode;
 
     /**
      * 特征族代码
