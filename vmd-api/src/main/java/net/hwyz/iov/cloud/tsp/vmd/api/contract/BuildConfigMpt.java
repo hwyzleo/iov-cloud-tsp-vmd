@@ -58,6 +58,11 @@ public class BuildConfigMpt extends BaseRequest {
     private String nameEn;
 
     /**
+     * 车辆阶段代码
+     */
+    private String vehicleStageCode;
+
+    /**
      * 外饰代码
      */
     private String exteriorCode;
@@ -68,9 +73,14 @@ public class BuildConfigMpt extends BaseRequest {
     private String interiorCode;
 
     /**
-     * 车轮代码
+     * 轮毂代码
      */
     private String wheelCode;
+
+    /**
+     * 轮胎代码
+     */
+    private String tireCode;
 
     /**
      * 备胎代码

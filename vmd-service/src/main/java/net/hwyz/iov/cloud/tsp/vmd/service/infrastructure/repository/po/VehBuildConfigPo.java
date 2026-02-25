@@ -78,6 +78,12 @@ public class VehBuildConfigPo extends BasePo {
     private String nameEn;
 
     /**
+     * 车辆阶段代码
+     */
+    @TableField("vehicle_stage_code")
+    private String vehicleStageCode;
+
+    /**
      * 外饰代码
      */
     @TableField("exterior_code")
@@ -90,10 +96,15 @@ public class VehBuildConfigPo extends BasePo {
     private String interiorCode;
 
     /**
-     * 车轮代码
+     * 轮毂代码
      */
     @TableField("wheel_code")
     private String wheelCode;
+    /**
+     * 轮胎代码
+     */
+    @TableField("tire_code")
+    private String tireCode;
 
     /**
      * 备胎代码

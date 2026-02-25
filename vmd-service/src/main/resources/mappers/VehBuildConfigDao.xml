@@ -19,9 +19,11 @@
         <result column="code" property="code" />
         <result column="name" property="name" />
         <result column="name_en" property="nameEn" />
+        <result column="vehicle_stage_code" property="vehicleStageCode" />
         <result column="exterior_code" property="exteriorCode" />
         <result column="interior_code" property="interiorCode" />
         <result column="wheel_code" property="wheelCode" />
+        <result column="tire_code" property="tireCode" />
         <result column="spare_tire_code" property="spareTireCode" />
         <result column="adas_code" property="adasCode" />
         <result column="seat_code" property="seatCode" />
@@ -31,18 +33,18 @@
 
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
-        id, platform_code, series_code, model_code, base_model_code, code, name, name_en, exterior_code, interior_code, wheel_code, spare_tire_code, adas_code, seat_code, enable, sort,
+        id, platform_code, series_code, model_code, base_model_code, code, name, name_en, vehicle_stage_code, exterior_code, interior_code, wheel_code, tire_code, spare_tire_code, adas_code, seat_code, enable, sort,
         description, create_time, create_by, modify_time, modify_by, row_version, row_valid
     </sql>
 
     <!-- 插入 -->
     <insert id="insertPo" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_veh_build_config (
-            id, platform_code, series_code, model_code, base_model_code, code, name, name_en, exterior_code, interior_code, wheel_code, spare_tire_code, adas_code, seat_code, enable, sort,
+            id, platform_code, series_code, model_code, base_model_code, code, name, name_en, vehicle_stage_code, exterior_code, interior_code, wheel_code, tire_code, spare_tire_code, adas_code, seat_code, enable, sort,
             description, create_time, create_by, modify_time, modify_by, row_version, row_valid
         )
         VALUES (
-            #{id}, #{platformCode}, #{seriesCode}, #{modelCode}, #{baseModelCode}, #{code}, #{name}, #{nameEn}, #{exteriorCode}, #{interiorCode}, #{wheelCode}, #{spareTireCode}, #{adasCode}, #{seatCode}, #{enable}, #{sort},
+            #{id}, #{platformCode}, #{seriesCode}, #{modelCode}, #{baseModelCode}, #{code}, #{name}, #{nameEn}, #{vehicleStageCode}, #{exteriorCode}, #{interiorCode}, #{wheelCode}, #{tireCode}, #{spareTireCode}, #{adasCode}, #{seatCode}, #{enable}, #{sort},
             #{description}, now(), #{createBy}, now(), #{modifyBy}, 1, 1
         )
     </insert>
@@ -50,13 +52,13 @@
     <!-- 批量插入 -->
     <insert id="batchInsertPo" useGeneratedKeys="true" keyProperty="id" parameterType="java.util.List">
         INSERT INTO tb_veh_build_config (
-            id, platform_code, series_code, model_code, base_model_code, code, name, name_en, exterior_code, interior_code, wheel_code, spare_tire_code, adas_code, seat_code, enable, sort,
+            id, platform_code, series_code, model_code, base_model_code, code, name, name_en, vehicle_stage_code, exterior_code, interior_code, wheel_code, tire_code, spare_tire_code, adas_code, seat_code, enable, sort,
             description, create_time, create_by, modify_time, modify_by, row_version, row_valid
         )
         VALUES
         <foreach collection="list" item="item" index="index" separator=",">
         (
-            #{item.id}, #{item.platformCode}, #{item.seriesCode}, #{item.modelCode}, #{item.baseModelCode}, #{item.code}, #{item.name}, #{item.nameEn}, #{item.exteriorCode}, #{item.interiorCode}, #{item.wheelCode}, #{item.spareTireCode}, #{item.adasCode}, #{item.seatCode}, #{item.enable}, #{item.sort},
+            #{item.id}, #{item.platformCode}, #{item.seriesCode}, #{item.modelCode}, #{item.baseModelCode}, #{item.code}, #{item.name}, #{item.nameEn}, #{item.vehicleStageCode}, #{item.exteriorCode}, #{item.interiorCode}, #{item.wheelCode}, #{item.tireCode}, #{item.spareTireCode}, #{item.adasCode}, #{item.seatCode}, #{item.enable}, #{item.sort},
             #{item.description}, now(), #{item.createBy}, now(), #{item.modifyBy}, 1, 1
         )
         </foreach>
@@ -71,6 +73,9 @@
         <if test="nameEn != null and nameEn != ''">
             t.name_en = #{nameEn},
         </if>
+        <if test="vehicleStageCode != null and vehicleStageCode != ''">
+            t.vehicle_stage_code = #{vehicleStageCode},
+        </if>
         <if test="exteriorCode != null and exteriorCode != ''">
             t.exterior_code = #{exteriorCode},
         </if>
@@ -79,6 +84,9 @@
         </if>
         <if test="wheelCode != null and wheelCode != ''">
             t.wheel_code = #{wheelCode},
+        </if>
+        <if test="tireCode != null and tireCode != ''">
+            t.tire_code = #{tireCode},
         </if>
         <if test="spareTireCode != null and spareTireCode != ''">
             t.spare_tire_code = #{spareTireCode},
@@ -167,6 +175,9 @@
         <if test="nameEn != null and nameEn != ''">
             AND t.name_en = #{nameEn}
         </if>
+        <if test="vehicleStageCode != null and vehicleStageCode != ''">
+            AND t.vehicle_stage_code = #{vehicleStageCode}
+        </if>
         <if test="exteriorCode != null and exteriorCode != ''">
             AND t.exterior_code = #{exteriorCode}
         </if>
@@ -175,6 +186,9 @@
         </if>
         <if test="wheelCode != null and wheelCode != ''">
             AND t.wheel_code = #{wheelCode}
+        </if>
+        <if test="tireCode != null and tireCode != ''">
+            AND t.tire_code = #{tireCode}
         </if>
         <if test="spareTireCode != null and spareTireCode != ''">
             AND t.spare_tire_code = #{spareTireCode}
@@ -272,6 +286,9 @@
         <if test="baseModelCode != null and baseModelCode != ''">
             AND t.base_model_code = #{baseModelCode}
         </if>
+        <if test="vehicleStageCode != null and vehicleStageCode != ''">
+            AND t.vehicle_stage_code = #{vehicleStageCode}
+        </if>
         <if test="exteriorCode != null and exteriorCode != ''">
             AND t.exterior_code = #{exteriorCode}
         </if>
@@ -280,6 +297,9 @@
         </if>
         <if test="wheelCode != null and wheelCode != ''">
             AND t.wheel_code = #{wheelCode}
+        </if>
+        <if test="tireCode != null and tireCode != ''">
+            AND t.tire_code = #{tireCode}
         </if>
     </select>
 </mapper>

@@ -29,7 +29,7 @@ public class BaseModelAppService {
 
     private final VehBasicInfoDao vehBasicInfoDao;
     private final VehBaseModelDao vehBaseModelDao;
-    private final VehBuildConfigDao vehModelConfigDao;
+    private final VehBuildConfigDao vehBuildConfigDao;
     private final VehBaseModelFeatureCodeDao vehBaseModelFeatureCodeDao;
 
     /**
@@ -108,16 +108,16 @@ public class BaseModelAppService {
     }
 
     /**
-     * 检查基础车型下是否存在车型配置
+     * 检查基础车型下是否存在生产配置
      *
      * @param baseModelId 基础车型ID
      * @return 结果
      */
-    public Boolean checkBaseModelModelConfigExist(Long baseModelId) {
+    public Boolean checkBaseModelBuildConfigExist(Long baseModelId) {
         VehBaseModelPo baseModelPo = getBaseModelById(baseModelId);
         Map<String, Object> map = new HashMap<>();
         map.put("baseModelCode", baseModelPo.getCode());
-        return vehModelConfigDao.countPoByMap(map) > 0;
+        return vehBuildConfigDao.countPoByMap(map) > 0;
     }
 
     /**

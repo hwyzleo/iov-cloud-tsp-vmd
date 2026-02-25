@@ -253,8 +253,8 @@ public class BaseModelMptController extends BaseController implements BaseModelM
     public AjaxResult remove(@PathVariable Long[] baseModelIds) {
         logger.info("管理后台用户[{}]删除基础车型信息[{}]", SecurityUtils.getUsername(), baseModelIds);
         for (Long baseModelId : baseModelIds) {
-            if (baseModelAppService.checkBaseModelModelConfigExist(baseModelId)) {
-                return error("删除基础车型'" + baseModelId + "'失败，该基础车型下存在车型配置");
+            if (baseModelAppService.checkBaseModelBuildConfigExist(baseModelId)) {
+                return error("删除基础车型'" + baseModelId + "'失败，该基础车型下存在生产配置");
             }
             if (baseModelAppService.checkBaseModelVehicleExist(baseModelId)) {
                 return error("删除基础车型'" + baseModelId + "'失败，该基础车型下存在车辆");
