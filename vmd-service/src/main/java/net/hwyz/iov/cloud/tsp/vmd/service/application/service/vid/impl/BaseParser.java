@@ -6,10 +6,12 @@ import cn.hutool.json.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import net.hwyz.iov.cloud.framework.common.util.StrUtil;
 import net.hwyz.iov.cloud.tsp.vmd.service.application.service.VehiclePartAppService;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehDetailInfoPo;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehiclePartPo;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 解析器基础类
@@ -80,6 +82,36 @@ public class BaseParser {
             } else if (!keyValue.trim().equalsIgnoreCase(fieldValue.toString())) {
                 logger.warn("车辆导入数据批次号[{}]车辆[{}]{}[{}]与原数据[{}]不一致", batchNum, vin, keyDesc, keyValue.trim(),
                         fieldValue);
+            }
+        } else {
+            logger.warn("车辆导入数据批次号[{}]车辆[{}]{}为空", batchNum, vin, keyDesc);
+        }
+    }
+
+    /**
+     * 处理车辆信息数据
+     *
+     * @param itemJson         车辆JSON数据
+     * @param vehicleDetailMap 车辆详情Map
+     * @param jsonKey          解析JSON KEY
+     * @param keyDesc          KEY描述
+     * @param batchNum         批次号
+     * @param vin              车架号
+     */
+    protected void handleVehicleDetail(JSONObject itemJson, Map<String, VehDetailInfoPo> vehicleDetailMap, String jsonKey,
+                                       String keyDesc, String batchNum, String vin) {
+        String keyValue = itemJson.getStr(jsonKey);
+        if (StrUtil.isNotBlank(keyValue)) {
+            VehDetailInfoPo vehicleDetail = vehicleDetailMap.get(jsonKey);
+            if (vehicleDetail == null) {
+                vehicleDetailMap.put(jsonKey, VehDetailInfoPo.builder()
+                        .vin(vin)
+                        .type(jsonKey)
+                        .val(keyValue)
+                        .build());
+            } else if (!keyValue.trim().equalsIgnoreCase(vehicleDetail.getVal())) {
+                logger.warn("车辆导入数据批次号[{}]车辆[{}]{}[{}]与原数据[{}]不一致", batchNum, vin, keyDesc, keyValue.trim(),
+                        vehicleDetail.getVal());
             }
         } else {
             logger.warn("车辆导入数据批次号[{}]车辆[{}]{}为空", batchNum, vin, keyDesc);

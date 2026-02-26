@@ -4,6 +4,8 @@ import net.hwyz.iov.cloud.framework.mysql.dao.BaseDao;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehDetailInfoPo;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * <p>
  * 车辆详细信息表 DAO
@@ -21,6 +23,6 @@ public interface VehDetailInfoDao extends BaseDao<VehDetailInfoPo, Long> {
      * @param vin 车架号
      * @return 车辆详细信息
      */
-    VehDetailInfoPo selectPoByVin(String vin);
+    List<VehDetailInfoPo> selectPoByVin(String vin);
 
 }

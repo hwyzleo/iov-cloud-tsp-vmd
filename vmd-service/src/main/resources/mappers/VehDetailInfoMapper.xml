@@ -13,50 +13,24 @@
         <result column="row_version" property="rowVersion" />
         <result column="row_valid" property="rowValid" />
         <result column="vin" property="vin" />
-        <result column="production_order" property="productionOrder" />
-        <result column="matnr" property="matnr" />
-        <result column="project" property="project" />
-        <result column="sales_area" property="salesArea" />
-        <result column="body_form" property="bodyForm" />
-        <result column="config_level" property="configLevel" />
-        <result column="model_year" property="modelYear" />
-        <result column="steering_wheel_position" property="steeringWheelPosition" />
-        <result column="interior_type" property="interiorType" />
-        <result column="exterior_color" property="exteriorColor" />
-        <result column="drive_form" property="driveForm" />
-        <result column="wheel" property="wheel" />
-        <result column="wheel_color" property="wheelColor" />
-        <result column="seat_type" property="seatType" />
-        <result column="assisted_driving" property="assistedDriving" />
-        <result column="etc_system" property="etcSystem" />
-        <result column="rear_tow_bar" property="rearTowBar" />
-        <result column="engine_no" property="engineNo" />
-        <result column="engine_type" property="engineType" />
-        <result column="front_drive_motor_no" property="frontDriveMotorNo" />
-        <result column="front_drive_motor_type" property="frontDriveMotorType" />
-        <result column="rear_drive_motor_no" property="rearDriveMotorNo" />
-        <result column="rear_drive_motor_type" property="rearDriveMotorType" />
-        <result column="generator_no" property="generatorNo" />
-        <result column="generator_type" property="generatorType" />
-        <result column="power_battery_pack_no" property="powerBatteryPackNo" />
-        <result column="power_battery_type" property="powerBatteryType" />
-        <result column="power_battery_factory" property="powerBatteryFactory" />
+        <result column="type" property="type" />
+        <result column="val" property="val" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
-        id, vin, production_order, matnr, project, sales_area, body_form, config_level, model_year, steering_wheel_position, interior_type, exterior_color, drive_form, wheel, wheel_color, seat_type, assisted_driving, etc_system, rear_tow_bar, engine_no, engine_type, front_drive_motor_no, front_drive_motor_type, rear_drive_motor_no, rear_drive_motor_type, generator_no, generator_type, power_battery_pack_no, power_battery_type, power_battery_factory,
+        id, vin, type, val,
         description, create_time, create_by, modify_time, modify_by, row_version, row_valid
     </sql>
 
     <!-- 插入 -->
     <insert id="insertPo" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_veh_detail_info (
-            id, vin, production_order, matnr, project, sales_area, body_form, config_level, model_year, steering_wheel_position, interior_type, exterior_color, drive_form, wheel, wheel_color, seat_type, assisted_driving, etc_system, rear_tow_bar, engine_no, engine_type, front_drive_motor_no, front_drive_motor_type, rear_drive_motor_no, rear_drive_motor_type, generator_no, generator_type, power_battery_pack_no, power_battery_type, power_battery_factory,
+            id, vin, type, val,
             description, create_time, create_by, modify_time, modify_by, row_version, row_valid
         )
         VALUES (
-            #{id}, #{vin}, #{productionOrder}, #{matnr}, #{project}, #{salesArea}, #{bodyForm}, #{configLevel}, #{modelYear}, #{steeringWheelPosition}, #{interiorType}, #{exteriorColor}, #{driveForm}, #{wheel}, #{wheelColor}, #{seatType}, #{assistedDriving}, #{etcSystem}, #{rearTowBar}, #{engineNo}, #{engineType}, #{frontDriveMotorNo}, #{frontDriveMotorType}, #{rearDriveMotorNo}, #{rearDriveMotorType}, #{generatorNo}, #{generatorType}, #{powerBatteryPackNo}, #{powerBatteryType}, #{powerBatteryFactory},
+            #{id}, #{vin}, #{type}, #{val},
             #{description}, now(), #{createBy}, now(), #{modifyBy}, 1, 1
         )
     </insert>
@@ -64,13 +38,13 @@
     <!-- 批量插入 -->
     <insert id="batchInsertPo" useGeneratedKeys="true" keyProperty="id" parameterType="java.util.List">
         INSERT INTO tb_veh_detail_info (
-            id, vin, production_order, matnr, project, sales_area, body_form, config_level, model_year, steering_wheel_position, interior_type, exterior_color, drive_form, wheel, wheel_color, seat_type, assisted_driving, etc_system, rear_tow_bar, engine_no, engine_type, front_drive_motor_no, front_drive_motor_type, rear_drive_motor_no, rear_drive_motor_type, generator_no, generator_type, power_battery_pack_no, power_battery_type, power_battery_factory,
+            id, vin, type, val,
             description, create_time, create_by, modify_time, modify_by, row_version, row_valid
         )
         VALUES
         <foreach collection="list" item="item" index="index" separator=",">
         (
-            #{item.id}, #{item.vin}, #{item.productionOrder}, #{item.matnr}, #{item.project}, #{item.salesArea}, #{item.bodyForm}, #{item.configLevel}, #{item.modelYear}, #{item.steeringWheelPosition}, #{item.interiorType}, #{item.exteriorColor}, #{item.driveForm}, #{item.wheel}, #{item.wheelColor}, #{item.seatType}, #{item.assistedDriving}, #{item.etcSystem}, #{item.rearTowBar}, #{item.engineNo}, #{item.engineType}, #{item.frontDriveMotorNo}, #{item.frontDriveMotorType}, #{item.rearDriveMotorNo}, #{item.rearDriveMotorType}, #{item.generatorNo}, #{item.generatorType}, #{item.powerBatteryPackNo}, #{item.powerBatteryType}, #{item.powerBatteryFactory},
+            #{item.id}, #{item.vin}, #{item.type}, #{item.val},
             #{item.description}, now(), #{item.createBy}, now(), #{item.modifyBy}, 1, 1
         )
         </foreach>
@@ -82,89 +56,11 @@
         <if test="vin != null and vin != ''">
             t.vin = #{vin},
         </if>
-        <if test="productionOrder != null and productionOrder != ''">
-            t.production_order = #{productionOrder},
+        <if test="type != null and type != ''">
+            t.type = #{type},
         </if>
-        <if test="matnr != null and matnr != ''">
-            t.matnr = #{matnr},
-        </if>
-        <if test="project != null and project != ''">
-            t.project = #{project},
-        </if>
-        <if test="salesArea != null and salesArea != ''">
-            t.sales_area = #{salesArea},
-        </if>
-        <if test="bodyForm != null and bodyForm != ''">
-            t.body_form = #{bodyForm},
-        </if>
-        <if test="configLevel != null and configLevel != ''">
-            t.config_level = #{configLevel},
-        </if>
-        <if test="modelYear != null and modelYear != ''">
-            t.model_year = #{modelYear},
-        </if>
-        <if test="steeringWheelPosition != null and steeringWheelPosition != ''">
-            t.steering_wheel_position = #{steeringWheelPosition},
-        </if>
-        <if test="interiorType != null and interiorType != ''">
-            t.interior_type = #{interiorType},
-        </if>
-        <if test="exteriorColor != null and exteriorColor != ''">
-            t.exterior_color = #{exteriorColor},
-        </if>
-        <if test="driveForm != null and driveForm != ''">
-            t.drive_form = #{driveForm},
-        </if>
-        <if test="wheel != null and wheel != ''">
-            t.wheel = #{wheel},
-        </if>
-        <if test="wheelColor != null and wheelColor != ''">
-            t.wheel_color = #{wheelColor},
-        </if>
-        <if test="seatType != null and seatType != ''">
-            t.seat_type = #{seatType},
-        </if>
-        <if test="assistedDriving != null and assistedDriving != ''">
-            t.assisted_driving = #{assistedDriving},
-        </if>
-        <if test="etcSystem != null and etcSystem != ''">
-            t.etc_system = #{etcSystem},
-        </if>
-        <if test="rearTowBar != null and rearTowBar != ''">
-            t.rear_tow_bar = #{rearTowBar},
-        </if>
-        <if test="engineNo != null and engineNo != ''">
-            t.engine_no = #{engineNo},
-        </if>
-        <if test="engineType != null and engineType != ''">
-            t.engine_type = #{engineType},
-        </if>
-        <if test="frontDriveMotorNo != null and frontDriveMotorNo != ''">
-            t.front_drive_motor_no = #{frontDriveMotorNo},
-        </if>
-        <if test="frontDriveMotorType != null and frontDriveMotorType != ''">
-            t.front_drive_motor_type = #{frontDriveMotorType},
-        </if>
-        <if test="rearDriveMotorNo != null and rearDriveMotorNo != ''">
-            t.rear_drive_motor_no = #{rearDriveMotorNo},
-        </if>
-        <if test="rearDriveMotorType != null and rearDriveMotorType != ''">
-            t.rear_drive_motor_type = #{rearDriveMotorType},
-        </if>
-        <if test="generatorNo != null and generatorNo != ''">
-            t.generator_no = #{generatorNo},
-        </if>
-        <if test="generatorType != null and generatorType != ''">
-            t.generator_type = #{generatorType},
-        </if>
-        <if test="powerBatteryPackNo != null and powerBatteryPackNo != ''">
-            t.power_battery_pack_no = #{powerBatteryPackNo},
-        </if>
-        <if test="powerBatteryType != null and powerBatteryType != ''">
-            t.power_battery_type = #{powerBatteryType},
-        </if>
-        <if test="powerBatteryFactory != null and powerBatteryFactory != ''">
-            t.power_battery_factory = #{powerBatteryFactory},
+        <if test="val != null and val != ''">
+            t.val = #{val},
         </if>
         <if test="description != null and description != ''">
             t.description = #{description},
@@ -211,89 +107,11 @@
         <if test="vin != null and vin != ''">
             AND t.vin = #{vin}
         </if>
-        <if test="productionOrder != null and productionOrder != ''">
-            AND t.production_order = #{productionOrder}
+        <if test="type != null and type != ''">
+            AND t.type = #{type}
         </if>
-        <if test="matnr != null and matnr != ''">
-            AND t.matnr = #{matnr}
-        </if>
-        <if test="project != null and project != ''">
-            AND t.project = #{project}
-        </if>
-        <if test="salesArea != null and salesArea != ''">
-            AND t.sales_area = #{salesArea}
-        </if>
-        <if test="bodyForm != null and bodyForm != ''">
-            AND t.body_form = #{bodyForm}
-        </if>
-        <if test="configLevel != null and configLevel != ''">
-            AND t.config_level = #{configLevel}
-        </if>
-        <if test="modelYear != null and modelYear != ''">
-            AND t.model_year = #{modelYear}
-        </if>
-        <if test="steeringWheelPosition != null and steeringWheelPosition != ''">
-            AND t.steering_wheel_position = #{steeringWheelPosition}
-        </if>
-        <if test="interiorType != null and interiorType != ''">
-            AND t.interior_type = #{interiorType}
-        </if>
-        <if test="exteriorColor != null and exteriorColor != ''">
-            AND t.exterior_color = #{exteriorColor}
-        </if>
-        <if test="driveForm != null and driveForm != ''">
-            AND t.drive_form = #{driveForm}
-        </if>
-        <if test="wheel != null and wheel != ''">
-            AND t.wheel = #{wheel}
-        </if>
-        <if test="wheelColor != null and wheelColor != ''">
-            AND t.wheel_color = #{wheelColor}
-        </if>
-        <if test="seatType != null and seatType != ''">
-            AND t.seat_type = #{seatType}
-        </if>
-        <if test="assistedDriving != null and assistedDriving != ''">
-            AND t.assisted_driving = #{assistedDriving}
-        </if>
-        <if test="etcSystem != null and etcSystem != ''">
-            AND t.etc_system = #{etcSystem}
-        </if>
-        <if test="rearTowBar != null and rearTowBar != ''">
-            AND t.rear_tow_bar = #{rearTowBar}
-        </if>
-        <if test="engineNo != null and engineNo != ''">
-            AND t.engine_no = #{engineNo}
-        </if>
-        <if test="engineType != null and engineType != ''">
-            AND t.engine_type = #{engineType}
-        </if>
-        <if test="frontDriveMotorNo != null and frontDriveMotorNo != ''">
-            AND t.front_drive_motor_no = #{frontDriveMotorNo}
-        </if>
-        <if test="frontDriveMotorType != null and frontDriveMotorType != ''">
-            AND t.front_drive_motor_type = #{frontDriveMotorType}
-        </if>
-        <if test="rearDriveMotorNo != null and rearDriveMotorNo != ''">
-            AND t.rear_drive_motor_no = #{rearDriveMotorNo}
-        </if>
-        <if test="rearDriveMotorType != null and rearDriveMotorType != ''">
-            AND t.rear_drive_motor_type = #{rearDriveMotorType}
-        </if>
-        <if test="generatorNo != null and generatorNo != ''">
-            AND t.generator_no = #{generatorNo}
-        </if>
-        <if test="generatorType != null and generatorType != ''">
-            AND t.generator_type = #{generatorType}
-        </if>
-        <if test="powerBatteryPackNo != null and powerBatteryPackNo != ''">
-            AND t.power_battery_pack_no = #{powerBatteryPackNo}
-        </if>
-        <if test="powerBatteryType != null and powerBatteryType != ''">
-            AND t.power_battery_type = #{powerBatteryType}
-        </if>
-        <if test="powerBatteryFactory != null and powerBatteryFactory != ''">
-            AND t.power_battery_factory = #{powerBatteryFactory}
+        <if test="val != null and val != ''">
+            AND t.val = #{val}
         </if>
         <if test="description != null and description != ''">
             AND t.description = #{description}
@@ -331,7 +149,6 @@
         FROM tb_veh_detail_info t
         WHERE t.row_valid = 1
         AND t.vin = #{vin}
-        LIMIT 1
     </select>
 
     <!-- 根据Map对象统计记录数 -->

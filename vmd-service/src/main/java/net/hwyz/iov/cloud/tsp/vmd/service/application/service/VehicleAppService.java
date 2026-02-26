@@ -104,7 +104,7 @@ public class VehicleAppService {
      * @param vin 车架号
      * @return 车辆详细信息
      */
-    public VehDetailInfoPo getVehicleDetailByVin(String vin) {
+    public List<VehDetailInfoPo> getVehicleDetailByVin(String vin) {
         return vehDetailInfoDao.selectPoByVin(vin);
     }
 

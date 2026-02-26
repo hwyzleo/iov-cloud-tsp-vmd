@@ -64,4 +64,5 @@ target/
 !**/src/test/**/target/
 
 doc/sql/init_**.sql
+doc/json/imp_**.json
 doc/material_code_rule.xlsx

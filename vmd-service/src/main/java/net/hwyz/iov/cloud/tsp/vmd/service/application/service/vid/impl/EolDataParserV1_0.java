@@ -32,6 +32,7 @@ import net.hwyz.iov.cloud.tsp.vmd.service.application.service.VehiclePartAppServ
 import net.hwyz.iov.cloud.tsp.vmd.service.application.service.vid.ImportDataParser;
 import net.hwyz.iov.cloud.tsp.vmd.service.domain.contract.enums.VehicleLifecycleNode;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehBasicInfoDao;
+import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.dao.VehDetailInfoDao;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.DevicePo;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehBasicInfoPo;
 import net.hwyz.iov.cloud.tsp.vmd.service.infrastructure.repository.po.VehDetailInfoPo;
@@ -41,6 +42,8 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 车辆生产数据解析器V1.0
@@ -55,6 +58,7 @@ public class EolDataParserV1_0 extends BaseParser implements ImportDataParser {
     private final VehiclePublish vehiclePublish;
     private final VehBasicInfoDao vehBasicInfoDao;
     private final DeviceAppService deviceAppService;
+    private final VehDetailInfoDao vehDetailInfoDao;
     private final VehicleAppService vehicleAppService;
     private final ExVehicleCcpService exVehicleCcpService;
     private final ExVehiclePartService exVehiclePartService;
@@ -78,14 +82,10 @@ public class EolDataParserV1_0 extends BaseParser implements ImportDataParser {
                 continue;
             }
             VehBasicInfoPo vehBasicInfoPo = vehicleAppService.getVehicleByVin(vin);
-            VehDetailInfoPo vehDetailInfoPo = vehicleAppService.getVehicleDetailByVin(vin);
+            Map<String, VehDetailInfoPo> vehicleDetailMap = vehicleAppService.getVehicleDetailByVin(vin).stream().collect(Collectors.toMap(VehDetailInfoPo::getType, v -> v));
             if (ObjUtil.isNull(vehBasicInfoPo)) {
                 vehBasicInfoPo = new VehBasicInfoPo();
                 vehBasicInfoPo.setVin(vin);
-            }
-            if (ObjUtil.isNull(vehDetailInfoPo)) {
-                vehDetailInfoPo = new VehDetailInfoPo();
-                vehDetailInfoPo.setVin(vin);
             }
             handleVehicleInfo(itemJson, vehBasicInfoPo, "MANUFACTURER", "manufacturerCode", "工厂数据", batchNum, vin);
             handleVehicleInfo(itemJson, vehBasicInfoPo, "BRAND", "brandCode", "品牌数据", batchNum, vin);
@@ -109,34 +109,34 @@ public class EolDataParserV1_0 extends BaseParser implements ImportDataParser {
             } else if (eolDate.isBefore(vehBasicInfoPo.getEolTime()) || eolDate.isAfter(vehBasicInfoPo.getEolTime())) {
                 logger.warn("车辆导入数据批次号[{}]下线日期数据[{}]与原数据[{}]不一致", batchNum, eolDateStr, DateUtil.formatDate(vehBasicInfoPo.getEolTime()));
             }
-            handleVehicleInfo(itemJson, vehDetailInfoPo, "PRODUCTION_ORDER", "productionOrder", "生产订单", batchNum, vin);
-            handleVehicleInfo(itemJson, vehDetailInfoPo, "MATNR", "matnr", "整车物料编码", batchNum, vin);
-            handleVehicleInfo(itemJson, vehDetailInfoPo, "PROJECT", "project", "车型项目", batchNum, vin);
-            handleVehicleInfo(itemJson, vehDetailInfoPo, "SALES_AREA", "salesArea", "销售区域", batchNum, vin);
-            handleVehicleInfo(itemJson, vehDetailInfoPo, "BODY_FORM", "bodyForm", "车身形式", batchNum, vin);
-            handleVehicleInfo(itemJson, vehDetailInfoPo, "CONFIG_LEVEL", "configLevel", "配置等级", batchNum, vin);
-            handleVehicleInfo(itemJson, vehDetailInfoPo, "MODEL_YEAR", "modelYear", "车型年份", batchNum, vin);
-            handleVehicleInfo(itemJson, vehDetailInfoPo, "STEERING_WHEEL_POSITION", "steeringWheelPosition", "方向盘位置", batchNum, vin);
-            handleVehicleInfo(itemJson, vehDetailInfoPo, "INTERIOR_TYPE", "interiorType", "内饰风格", batchNum, vin);
-            handleVehicleInfo(itemJson, vehDetailInfoPo, "EXTERIOR_COLOR", "exteriorColor", "外饰颜色", batchNum, vin);
-            handleVehicleInfo(itemJson, vehDetailInfoPo, "DRIVE_FORM", "driveForm", "驾驶形式", batchNum, vin);
-            handleVehicleInfo(itemJson, vehDetailInfoPo, "WHEEL", "wheel", "车轮", batchNum, vin);
-            handleVehicleInfo(itemJson, vehDetailInfoPo, "WHEEL_COLOR", "wheelColor", "车轮颜色", batchNum, vin);
-            handleVehicleInfo(itemJson, vehDetailInfoPo, "SEAT_TYPE", "seatType", "座椅类型", batchNum, vin);
-            handleVehicleInfo(itemJson, vehDetailInfoPo, "ASSISTED_DRIVING", "assistedDriving", "辅助驾驶", batchNum, vin);
-            handleVehicleInfo(itemJson, vehDetailInfoPo, "ETC_SYSTEM", "etcSystem", "ETC系统", batchNum, vin);
-            handleVehicleInfo(itemJson, vehDetailInfoPo, "REAR_TOW_BAR", "rearTowBar", "后牵引杆", batchNum, vin);
-            handleVehicleInfo(itemJson, vehDetailInfoPo, "ENGINE_NO", "engineNo", "发动机编码", batchNum, vin);
-            handleVehicleInfo(itemJson, vehDetailInfoPo, "ENGINE_TYPE", "engineType", "发动机类型", batchNum, vin);
-            handleVehicleInfo(itemJson, vehDetailInfoPo, "FRONT_DRIVE_MOTOR_NO", "frontDriveMotorNo", "前驱电机编码", batchNum, vin);
-            handleVehicleInfo(itemJson, vehDetailInfoPo, "FRONT_DRIVE_MOTOR_TYPE", "frontDriveMotorType", "前驱电机类型", batchNum, vin);
-            handleVehicleInfo(itemJson, vehDetailInfoPo, "REAR_DRIVE_MOTOR_NO", "rearDriveMotorNo", "后驱电机编码", batchNum, vin);
-            handleVehicleInfo(itemJson, vehDetailInfoPo, "REAR_DRIVE_MOTOR_TYPE", "rearDriveMotorType", "后驱电机类型", batchNum, vin);
-            handleVehicleInfo(itemJson, vehDetailInfoPo, "GENERATOR_NO", "generatorNo", "发电机编码", batchNum, vin);
-            handleVehicleInfo(itemJson, vehDetailInfoPo, "GENERATOR_TYPE", "generatorType", "发电机类型", batchNum, vin);
-            handleVehicleInfo(itemJson, vehDetailInfoPo, "POWER_BATTERY_PACK_NO", "powerBatteryPackNo", "动力电池包编码", batchNum, vin);
-            handleVehicleInfo(itemJson, vehDetailInfoPo, "POWER_BATTERY_TYPE", "powerBatteryType", "动力电池类型", batchNum, vin);
-            handleVehicleInfo(itemJson, vehDetailInfoPo, "POWER_BATTERY_FACTORY", "powerBatteryFactory", "动力电池厂商", batchNum, vin);
+            handleVehicleDetail(itemJson, vehicleDetailMap, "PRODUCTION_ORDER", "生产订单", batchNum, vin);
+            handleVehicleDetail(itemJson, vehicleDetailMap, "MATNR", "整车物料编码", batchNum, vin);
+            handleVehicleDetail(itemJson, vehicleDetailMap, "PROJECT", "车型项目", batchNum, vin);
+            handleVehicleDetail(itemJson, vehicleDetailMap, "SALES_AREA", "销售区域", batchNum, vin);
+            handleVehicleDetail(itemJson, vehicleDetailMap, "BODY_TYPE", "车身形式", batchNum, vin);
+            handleVehicleDetail(itemJson, vehicleDetailMap, "CONFIG_LEVEL", "配置等级", batchNum, vin);
+            handleVehicleDetail(itemJson, vehicleDetailMap, "MODEL_YEAR", "车型年份", batchNum, vin);
+            handleVehicleDetail(itemJson, vehicleDetailMap, "STEERING_POSITION", "左右舵", batchNum, vin);
+            handleVehicleDetail(itemJson, vehicleDetailMap, "INTERIOR_STYLE", "内饰风格", batchNum, vin);
+            handleVehicleDetail(itemJson, vehicleDetailMap, "EXTERIOR_COLOR", "外饰颜色", batchNum, vin);
+            handleVehicleDetail(itemJson, vehicleDetailMap, "DRIVE_TYPE", "驾驶形式", batchNum, vin);
+            handleVehicleDetail(itemJson, vehicleDetailMap, "WHEEL", "轮毂", batchNum, vin);
+            handleVehicleDetail(itemJson, vehicleDetailMap, "TIRE", "轮胎", batchNum, vin);
+            handleVehicleDetail(itemJson, vehicleDetailMap, "SEAT_TYPE", "座椅类型", batchNum, vin);
+            handleVehicleDetail(itemJson, vehicleDetailMap, "ASSISTED_DRIVING", "辅助驾驶", batchNum, vin);
+            handleVehicleDetail(itemJson, vehicleDetailMap, "ETC_SYSTEM", "ETC系统", batchNum, vin);
+            handleVehicleDetail(itemJson, vehicleDetailMap, "REAR_TOW_BAR", "后牵引杆", batchNum, vin);
+            handleVehicleDetail(itemJson, vehicleDetailMap, "ENGINE_NO", "发动机编码", batchNum, vin);
+            handleVehicleDetail(itemJson, vehicleDetailMap, "ENGINE_TYPE", "发动机类型", batchNum, vin);
+            handleVehicleDetail(itemJson, vehicleDetailMap, "FRONT_DRIVE_MOTOR_NO", "前驱电机编码", batchNum, vin);
+            handleVehicleDetail(itemJson, vehicleDetailMap, "FRONT_DRIVE_MOTOR_TYPE", "前驱电机类型", batchNum, vin);
+            handleVehicleDetail(itemJson, vehicleDetailMap, "REAR_DRIVE_MOTOR_NO", "后驱电机编码", batchNum, vin);
+            handleVehicleDetail(itemJson, vehicleDetailMap, "REAR_DRIVE_MOTOR_TYPE", "后驱电机类型", batchNum, vin);
+            handleVehicleDetail(itemJson, vehicleDetailMap, "GENERATOR_NO", "发电机编码", batchNum, vin);
+            handleVehicleDetail(itemJson, vehicleDetailMap, "GENERATOR_TYPE", "发电机类型", batchNum, vin);
+            handleVehicleDetail(itemJson, vehicleDetailMap, "POWER_BATTERY_PACK_NO", "动力电池包编码", batchNum, vin);
+            handleVehicleDetail(itemJson, vehicleDetailMap, "POWER_BATTERY_TYPE", "动力电池类型", batchNum, vin);
+            handleVehicleDetail(itemJson, vehicleDetailMap, "POWER_BATTERY_FACTORY", "动力电池厂商", batchNum, vin);
             if (ObjUtil.isNull(vehBasicInfoPo.getId())) {
                 vehBasicInfoDao.insertPo(vehBasicInfoPo);
                 // 如果车辆是新生成，则补发车辆生产事件
@@ -144,6 +144,7 @@ public class EolDataParserV1_0 extends BaseParser implements ImportDataParser {
             } else {
                 vehBasicInfoDao.updatePo(vehBasicInfoPo);
             }
+            vehDetailInfoDao.batchInsertPo(vehicleDetailMap.values().stream().filter(po -> po.getId() == null).toList());
             if (firstEol) {
                 vehiclePublish.eol(vin, eolDate);
             }
@@ -171,7 +172,7 @@ public class EolDataParserV1_0 extends BaseParser implements ImportDataParser {
                     logger.warn("车辆导入数据批次号[{}]车架号[{}]设备[{}]车架号[{}]不一致", batchNum, vin, deviceCode, partVin);
                     continue;
                 }
-                String pn = partJson.getStr("PART_PN");
+                String pn = partJson.getStr("PART_NO");
                 String sn = partJson.getStr("PART_SN");
                 DevicePo device = deviceAppService.getDeviceByCode(deviceCode);
                 String supplierCode = partJson.getStr("SUPPLIER_CODE");
