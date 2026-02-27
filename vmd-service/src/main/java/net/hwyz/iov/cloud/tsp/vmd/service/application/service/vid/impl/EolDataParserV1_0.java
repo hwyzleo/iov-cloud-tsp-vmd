@@ -144,7 +144,10 @@ public class EolDataParserV1_0 extends BaseParser implements ImportDataParser {
             } else {
                 vehBasicInfoDao.updatePo(vehBasicInfoPo);
             }
-            vehDetailInfoDao.batchInsertPo(vehicleDetailMap.values().stream().filter(po -> po.getId() == null).toList());
+            List<VehDetailInfoPo> needInsertDetailList = vehicleDetailMap.values().stream().filter(po -> po.getId() == null).toList();
+            if (!needInsertDetailList.isEmpty()) {
+                vehDetailInfoDao.batchInsertPo(needInsertDetailList);
+            }
             if (firstEol) {
                 vehiclePublish.eol(vin, eolDate);
             }
